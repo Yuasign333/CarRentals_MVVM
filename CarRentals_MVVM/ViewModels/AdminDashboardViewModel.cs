@@ -1,0 +1,74 @@
+﻿using System.Windows;
+using System.Windows.Input;
+using CarRentals_MVVM.Commands;
+using CarRentals_MVVM.Models;
+using CarRentals_MVVM.Services;
+
+namespace CarRentals_MVVM.ViewModels
+{
+    public class AdminDashboardViewModel : ObservableObject
+    {
+        private readonly string _userId;
+
+        private bool _isSidebarOpen = false;
+        public bool IsSidebarOpen
+        {
+            get => _isSidebarOpen;
+            set
+            {
+                _isSidebarOpen = value;
+                OnPropertyChanged();
+                OnPropertyChanged(nameof(SidebarWidth));
+            }
+        }
+
+       
+        public GridLength SidebarWidth
+            => IsSidebarOpen ? new GridLength(220) : new GridLength(0);
+
+        private string _userLabel = string.Empty;
+        public string UserLabel
+        {
+            get => _userLabel;
+            set { _userLabel = value; OnPropertyChanged(); }
+        }
+
+        private string _welcomeText = string.Empty;
+        public string WelcomeText
+        {
+            get => _welcomeText;
+            set { _welcomeText = value; OnPropertyChanged(); }
+        }
+
+        public ICommand HamburgerCommand { get; }
+        public ICommand FleetCommand { get; }
+        public ICommand ReturnCommand { get; }
+        public ICommand AddCarCommand { get; }
+        public ICommand MaintenanceCommand { get; }
+        public ICommand RevenueCommand { get; }
+        public ICommand LogoutCommand { get; }
+
+        public AdminDashboardViewModel(UserModel user)
+        {
+            _userId = user.UserID;
+            UserLabel = $"Agent: {user.UserID}";
+            WelcomeText = $"Welcome back, {user.UserID}!";
+
+            HamburgerCommand = new RelayCommand(_ => IsSidebarOpen = !IsSidebarOpen);
+            FleetCommand = new RelayCommand(_ => NavigationService.Navigate(new View.FleetStatusWindow(_userId)));
+            ReturnCommand = new RelayCommand(_ => NavigationService.Navigate(new View.ProcessReturnWindow(_userId)));
+            AddCarCommand = new RelayCommand(_ => NavigationService.Navigate(new View.AddCarWindow(_userId)));
+            MaintenanceCommand = new RelayCommand(_ => NavigationService.Navigate(new View.MaintenanceWindow(_userId)));
+            RevenueCommand = new RelayCommand(_ => NavigationService.Navigate(new View.RevenueWindow(_userId)));
+            LogoutCommand = new RelayCommand(_ =>
+            {
+                var owner = Application.Current.MainWindow;
+                var result = MessageBox.Show(owner,
+                    "Are you sure you want to log out?", "Log Out",
+                    MessageBoxButton.YesNo, MessageBoxImage.Question);
+                if (result == MessageBoxResult.Yes)
+                    NavigationService.Navigate(new View.ChooseRole());
+            });
+        }
+    }
+}

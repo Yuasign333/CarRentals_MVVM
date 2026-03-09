@@ -1,0 +1,140 @@
+﻿<Window x:Class="CarRentals_MVVM.View.AdminLogin"
+        xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
+        xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
+        Title="Rental Rev. — Admin Login"
+        WindowStartupLocation="CenterScreen"
+        ResizeMode="CanResize">
+
+    <Viewbox Stretch="UniformToFill">
+        <Grid>
+            <Rectangle Width="1200" Height="600">
+                <Rectangle.Fill>
+                    <LinearGradientBrush StartPoint="0,0" EndPoint="1,1">
+                        <GradientStop Color="#F0EBFF" Offset="0"/>
+                        <GradientStop Color="#E8F0FF" Offset="0.5"/>
+                        <GradientStop Color="MediumPurple" Offset="1"/>
+                    </LinearGradientBrush>
+                </Rectangle.Fill>
+            </Rectangle>
+            <Image Source="https://i.imgur.com/vTJAlag.jpeg" Opacity="0.10" Stretch="UniformToFill"/>
+            <Ellipse Width="420" Height="420" Opacity="0.18"
+                     HorizontalAlignment="Right" VerticalAlignment="Top" Margin="0,-120,-120,0">
+                <Ellipse.Fill>
+                    <RadialGradientBrush>
+                        <GradientStop Color="#C9B8E8" Offset="0"/>
+                        <GradientStop Color="Transparent" Offset="1"/>
+                    </RadialGradientBrush>
+                </Ellipse.Fill>
+            </Ellipse>
+            <Ellipse Width="320" Height="320" Opacity="0.12"
+                     HorizontalAlignment="Left" VerticalAlignment="Bottom" Margin="-60,0,0,-60">
+                <Ellipse.Fill>
+                    <RadialGradientBrush>
+                        <GradientStop Color="#B8D4F0" Offset="0"/>
+                        <GradientStop Color="Transparent" Offset="1"/>
+                    </RadialGradientBrush>
+                </Ellipse.Fill>
+            </Ellipse>
+
+            <Viewbox Stretch="Uniform" Margin="0,0,0,42">
+                <StackPanel HorizontalAlignment="Center" VerticalAlignment="Center" Width="340">
+                    <Border Width="120" Height="83" ClipToBounds="True" HorizontalAlignment="Center">
+                        <Image Source="https://i.imgur.com/LgR81Ns.png"
+                               Stretch="UniformToFill" Margin="0,-18,0,13"/>
+                    </Border>
+                    <TextBlock Text="RENTAL REV." FontSize="24" FontWeight="Bold"
+                               Foreground="LavenderBlush" HorizontalAlignment="Center"
+                               Margin="0,-18,0,22">
+                        <TextBlock.Effect>
+                            <DropShadowEffect Color="#8A2BE2" BlurRadius="10" ShadowDepth="0" Opacity="0.4"/>
+                        </TextBlock.Effect>
+                    </TextBlock>
+
+                    <Border Margin="0,-10,0,0" CornerRadius="20" Padding="32,28"
+                            BorderThickness="0" Width="322" Height="427">
+                        <Border.Background>
+                            <LinearGradientBrush EndPoint="0.5,1" StartPoint="0.5,0">
+                                <GradientStop Color="#F0EBFF" Offset="0"/>
+                                <GradientStop Color="#E8F0FF" Offset="0.5"/>
+                                <GradientStop Color="#C8B6FF" Offset="1"/>
+                            </LinearGradientBrush>
+                        </Border.Background>
+                        <Border.Effect>
+                            <DropShadowEffect Color="#C8B6FF" BlurRadius="30" ShadowDepth="0" Opacity="0.35"/>
+                        </Border.Effect>
+                        <StackPanel>
+                            <TextBlock Text="Admin Login" FontSize="22" FontWeight="Bold"
+                                       Foreground="{StaticResource TextDark}"
+                                       HorizontalAlignment="Center" Margin="0,0,0,24"/>
+
+                            <StackPanel Orientation="Horizontal" Margin="0,0,0,6">
+                                <TextBlock Text="🔐" FontSize="13" VerticalAlignment="Center"
+                                           Foreground="{StaticResource TextMuted}" Margin="0,0,6,0"/>
+                                <Border Width="1" Background="{StaticResource BorderInput}" Margin="0,2,8,2"/>
+                                <TextBlock Text="Agent ID" FontSize="13"
+                                           Foreground="{StaticResource TextMuted}" VerticalAlignment="Center"/>
+                            </StackPanel>
+                            <Border CornerRadius="10" BorderBrush="{StaticResource BorderSoft}"
+                                    BorderThickness="1.5" Margin="0,0,0,16"
+                                    Background="{StaticResource SurfaceInput}">
+                                <TextBox x:Name="UsernameBox"
+                                         Text="{Binding CurrentUser.UserID, UpdateSourceTrigger=PropertyChanged}"
+                                         Style="{StaticResource InputTextBoxStyle}" Height="35"/>
+                            </Border>
+
+                            <StackPanel Orientation="Horizontal" Margin="0,0,0,6">
+                                <TextBlock Text="🔒" FontSize="13" VerticalAlignment="Center"
+                                           Foreground="{StaticResource TextMuted}" Margin="0,0,6,0"/>
+                                <Border Width="1" Background="{StaticResource BorderInput}" Margin="0,2,8,2"/>
+                                <TextBlock Text="Password" FontSize="13"
+                                           Foreground="{StaticResource TextMuted}" VerticalAlignment="Center"/>
+                            </StackPanel>
+                            <Border CornerRadius="10" BorderBrush="{StaticResource BorderSoft}"
+                                    BorderThickness="1.5" Margin="0,0,0,16"
+                                    Background="{StaticResource SurfaceInput}">
+                                <PasswordBox x:Name="PasswordBox"
+                                             Style="{StaticResource InputPasswordBoxStyle}" Height="35"/>
+                            </Border>
+
+                            <!-- ERROR BANNER: Collapsed by default, shown only on error -->
+                            <Border Visibility="{Binding ErrorVisible, Converter={StaticResource BoolToVisibility}}"
+                                    Background="{StaticResource ColorErrorBg}"
+                                    BorderBrush="{StaticResource ColorErrorBorder}"
+                                    BorderThickness="1" CornerRadius="8"
+                                    Padding="12,8" Margin="0,0,0,14">
+                                <TextBlock Text="{Binding ErrorMessage}"
+                                           Foreground="{StaticResource ColorError}"
+                                           FontSize="12" TextWrapping="Wrap"/>
+                            </Border>
+
+                            <Button Content="Login"
+                                    Style="{StaticResource LoginButtonStyle}"
+                                    Command="{Binding LoginCommand}"
+                                    CommandParameter="{Binding ElementName=PasswordBox}">
+                                <Button.Background>
+                                    <LinearGradientBrush StartPoint="0,0" EndPoint="1,0">
+                                        <GradientStop Color="#2D0B6B" Offset="0"/>
+                                        <GradientStop Color="#7B22D3" Offset="1"/>
+                                    </LinearGradientBrush>
+                                </Button.Background>
+                            </Button>
+
+                            <TextBlock Text="Default: A001 / admin123" FontSize="11"
+                                       Foreground="{StaticResource TextHint}"
+                                       HorizontalAlignment="Center" Margin="0,10,0,0"/>
+                            <TextBlock Text="Made by Yuan" FontSize="12"
+                                       Foreground="{StaticResource TextMuted}"
+                                       HorizontalAlignment="Center" Margin="0,8,0,0"/>
+                        </StackPanel>
+                    </Border>
+                </StackPanel>
+            </Viewbox>
+
+            <Button x:Name="BackButton" Content="🡸"
+                    Margin="0,10,1149,557"
+                    Command="{Binding BackCommand}"
+                    Style="{StaticResource BackButtonStyle}"
+                    FontSize="26"/>
+        </Grid>
+    </Viewbox>
+</Window>
