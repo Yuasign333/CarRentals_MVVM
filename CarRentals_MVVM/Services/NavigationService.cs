@@ -1,4 +1,6 @@
-﻿using System.Windows;
+﻿using System;
+using System.Windows;
+using System.Windows.Media.Animation;
 using System.Windows.Threading;
 
 namespace CarRentals_MVVM.Services
@@ -16,6 +18,7 @@ namespace CarRentals_MVVM.Services
         {
             var previous = _current;
 
+            // Copy position/size from previous window
             if (previous != null)
             {
                 next.WindowState = previous.WindowState;
@@ -28,13 +31,13 @@ namespace CarRentals_MVVM.Services
 
             Application.Current.MainWindow = next;
             _current = next;
-
             next.Show();
 
+            // Close previous immediately — no animation fighting
             if (previous != null)
             {
                 previous.Dispatcher.BeginInvoke(DispatcherPriority.Loaded,
-                    new System.Action(() => previous.Close()));
+                    new Action(() => previous.Close()));
             }
         }
     }

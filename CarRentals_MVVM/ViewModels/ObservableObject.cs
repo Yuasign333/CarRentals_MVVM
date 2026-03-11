@@ -8,6 +8,9 @@ namespace CarRentals_MVVM.ViewModels
         public event PropertyChangedEventHandler? PropertyChanged;
 
         protected void OnPropertyChanged([CallerMemberName] string? name = null)
-            => PropertyChanged?.Invoke(this, new PropertyChangedEventArgs(name ?? string.Empty));
+        {
+            PropertyChanged?.Invoke(this, new PropertyChangedEventArgs(name ?? string.Empty));
+        }
+      
     }
 }

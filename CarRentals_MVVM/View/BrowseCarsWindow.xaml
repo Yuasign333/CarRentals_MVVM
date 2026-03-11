@@ -1,11 +1,28 @@
 ﻿<Window x:Class="CarRentals_MVVM.View.BrowseCarsWindow"
         xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
         xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
+        xmlns:d="http://schemas.microsoft.com/expression/blend/2008"
+        xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
+        xmlns:vm="clr-namespace:CarRentals_MVVM.ViewModels"
+        mc:Ignorable="d"
+        d:DataContext="{d:DesignInstance Type=vm:BrowseCarsDesignViewModel, IsDesignTimeCreatable=True}"
         Title="Rental Rev. — Browse Cars"
+        Height="620" Width="1020"
         WindowStartupLocation="CenterScreen" ResizeMode="CanResize">
+
     <Viewbox Stretch="UniformToFill">
-        <Grid>
-            <Rectangle Height="620" Width="1020">
+
+       
+        <Grid Width="1020" Height="560">
+            <Grid.RowDefinitions>
+                <RowDefinition Height="56"/>
+                <RowDefinition Height="*"/>
+            </Grid.RowDefinitions>
+
+            <!-- ═══════════════════════════════════════════
+                 BACKGROUND  (spans all rows, behind everything)
+            ═══════════════════════════════════════════ -->
+            <Rectangle Grid.RowSpan="2" Panel.ZIndex="0">
                 <Rectangle.Fill>
                     <LinearGradientBrush StartPoint="0,0" EndPoint="1,1">
                         <GradientStop Color="#F0EBFF" Offset="0"/>
@@ -14,8 +31,13 @@
                     </LinearGradientBrush>
                 </Rectangle.Fill>
             </Rectangle>
-            <Image Source="https://i.imgur.com/vTJAlag.jpeg" Opacity="0.10" Stretch="UniformToFill"/>
-            <Ellipse Width="420" Height="420" Opacity="0.18" HorizontalAlignment="Right" VerticalAlignment="Top" Margin="0,-120,-120,0">
+            <Image Grid.RowSpan="2" Panel.ZIndex="0"
+                   Source="https://i.imgur.com/vTJAlag.jpeg"
+                   Opacity="0.07" Stretch="UniformToFill" Margin="-14,0,-14,0"/>
+            <Ellipse Grid.RowSpan="2" Panel.ZIndex="0"
+                     Width="420" Height="420" Opacity="0.15"
+                     HorizontalAlignment="Right" VerticalAlignment="Top"
+                     Margin="0,-120,-120,0">
                 <Ellipse.Fill>
                     <RadialGradientBrush>
                         <GradientStop Color="#C9B8E8" Offset="0"/>
@@ -23,81 +45,178 @@
                     </RadialGradientBrush>
                 </Ellipse.Fill>
             </Ellipse>
-            <Ellipse Width="320" Height="320" Opacity="0.12" HorizontalAlignment="Left" VerticalAlignment="Bottom" Margin="-60,0,0,-60">
-                <Ellipse.Fill>
-                    <RadialGradientBrush>
-                        <GradientStop Color="#B8D4F0" Offset="0"/>
-                        <GradientStop Color="Transparent" Offset="1"/>
-                    </RadialGradientBrush>
-                </Ellipse.Fill>
-            </Ellipse>
-            <Border VerticalAlignment="Top" Height="60" BorderBrush="#E2D4F8" BorderThickness="0">
-                <Grid Margin="28,0">
+
+            <!-- ═══════════════════════════════════════════
+                 ROW 0 — TOP BAR  (sticky, never scrolls)
+            ═══════════════════════════════════════════ -->
+            <Border Grid.Row="0" Panel.ZIndex="10">
+                <Grid Margin="24,0">
                     <Grid.ColumnDefinitions>
                         <ColumnDefinition Width="*"/>
                         <ColumnDefinition Width="Auto"/>
                     </Grid.ColumnDefinitions>
+
                     <StackPanel Orientation="Horizontal" VerticalAlignment="Center">
-                        <TextBlock Text="RENTAL REV." FontSize="13" FontWeight="Black" Foreground="#C9B8E8"/>
-                        <TextBlock Text="  /  " FontSize="13" Foreground="#C4B0E0"/>
-                        <TextBlock Text="Browse Cars" FontSize="15" FontWeight="Bold" Foreground="#2A1B5E"/>
+                        <Button Content="←" FontSize="16"
+                                Style="{StaticResource BackButtonStyle}"
+                                Command="{Binding BackCommand}" Margin="0,0,10,0"/>
+                        <TextBlock Text="RENTAL REV." FontSize="12" FontWeight="Black"
+                                   Foreground="#C9B8E8" VerticalAlignment="Center"/>
+                        <TextBlock Text="  /  " FontSize="12"
+                                   Foreground="#C4B0E0" VerticalAlignment="Center"/>
+                        <TextBlock Text="Browse Cars" FontSize="15" FontWeight="Bold"
+                                   Foreground="#2A1B5E" VerticalAlignment="Center"/>
                     </StackPanel>
-                    <Border Grid.Column="1" Background="White" CornerRadius="20" Padding="12,7" VerticalAlignment="Center">
+
+                    <Border Grid.Column="1" Background="White" CornerRadius="20"
+                            Padding="12,7" VerticalAlignment="Center">
                         <Border.Effect>
                             <DropShadowEffect Color="#C9B8E8" BlurRadius="25" ShadowDepth="0" Opacity="0.25"/>
                         </Border.Effect>
                         <StackPanel Orientation="Horizontal">
                             <TextBlock Text="👤" Margin="0,0,6,0"/>
-                            <TextBlock Text="{Binding UserLabel}" FontWeight="SemiBold" Foreground="#3D1A7A"/>
+                            <TextBlock Text="{Binding UserLabel}"
+                                       FontWeight="SemiBold" Foreground="#3D1A7A"/>
                         </StackPanel>
                     </Border>
                 </Grid>
             </Border>
-            <Border HorizontalAlignment="Center" VerticalAlignment="Center" Width="420" CornerRadius="20" Padding="44,40" Background="White">
-                <Border.Effect>
-                    <DropShadowEffect Color="#C8B6FF" BlurRadius="30" ShadowDepth="0" Opacity="0.35"/>
-                </Border.Effect>
-                <StackPanel HorizontalAlignment="Center">
-                    <Border Width="72" Height="72" CornerRadius="18" HorizontalAlignment="Center" Margin="0,0,0,18">
+
+            <!-- ═══════════════════════════════════════════
+                 ROW 1 — SCROLLABLE BODY
+                 Only this region scrolls; top bar stays put.
+            ═══════════════════════════════════════════ -->
+            <ScrollViewer Grid.Row="1" Panel.ZIndex="5"
+                          VerticalScrollBarVisibility="Auto"
+                          HorizontalScrollBarVisibility="Disabled"
+                          CanContentScroll="False">
+                <Grid Margin="28,8,28,24">
+                    <Grid.RowDefinitions>
+                        <RowDefinition Height="Auto"/>
+                        <RowDefinition Height="10"/>
+                        <RowDefinition Height="Auto"/>
+                        <RowDefinition Height="12"/>
+                        <RowDefinition Height="Auto"/>
+                    </Grid.RowDefinitions>
+
+                    <!-- Page title -->
+                    <TextBlock Grid.Row="0"
+                               Text="Available Cars"
+                               FontSize="18" FontWeight="Bold" Foreground="#2A1B5E"/>
+
+                    <!-- Filter panel -->
+                    <Border Grid.Row="2" CornerRadius="16" Padding="20,14">
                         <Border.Background>
-                            <LinearGradientBrush StartPoint="0,0" EndPoint="1,1">
-                                <GradientStop Color="#D4C5F0" Offset="0"/>
-                                <GradientStop Color="#C9B8E8" Offset="1"/>
-                            </LinearGradientBrush>
+                            <SolidColorBrush Color="#F5F0FF" Opacity="0.95"/>
                         </Border.Background>
                         <Border.Effect>
-                            <DropShadowEffect Color="#C8B6FF" BlurRadius="16" ShadowDepth="0" Opacity="0.4"/>
+                            <DropShadowEffect Color="#C8B6FF" BlurRadius="18" ShadowDepth="0" Opacity="0.15"/>
                         </Border.Effect>
-                        <TextBlock Text="🚗" FontSize="34" HorizontalAlignment="Center" VerticalAlignment="Center"/>
-                    </Border>
-                    <TextBlock Text="Browse Cars" FontSize="24" FontWeight="Bold" Foreground="#2A1B5E" HorizontalAlignment="Center" Margin="0,0,0,8"/>
-                    <TextBlock Text="Browse all available vehicles for rent." FontSize="13" Foreground="#7E74A6" HorizontalAlignment="Center" TextAlignment="Center" Margin="0,0,0,28"/>
-                    <Border HorizontalAlignment="Center" CornerRadius="12" Padding="20,10" Margin="0,0,0,16">
-                        <Border.Background>
-                            <LinearGradientBrush StartPoint="0,0" EndPoint="1,1">
-                                <GradientStop Color="#D4C5F0" Offset="0"/>
-                                <GradientStop Color="#C9B8E8" Offset="1"/>
-                            </LinearGradientBrush>
-                        </Border.Background>
-                        <StackPanel Orientation="Horizontal">
-                            <TextBlock Text="🚧 " FontSize="14" VerticalAlignment="Center"/>
-                            <TextBlock Text="Work in progress — coming soon" FontSize="13" FontWeight="SemiBold" Foreground="#3D1A7A" VerticalAlignment="Center"/>
+                        <StackPanel>
+                            <StackPanel Orientation="Horizontal" Margin="0,0,0,2">
+                                <TextBlock Text="🔍  " FontSize="13"/>
+                                <TextBlock Text="Filters" FontSize="14" FontWeight="Bold" Foreground="#2A1B5E"/>
+                            </StackPanel>
+                            <StackPanel Orientation="Horizontal" Margin="0,10,0,0">
+                                <StackPanel Margin="0,0,28,0">
+                                    <TextBlock Text="Category" FontSize="12"
+                                               Foreground="#7E74A6" Margin="0,0,0,5"/>
+                                    <ComboBox Width="200" Height="36" FontSize="13"
+                                              SelectedValuePath="Tag"
+                                              SelectedValue="{Binding SelectedCategory}">
+                                        <ComboBoxItem Content="All Categories" Tag="All" IsSelected="True"/>
+                                        <ComboBoxItem Content="SUV"            Tag="SUV"/>
+                                        <ComboBoxItem Content="Sedan"          Tag="Sedan"/>
+                                        <ComboBoxItem Content="Van"            Tag="Van"/>
+                                    </ComboBox>
+                                </StackPanel>
+                                <StackPanel>
+                                    <TextBlock Text="Fuel Type" FontSize="12"
+                                               Foreground="#7E74A6" Margin="0,0,0,5"/>
+                                    <ComboBox Width="200" Height="36" FontSize="13"
+                                              SelectedValuePath="Tag"
+                                              SelectedValue="{Binding SelectedFuel}">
+                                        <ComboBoxItem Content="All Fuel Types"  Tag="All" IsSelected="True"/>
+                                        <ComboBoxItem Content="Standard Engine" Tag="Standard Engine"/>
+                                        <ComboBoxItem Content="EV"              Tag="EV"/>
+                                    </ComboBox>
+                                </StackPanel>
+                            </StackPanel>
                         </StackPanel>
                     </Border>
-                    <Border CornerRadius="12" Padding="20,10" Cursor="Hand" HorizontalAlignment="Center" MouseLeftButtonUp="BackBtn_Click">
-                        <Border.Background>
-                            <LinearGradientBrush StartPoint="0,0" EndPoint="1,0">
-                                <GradientStop Color="LavenderBlush" Offset="0"/>
-                                <GradientStop Color="#D4C5F0" Offset="1"/>
-                            </LinearGradientBrush>
-                        </Border.Background>
-                        <StackPanel Orientation="Horizontal">
-                            <TextBlock Text="← " FontSize="14" Foreground="#3D1A7A" VerticalAlignment="Center"/>
-                            <TextBlock Text="Back to Dashboard" FontSize="13" FontWeight="SemiBold" Foreground="#3D1A7A" VerticalAlignment="Center"/>
-                        </StackPanel>
-                    </Border>
-                </StackPanel>
-            </Border>
+
+                    <!-- Car cards -->
+                    <ItemsControl Grid.Row="4" ItemsSource="{Binding FilteredCars}">
+                        <ItemsControl.ItemsPanel>
+                            <ItemsPanelTemplate>
+                                <WrapPanel/>
+                            </ItemsPanelTemplate>
+                        </ItemsControl.ItemsPanel>
+                        <ItemsControl.ItemTemplate>
+                            <DataTemplate>
+                                <Border Width="295" Height="258" CornerRadius="18"
+                                        Margin="0,0,14,14" Background="White" Cursor="Hand"
+                                        Style="{StaticResource DashCardStyle}">
+                                    <Border.Effect>
+                                        <DropShadowEffect Color="#C8B6FF" BlurRadius="22"
+                                                          ShadowDepth="0" Opacity="0.22"/>
+                                    </Border.Effect>
+                                    <Border.InputBindings>
+                                        <MouseBinding MouseAction="LeftClick"
+                                                      Command="{Binding DataContext.SelectCarCommand,
+                                                                RelativeSource={RelativeSource AncestorType=ItemsControl}}"
+                                                      CommandParameter="{Binding}"/>
+                                    </Border.InputBindings>
+                                    <Grid>
+                                        <Border Height="150" VerticalAlignment="Top"
+                                                CornerRadius="18,18,0,0" ClipToBounds="True">
+                                            <Border.Background>
+                                                <LinearGradientBrush StartPoint="0,0" EndPoint="1,1">
+                                                    <GradientStop Color="#EDE5FF" Offset="0"/>
+                                                    <GradientStop Color="#D8CCFF" Offset="1"/>
+                                                </LinearGradientBrush>
+                                            </Border.Background>
+                                            <Image Source="{Binding ImageUrl}" Stretch="UniformToFill"/>
+                                        </Border>
+                                        <StackPanel VerticalAlignment="Bottom" Margin="14,0,14,12">
+                                            <TextBlock Text="{Binding Name}"
+                                                       FontWeight="Bold" FontSize="14" Foreground="#2A1B5E"/>
+                                            <TextBlock Text="{Binding CarId, StringFormat='ID: {0}'}"
+                                                       FontSize="11" Foreground="#7E74A6" Margin="0,2,0,5"/>
+                                            <StackPanel Orientation="Horizontal" Margin="0,0,0,5">
+                                                <Border CornerRadius="8" Padding="7,3"
+                                                        Margin="0,0,5,0" Background="#E8F0FF">
+                                                    <TextBlock Text="{Binding Category}"
+                                                               FontSize="10" Foreground="#3D6FCC"/>
+                                                </Border>
+                                                <Border CornerRadius="8" Padding="7,3"
+                                                        Margin="0,0,5,0" Background="#F0EBFF">
+                                                    <TextBlock Text="{Binding FuelType}"
+                                                               FontSize="10" Foreground="#6B3FCC"/>
+                                                </Border>
+                                                <Border CornerRadius="8" Padding="7,3" Background="#EDFBF0">
+                                                    <TextBlock Text="{Binding Status}"
+                                                               FontSize="10" Foreground="#2E7D52"/>
+                                                </Border>
+                                            </StackPanel>
+                                            <StackPanel Orientation="Horizontal">
+                                                <TextBlock FontSize="15" FontWeight="Bold" Foreground="#8A2BE2">
+                                                    <Run Text="$"/>
+                                                    <Run Text="{Binding PricePerHour, StringFormat='{}{0:F0}'}"/>
+                                                </TextBlock>
+                                                <TextBlock Text=" / hr" FontSize="11" Foreground="#7E74A6"
+                                                           VerticalAlignment="Bottom" Margin="0,0,0,1"/>
+                                            </StackPanel>
+                                        </StackPanel>
+                                    </Grid>
+                                </Border>
+                            </DataTemplate>
+                        </ItemsControl.ItemTemplate>
+                    </ItemsControl>
+
+                </Grid>
+            </ScrollViewer>
+
         </Grid>
     </Viewbox>
 </Window>
