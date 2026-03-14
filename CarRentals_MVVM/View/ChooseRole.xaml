@@ -72,9 +72,10 @@
 
                     <!-- CUSTOMER CARD -->
                     <Border Background="#F8F4FF" CornerRadius="16"
-                            BorderBrush="#E0D0FF" BorderThickness="1.5"
-                            Padding="24,18" Margin="0,0,0,14"
-                            Cursor="Hand" MouseLeftButtonUp="CustomerCard_Click">
+        BorderBrush="#E0D0FF" BorderThickness="1.5"
+        Padding="24,18" Margin="0,0,0,14"
+        Cursor="Hand" MouseLeftButtonUp="CustomerCard_Click"
+        Style="{StaticResource RoleCardStyle}">
                         <Border.Effect>
                             <DropShadowEffect Color="#C9B8E8" BlurRadius="12" ShadowDepth="2" Opacity="0.3"/>
                         </Border.Effect>
@@ -108,9 +109,10 @@
 
                     <!-- ADMIN CARD -->
                     <Border Background="#F3EEFF" CornerRadius="16"
-                            BorderBrush="#D4B8FF" BorderThickness="1.5"
-                            Padding="24,18" Cursor="Hand"
-                            MouseLeftButtonUp="AdminCard_Click">
+        BorderBrush="#D4B8FF" BorderThickness="1.5"
+        Padding="24,18" Cursor="Hand"
+        MouseLeftButtonUp="AdminCard_Click"
+        Style="{StaticResource RoleCardStyle}">
                         <Border.Effect>
                             <DropShadowEffect Color="#C9B8E8" BlurRadius="12" ShadowDepth="2" Opacity="0.3"/>
                         </Border.Effect>

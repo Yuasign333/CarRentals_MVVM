@@ -22,12 +22,25 @@ namespace CarRentals_MVVM.Models
         public string Role
         {
             get => _role;
-            set { if (_role != value) { _role = value; OnPropertyChanged(); } }
+            set 
+            { 
+                if (_role != value) 
+                
+                { 
+                    _role = value; OnPropertyChanged(); 
+                } 
+            }
         }
         public string StatusMessage
         {
             get => _statusMessage;
-            set { if (_statusMessage != value) { _statusMessage = value; OnPropertyChanged(); } }
+
+            set 
+            { if (_statusMessage != value) 
+                { 
+                    _statusMessage = value; OnPropertyChanged(); 
+                } 
+            }
         }
     }
 }
