@@ -11,10 +11,15 @@ namespace CarRentals_MVVM.View
         {
             InitializeComponent();
             this.Loaded += (s, e) => NavigationService.SetCurrent(this);
-            this.DataContext = new StubWindowViewModel(userId, isAdmin: true);
+            this.DataContext = new AddCarViewModel(userId);
         }
 
         private void BackBtn_Click(object sender, MouseButtonEventArgs e)
-        { if (DataContext is StubWindowViewModel vm) vm.BackCommand.Execute(null); }
+        {
+            if (DataContext is AddCarViewModel vm)
+                vm.BackCommand.Execute(null);
+        }
+
+        private void Button_Click(object sender, RoutedEventArgs e) { }
     }
 }

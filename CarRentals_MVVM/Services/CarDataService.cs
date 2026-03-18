@@ -1,5 +1,4 @@
 ﻿using System.Collections.Generic;
-using System.Linq;
 using CarRentals_MVVM.Models;
 
 namespace CarRentals_MVVM.Services
@@ -17,7 +16,7 @@ namespace CarRentals_MVVM.Services
             new CarModel { CarId="C003", Name="Honda Civic",    Category="Sedan", FuelType="Standard Engine", Status="Available", PricePerHour=35,
                 ImageUrl="https://i.imgur.com/adLesJ3.jpeg",
                 AvailableColors=["White","Red","Blue"] },
-            new CarModel { CarId="C004", Name="Tesla Model 3",  Category="Sedan", FuelType="EV", Status="Available", PricePerHour=65,
+            new CarModel { CarId="C004", Name="Tesla Model 3",  Category="Sedan", FuelType="EV",              Status="Available", PricePerHour=65,
                 ImageUrl="https://i.imgur.com/69GQ8YT.jpeg",
                 AvailableColors=["White"] },
             new CarModel { CarId="C005", Name="Toyota HiAce",   Category="Van",   FuelType="Standard Engine", Status="Available", PricePerHour=80,
@@ -30,8 +29,58 @@ namespace CarRentals_MVVM.Services
 
         public static List<RentalModel> Rentals { get; } = new();
 
-        public static List<CarModel> GetAll() => Cars.ToList();
-        public static List<RentalModel> GetByCustomer(string id) =>
-            Rentals.Where(r => r.CustomerId == id).ToList();
+        public static List<CarModel> GetAll()
+        {
+            return new List<CarModel>(Cars);
+        }
+
+        public static List<CarModel> GetAvailable()
+        {
+            var result = new List<CarModel>();
+            foreach (var car in Cars)
+            {
+                if (car.Status == "Available")
+                    result.Add(car);
+            }
+            return result;
+        }
+
+        public static List<RentalModel> GetByCustomer(string id)
+        {
+            var result = new List<RentalModel>();
+            foreach (var rental in Rentals)
+            {
+                if (rental.CustomerId == id)
+                    result.Add(rental);
+            }
+            return result;
+        }
+
+        public static CarModel? GetById(string carId)
+        {
+            foreach (var car in Cars)
+            {
+                if (car.CarId == carId)
+                    return car;
+            }
+            return null;
+        }
+
+        public static void AddCar(CarModel car)
+        {
+            Cars.Add(car);
+        }
+
+        public static void RemoveCar(string carId)
+        {
+            var car = GetById(carId);
+            if (car != null)
+                Cars.Remove(car);
+        }
+
+        public static void AddRental(RentalModel rental)
+        {
+            Rentals.Add(rental);
+        }
     }
 }

@@ -261,8 +261,8 @@
                             <Grid Margin="18">
                                 <StackPanel>
                                     <TextBlock Text="➕" FontSize="26"/>
-                                    <TextBlock Text="Add Car" FontWeight="Bold" Margin="0,12,0,2"/>
-                                    <TextBlock Text="Register new vehicle" FontSize="12" Foreground="#5F5A87"/>
+                                    <TextBlock Text="Add/Delete Car" FontWeight="Bold" Margin="0,12,0,2"/>
+                                    <TextBlock Text="Register new vehicle and delete" FontSize="12" Foreground="#5F5A87"/>
                                 </StackPanel>
                             </Grid>
                         </Border>

@@ -15,7 +15,10 @@
 
             <!-- SIDEBAR -->
             
+            
             <Grid Grid.Column="0">
+                
+                
                 <Grid.Background>
                     <LinearGradientBrush EndPoint="0.5,1" StartPoint="0.5,0">
                         <GradientStop Color="#FF7D4FD2" Offset="0"/>
@@ -41,6 +44,7 @@
                     <TextBlock Text="RENTAL REV." FontSize="28" FontWeight="Bold"
                                Foreground="Lavender" Margin="0,-38,0,0"/>
                 </StackPanel>
+
                 <StackPanel Grid.Row="1" Margin="16,0">
                     <Border CornerRadius="14" Padding="14,12" Margin="0,0,0,8">
                         <Border.Background>

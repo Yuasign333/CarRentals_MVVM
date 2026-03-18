@@ -19,7 +19,7 @@ namespace CarRentals_MVVM.View
             this.DataContext = new CustomerDashboardViewModel(
                 new Models.UserModel { UserID = userId, Role = "Customer" });
         }
-
+        
         private void Hamburger_Click(object sender, RoutedEventArgs e)
         {
             _sidebarOpen = !_sidebarOpen;
