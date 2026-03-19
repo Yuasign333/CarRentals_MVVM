@@ -14,12 +14,7 @@ namespace CarRentals_MVVM.View
             this.DataContext = new AddCarViewModel(userId);
         }
 
-        private void BackBtn_Click(object sender, MouseButtonEventArgs e)
-        {
-            if (DataContext is AddCarViewModel vm)
-                vm.BackCommand.Execute(null);
-        }
-
-        private void Button_Click(object sender, RoutedEventArgs e) { }
+       
+       
     }
 }

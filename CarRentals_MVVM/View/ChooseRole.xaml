@@ -71,79 +71,81 @@
                                HorizontalAlignment="Center" Margin="0,0,0,30"/>
 
                     <!-- CUSTOMER CARD -->
-                    <Border Background="#F8F4FF" CornerRadius="16"
-        BorderBrush="#E0D0FF" BorderThickness="1.5"
-        Padding="24,18" Margin="0,0,0,14"
-        Cursor="Hand" MouseLeftButtonUp="CustomerCard_Click"
-        Style="{StaticResource RoleCardStyle}">
-                        <Border.Effect>
-                            <DropShadowEffect Color="#C9B8E8" BlurRadius="12" ShadowDepth="2" Opacity="0.3"/>
-                        </Border.Effect>
-                        <Grid>
-                            <Grid.ColumnDefinitions>
-                                <ColumnDefinition Width="Auto"/>
-                                <ColumnDefinition Width="*"/>
-                                <ColumnDefinition Width="Auto"/>
-                            </Grid.ColumnDefinitions>
-                            <Border Grid.Column="0" Width="46" Height="46"
-                                    CornerRadius="12" Margin="0,0,14,0">
-                                <Border.Background>
-                                    <LinearGradientBrush StartPoint="0,0" EndPoint="1,1">
-                                        <GradientStop Color="#C9B8E8" Offset="0.3"/>
-                                        <GradientStop Color="LavenderBlush" Offset="1"/>
-                                    </LinearGradientBrush>
-                                </Border.Background>
-                                <TextBlock Text="👤" FontSize="22"
-                                           HorizontalAlignment="Center" VerticalAlignment="Center"/>
-                            </Border>
-                            <StackPanel Grid.Column="1" VerticalAlignment="Center">
-                                <TextBlock Text="Customer" FontSize="16"
-                                           FontWeight="Bold" Foreground="#1A1A2E"/>
-                                <TextBlock Text="Browse &amp; rent cars"
-                                           FontSize="12" Foreground="{StaticResource TextHint}"/>
-                            </StackPanel>
-                            <TextBlock Grid.Column="2" Text="→" FontSize="22"
-                                       Foreground="{StaticResource BrandPrimary}" VerticalAlignment="Center"/>
-                        </Grid>
-                    </Border>
-
+                    <!-- CUSTOMER CARD -->
+                    <Button Command="{Binding CustomerCommand}"
+        Margin="0,0,0,14"
+        Style="{StaticResource RoleCardButtonStyle}">
+                        <Border Background="#F8F4FF" CornerRadius="16"
+            BorderBrush="#E0D0FF" BorderThickness="1.5"
+            Padding="24,18">
+                            <Border.Effect>
+                                <DropShadowEffect Color="#C9B8E8" BlurRadius="12" ShadowDepth="2" Opacity="0.3"/>
+                            </Border.Effect>
+                            <Grid>
+                                <Grid.ColumnDefinitions>
+                                    <ColumnDefinition Width="Auto"/>
+                                    <ColumnDefinition Width="*"/>
+                                    <ColumnDefinition Width="Auto"/>
+                                </Grid.ColumnDefinitions>
+                                <Border Grid.Column="0" Width="46" Height="46"
+                    CornerRadius="12" Margin="0,0,14,0">
+                                    <Border.Background>
+                                        <LinearGradientBrush StartPoint="0,0" EndPoint="1,1">
+                                            <GradientStop Color="#C9B8E8" Offset="0.3"/>
+                                            <GradientStop Color="LavenderBlush" Offset="1"/>
+                                        </LinearGradientBrush>
+                                    </Border.Background>
+                                    <TextBlock Text="👤" FontSize="22"
+                           HorizontalAlignment="Center" VerticalAlignment="Center"/>
+                                </Border>
+                                <StackPanel Grid.Column="1" VerticalAlignment="Center">
+                                    <TextBlock Text="Customer" FontSize="16"
+                           FontWeight="Bold" Foreground="#1A1A2E"/>
+                                    <TextBlock Text="Browse &amp; rent cars"
+                           FontSize="12" Foreground="{StaticResource TextHint}"/>
+                                </StackPanel>
+                                <TextBlock Grid.Column="2" Text="→" FontSize="22"
+                       Foreground="{StaticResource BrandPrimary}" VerticalAlignment="Center"/>
+                            </Grid>
+                        </Border>
+                    </Button>
                     <!-- ADMIN CARD -->
-                    <Border Background="#F3EEFF" CornerRadius="16"
-        BorderBrush="#D4B8FF" BorderThickness="1.5"
-        Padding="24,18" Cursor="Hand"
-        MouseLeftButtonUp="AdminCard_Click"
-        Style="{StaticResource RoleCardStyle}">
-                        <Border.Effect>
-                            <DropShadowEffect Color="#C9B8E8" BlurRadius="12" ShadowDepth="2" Opacity="0.3"/>
-                        </Border.Effect>
-                        <Grid>
-                            <Grid.ColumnDefinitions>
-                                <ColumnDefinition Width="Auto"/>
-                                <ColumnDefinition Width="*"/>
-                                <ColumnDefinition Width="Auto"/>
-                            </Grid.ColumnDefinitions>
-                            <Border Grid.Column="0" Width="46" Height="46"
-                                    CornerRadius="12" Margin="0,0,14,0">
-                                <Border.Background>
-                                    <LinearGradientBrush StartPoint="0,0" EndPoint="1,1">
-                                        <GradientStop Color="LavenderBlush" Offset="0"/>
-                                        <GradientStop Color="MediumPurple" Offset="1"/>
-                                    </LinearGradientBrush>
-                                </Border.Background>
-                                <TextBlock Text="🔐" FontSize="22"
-                                           HorizontalAlignment="Center" VerticalAlignment="Center"/>
-                            </Border>
-                            <StackPanel Grid.Column="1" VerticalAlignment="Center">
-                                <TextBlock Text="Admin" FontSize="16"
-                                           FontWeight="Bold" Foreground="#1A1A2E"/>
-                                <TextBlock Text="Manage fleet &amp; rentals"
-                                           FontSize="12" Foreground="{StaticResource TextHint}"/>
-                            </StackPanel>
-                            <TextBlock Grid.Column="2" Text="→" FontSize="22"
-                                       Foreground="#6A1BBF" VerticalAlignment="Center"/>
-                        </Grid>
-                    </Border>
-
+                    <Button Command="{Binding AdminCommand}"
+        Style="{StaticResource RoleCardButtonStyle}">
+                        <Border Background="#F3EEFF" CornerRadius="16"
+            BorderBrush="#D4B8FF" BorderThickness="1.5"
+            Padding="24,18">
+                            <Border.Effect>
+                                <DropShadowEffect Color="#C9B8E8" BlurRadius="12" ShadowDepth="2" Opacity="0.3"/>
+                            </Border.Effect>
+                            <Grid>
+                                <Grid.ColumnDefinitions>
+                                    <ColumnDefinition Width="Auto"/>
+                                    <ColumnDefinition Width="*"/>
+                                    <ColumnDefinition Width="Auto"/>
+                                </Grid.ColumnDefinitions>
+                                <Border Grid.Column="0" Width="46" Height="46"
+                    CornerRadius="12" Margin="0,0,14,0">
+                                    <Border.Background>
+                                        <LinearGradientBrush StartPoint="0,0" EndPoint="1,1">
+                                            <GradientStop Color="LavenderBlush" Offset="0"/>
+                                            <GradientStop Color="MediumPurple" Offset="1"/>
+                                        </LinearGradientBrush>
+                                    </Border.Background>
+                                    <TextBlock Text="🔐" FontSize="22"
+                           HorizontalAlignment="Center" VerticalAlignment="Center"/>
+                                </Border>
+                                <StackPanel Grid.Column="1" VerticalAlignment="Center">
+                                    <TextBlock Text="Admin" FontSize="16"
+                           FontWeight="Bold" Foreground="#1A1A2E"/>
+                                    <TextBlock Text="Manage fleet &amp; rentals"
+                           FontSize="12" Foreground="{StaticResource TextHint}"/>
+                                </StackPanel>
+                                <TextBlock Grid.Column="2" Text="→" FontSize="22"
+                       Foreground="#6A1BBF" VerticalAlignment="Center"/>
+                            </Grid>
+                        </Border>
+                    </Button>
                     <TextBlock Text="Made by Yuan" FontSize="12"
                                Foreground="#CCC" HorizontalAlignment="Center" Margin="0,24,0,0"/>
                 </StackPanel>
@@ -151,8 +153,9 @@
 
             <Button x:Name="ExitButton" Content="❌"
                     Margin="0,10,1149,557"
-                    Click="BackButton_Click"
+                   
                     Style="{StaticResource BackButtonStyle}"
+                    Command= "{Binding ExitCommand}"
                     FontSize="16"/>
         </Grid>
     </Viewbox>

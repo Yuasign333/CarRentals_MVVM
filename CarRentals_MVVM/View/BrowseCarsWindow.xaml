@@ -89,7 +89,8 @@
             <ScrollViewer Grid.Row="1" Panel.ZIndex="5"
                           VerticalScrollBarVisibility="Auto"
                           HorizontalScrollBarVisibility="Disabled"
-                          CanContentScroll="False">
+                          CanContentScroll="False" Visibility="{Binding IsPageList, Converter={StaticResource BoolToVisibility}}"
+              d:Visibility="Visible">
                 <Grid Margin="28,8,28,24">
                     <Grid.RowDefinitions>
                         <RowDefinition Height="Auto"/>
@@ -144,6 +145,7 @@
                             </StackPanel>
                         </StackPanel>
                     </Border>
+                    
 
                     <!-- Car cards -->
                     <ItemsControl Grid.Row="4" ItemsSource="{Binding FilteredCars}">
@@ -209,6 +211,7 @@
                                             </StackPanel>
                                         </StackPanel>
                                     </Grid>
+                                    
                                 </Border>
                             </DataTemplate>
                         </ItemsControl.ItemTemplate>

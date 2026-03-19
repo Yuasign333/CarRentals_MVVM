@@ -2,6 +2,9 @@
 
 namespace CarRentals_MVVM.Models
 {
+    /// <summary>
+    /// Containd data for Cars
+    /// </summary>
     public class CarModel : ObservableObject
     {
         private string _carId = string.Empty;
@@ -12,8 +15,8 @@ namespace CarRentals_MVVM.Models
         private decimal _pricePerHour;
         private string _imageUrl = string.Empty;
         private string[] _availableColors = [];
-        private string _lostItemName = string.Empty;
-
+        
+        // 
         public string CarId
         {
             get => _carId;

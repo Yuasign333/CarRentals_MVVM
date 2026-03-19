@@ -12,7 +12,7 @@
         WindowStartupLocation="CenterScreen" ResizeMode="CanResize">
 
 
-    <Viewbox Stretch="UniformToFill">
+    <Viewbox Stretch="UniformToFill" >
         <Grid Width="1020" Height="620">
             <Grid.RowDefinitions>
                 <RowDefinition Height="56"/>

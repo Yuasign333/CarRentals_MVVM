@@ -32,6 +32,7 @@
                         <BlurEffect Radius="18"/>
                     </Image.Effect>
                 </Image>
+
                 <StackPanel Grid.Row="0" Margin="0,26,0,28" HorizontalAlignment="Center">
                     <Border Width="150" Height="103" ClipToBounds="True">
                         <Image Source="https://i.imgur.com/yVApvuV.png"
@@ -40,7 +41,9 @@
                     <TextBlock Text="RENTAL REV." FontSize="28" FontWeight="Bold"
                                Foreground="Lavender" Margin="0,-38,0,0"/>
                 </StackPanel>
+
                 <StackPanel Grid.Row="1" Margin="16,0">
+                    <!-- Active dashboard item (no command needed) -->
                     <Border CornerRadius="14" Padding="14,12" Margin="0,0,0,8">
                         <Border.Background>
                             <LinearGradientBrush StartPoint="0,0" EndPoint="1,0">
@@ -53,62 +56,125 @@
                             <TextBlock Text="Dashboard" FontWeight="Bold" Foreground="White"/>
                         </StackPanel>
                     </Border>
-                    <Border CornerRadius="14" Padding="14,12" Margin="0,0,0,4"
-                            Cursor="Hand" Background="Transparent"
-                            MouseLeftButtonUp="FleetBtn_Click">
-                        <StackPanel Orientation="Horizontal">
-                            <TextBlock Text="🚗" Margin="0,0,8,0"/>
-                            <TextBlock Text="Fleet Status" Foreground="#FFFFFFCC"/>
-                        </StackPanel>
-                    </Border>
-                    <Border CornerRadius="14" Padding="14,12" Margin="0,0,0,4"
-                            Cursor="Hand" Background="Transparent"
-                            MouseLeftButtonUp="ReturnBtn_Click">
-                        <StackPanel Orientation="Horizontal">
-                            <TextBlock Text="🔄" Margin="0,0,8,0"/>
-                            <TextBlock Text="Process Return" Foreground="#FFFFFFCC"/>
-                        </StackPanel>
-                    </Border>
-                    <Border CornerRadius="14" Padding="14,12" Margin="0,0,0,4"
-                            Cursor="Hand" Background="Transparent"
-                            MouseLeftButtonUp="AddCarBtn_Click">
-                        <StackPanel Orientation="Horizontal">
-                            <TextBlock Text="➕" Margin="0,0,8,0"/>
-                            <TextBlock Text="Add Car" Foreground="#FFFFFFCC"/>
-                        </StackPanel>
-                    </Border>
-                    <Border CornerRadius="14" Padding="14,12" Margin="0,0,0,4"
-                            Cursor="Hand" Background="Transparent"
-                            MouseLeftButtonUp="MaintenanceBtn_Click">
-                        <StackPanel Orientation="Horizontal">
-                            <TextBlock Text="🔧" Margin="0,0,8,0"/>
-                            <TextBlock Text="Maintenance" Foreground="#FFFFFFCC"/>
-                        </StackPanel>
-                    </Border>
-                    <Border CornerRadius="14" Padding="14,12" Margin="0,0,0,4"
-                            Cursor="Hand" Background="Transparent"
-                            MouseLeftButtonUp="RevenueBtn_Click">
-                        <StackPanel Orientation="Horizontal">
-                            <TextBlock Text="💰" Margin="0,0,8,0"/>
-                            <TextBlock Text="Revenue" Foreground="#FFFFFFCC"/>
-                        </StackPanel>
-                    </Border>
+
+                    <!-- Fleet Status -->
+                    <Button Command="{Binding FleetCommand}" Padding="0" Margin="0,0,0,4">
+                        <Button.Template>
+                            <ControlTemplate TargetType="Button">
+                                <ContentPresenter/>
+                            </ControlTemplate>
+                        </Button.Template>
+                        <Border CornerRadius="14" Padding="14,12" Cursor="Hand"
+                                Style="{StaticResource SidebarItemStyle}">
+                            <Border.Background>
+                                <SolidColorBrush Color="#00FFFFFF"/>
+                            </Border.Background>
+                            <StackPanel Orientation="Horizontal">
+                                <TextBlock Text="🚗" Margin="0,0,8,0"/>
+                                <TextBlock Text="Fleet Status" Foreground="#FFFFFFCC"/>
+                            </StackPanel>
+                        </Border>
+                    </Button>
+
+                    <!-- Process Return -->
+                    <Button Command="{Binding ReturnCommand}" Padding="0" Margin="0,0,0,4">
+                        <Button.Template>
+                            <ControlTemplate TargetType="Button">
+                                <ContentPresenter/>
+                            </ControlTemplate>
+                        </Button.Template>
+                        <Border CornerRadius="14" Padding="14,12" Cursor="Hand"
+                                Style="{StaticResource SidebarItemStyle}">
+                            <Border.Background>
+                                <SolidColorBrush Color="#00FFFFFF"/>
+                            </Border.Background>
+                            <StackPanel Orientation="Horizontal">
+                                <TextBlock Text="🔄" Margin="0,0,8,0"/>
+                                <TextBlock Text="Process Return" Foreground="#FFFFFFCC"/>
+                            </StackPanel>
+                        </Border>
+                    </Button>
+
+                    <!-- Add Car -->
+                    <Button Command="{Binding AddCarCommand}" Padding="0" Margin="0,0,0,4">
+                        <Button.Template>
+                            <ControlTemplate TargetType="Button">
+                                <ContentPresenter/>
+                            </ControlTemplate>
+                        </Button.Template>
+                        <Border CornerRadius="14" Padding="14,12" Cursor="Hand"
+                                Style="{StaticResource SidebarItemStyle}">
+                            <Border.Background>
+                                <SolidColorBrush Color="#00FFFFFF"/>
+                            </Border.Background>
+                            <StackPanel Orientation="Horizontal">
+                                <TextBlock Text="➕" Margin="0,0,8,0"/>
+                                <TextBlock Text="Add Car" Foreground="#FFFFFFCC"/>
+                            </StackPanel>
+                        </Border>
+                    </Button>
+
+                    <!-- Maintenance -->
+                    <Button Command="{Binding MaintenanceCommand}" Padding="0" Margin="0,0,0,4">
+                        <Button.Template>
+                            <ControlTemplate TargetType="Button">
+                                <ContentPresenter/>
+                            </ControlTemplate>
+                        </Button.Template>
+                        <Border CornerRadius="14" Padding="14,12" Cursor="Hand"
+                                Style="{StaticResource SidebarItemStyle}">
+                            <Border.Background>
+                                <SolidColorBrush Color="#00FFFFFF"/>
+                            </Border.Background>
+                            <StackPanel Orientation="Horizontal">
+                                <TextBlock Text="🔧" Margin="0,0,8,0"/>
+                                <TextBlock Text="Maintenance" Foreground="#FFFFFFCC"/>
+                            </StackPanel>
+                        </Border>
+                    </Button>
+
+                    <!-- Revenue -->
+                    <Button Command="{Binding RevenueCommand}" Padding="0" Margin="0,0,0,4">
+                        <Button.Template>
+                            <ControlTemplate TargetType="Button">
+                                <ContentPresenter/>
+                            </ControlTemplate>
+                        </Button.Template>
+                        <Border CornerRadius="14" Padding="14,12" Cursor="Hand"
+                                Style="{StaticResource SidebarItemStyle}">
+                            <Border.Background>
+                                <SolidColorBrush Color="#00FFFFFF"/>
+                            </Border.Background>
+                            <StackPanel Orientation="Horizontal">
+                                <TextBlock Text="💰" Margin="0,0,8,0"/>
+                                <TextBlock Text="Revenue" Foreground="#FFFFFFCC"/>
+                            </StackPanel>
+                        </Border>
+                    </Button>
                 </StackPanel>
+
+                <!-- Logout -->
                 <StackPanel Grid.Row="2" Margin="16,0,16,24">
-                    <Border CornerRadius="14" Padding="14,12"
-                            Cursor="Hand" MouseLeftButtonUp="LogoutBtn_Click">
-                        <Border.Background>
-                            <LinearGradientBrush StartPoint="0,0" EndPoint="1,0">
-                                <GradientStop Color="#E8D8FF" Offset="0"/>
-                                <GradientStop Color="LavenderBlush" Offset="1"/>
-                            </LinearGradientBrush>
-                        </Border.Background>
-                        <StackPanel Orientation="Horizontal">
-                            <TextBlock Text="⏻" Margin="0,0,8,0"/>
-                            <TextBlock Text="Log Out" FontWeight="Bold"
-                                       Foreground="{StaticResource TextMedium}"/>
-                        </StackPanel>
-                    </Border>
+                    <Button Command="{Binding LogoutCommand}" Padding="0">
+                        <Button.Template>
+                            <ControlTemplate TargetType="Button">
+                                <ContentPresenter/>
+                            </ControlTemplate>
+                        </Button.Template>
+                        <Border CornerRadius="14" Padding="14,12" Cursor="Hand">
+                            <Border.Background>
+                                <LinearGradientBrush StartPoint="0,0" EndPoint="1,0">
+                                    <GradientStop Color="#E8D8FF" Offset="0"/>
+                                    <GradientStop Color="LavenderBlush" Offset="1"/>
+                                </LinearGradientBrush>
+                            </Border.Background>
+                            <StackPanel Orientation="Horizontal">
+                                <TextBlock Text="⏻" Margin="0,0,8,0"/>
+                                <TextBlock Text="Log Out" FontWeight="Bold"
+                                           Foreground="{StaticResource TextMedium}"/>
+                            </StackPanel>
+                        </Border>
+                    </Button>
                     <TextBlock Text="Made by Yuan" FontSize="10"
                                Foreground="LightGray" HorizontalAlignment="Center" Margin="0,10,0,0"/>
                 </StackPanel>
@@ -152,7 +218,7 @@
                     </Ellipse.Fill>
                 </Ellipse>
 
-                <!-- TOP BAR — exactly matching CustomerDashboard -->
+                <!-- TOP BAR -->
                 <Border VerticalAlignment="Top" Height="60" BorderThickness="0">
                     <Grid Margin="28,0">
                         <Grid.ColumnDefinitions>
@@ -162,8 +228,8 @@
                         </Grid.ColumnDefinitions>
                         <Button Grid.Column="0" Content="☰"
                                 Style="{StaticResource HamburgerButtonStyle}"
-                                VerticalAlignment="Center"
-                                Click="Hamburger_Click" Margin="-10,0,10,0"/>
+                                Command="{Binding HamburgerCommand}"
+                                VerticalAlignment="Center" Margin="-10,0,10,0"/>
                         <TextBlock Text="Admin Dashboard"
                                    FontSize="16" FontWeight="Bold"
                                    Foreground="{StaticResource TextMedium}"
@@ -184,7 +250,7 @@
                     </Grid>
                 </Border>
 
-                <!-- BODY — exactly matching CustomerDashboard structure -->
+                <!-- BODY -->
                 <Grid Margin="36,76,36,24" Grid.RowSpan="2">
                     <Grid.RowDefinitions>
                         <RowDefinition Height="Auto"/>
@@ -199,119 +265,149 @@
                                    Foreground="{StaticResource TextMuted}" Margin="0,6,0,0"/>
                     </StackPanel>
 
-                    <!-- Cards: WrapPanel with same sizing as CustomerDashboard -->
                     <WrapPanel Grid.Row="2">
-                        <Border Width="210" Height="130" CornerRadius="20"
-                                Margin="0,0,18,18" Cursor="Hand"
-                                MouseLeftButtonUp="FleetBtn_Click"
-                                Style="{StaticResource DashCardStyle}">
-                            <Border.Background>
-                                <LinearGradientBrush StartPoint="0,0" EndPoint="1,1">
-                                    <GradientStop Color="White" Offset="0.01"/>
-                                    <GradientStop Color="Lavender" Offset="0.4"/>
-                                </LinearGradientBrush>
-                            </Border.Background>
-                            <Border.Effect>
-                                <DropShadowEffect Color="#C8B6FF" BlurRadius="30" ShadowDepth="0" Opacity="0.35"/>
-                            </Border.Effect>
-                            <Grid Margin="18">
-                                <StackPanel>
-                                    <TextBlock Text="🚗" FontSize="26"/>
-                                    <TextBlock Text="Fleet Status" FontWeight="Bold" Margin="0,12,0,2"/>
-                                    <TextBlock Text="View all vehicles" FontSize="12" Foreground="#5F5A87"/>
-                                </StackPanel>
-                            </Grid>
-                        </Border>
+                        <!-- Fleet Status card -->
+                        <Button Command="{Binding FleetCommand}" Padding="0" Margin="0,0,18,18">
+                            <Button.Template>
+                                <ControlTemplate TargetType="Button">
+                                    <ContentPresenter/>
+                                </ControlTemplate>
+                            </Button.Template>
+                            <Border Width="210" Height="130" CornerRadius="20" Cursor="Hand"
+                                    Style="{StaticResource DashCardStyle}">
+                                <Border.Background>
+                                    <LinearGradientBrush StartPoint="0,0" EndPoint="1,1">
+                                        <GradientStop Color="White" Offset="0.01"/>
+                                        <GradientStop Color="Lavender" Offset="0.4"/>
+                                    </LinearGradientBrush>
+                                </Border.Background>
+                                <Border.Effect>
+                                    <DropShadowEffect Color="#C8B6FF" BlurRadius="30" ShadowDepth="0" Opacity="0.35"/>
+                                </Border.Effect>
+                                <Grid Margin="18">
+                                    <StackPanel>
+                                        <TextBlock Text="🚗" FontSize="26"/>
+                                        <TextBlock Text="Fleet Status" FontWeight="Bold" Margin="0,12,0,2"/>
+                                        <TextBlock Text="View all vehicles" FontSize="12" Foreground="#5F5A87"/>
+                                    </StackPanel>
+                                </Grid>
+                            </Border>
+                        </Button>
 
-                        <Border Width="210" Height="130" CornerRadius="20"
-                                Margin="0,0,18,18" Cursor="Hand"
-                                MouseLeftButtonUp="ReturnBtn_Click"
-                                Style="{StaticResource DashCardStyle}">
-                            <Border.Background>
-                                <LinearGradientBrush StartPoint="0,0" EndPoint="1,1">
-                                    <GradientStop Color="White" Offset="0.01"/>
-                                    <GradientStop Color="Lavender" Offset="0.4"/>
-                                </LinearGradientBrush>
-                            </Border.Background>
-                            <Border.Effect>
-                                <DropShadowEffect Color="#C8B6FF" BlurRadius="30" ShadowDepth="0" Opacity="0.35"/>
-                            </Border.Effect>
-                            <Grid Margin="18">
-                                <StackPanel>
-                                    <TextBlock Text="🔄" FontSize="26"/>
-                                    <TextBlock Text="Process Return" FontWeight="Bold" Margin="0,12,0,2"/>
-                                    <TextBlock Text="Complete active returns" FontSize="12" Foreground="#5F5A87"/>
-                                </StackPanel>
-                            </Grid>
-                        </Border>
+                        <!-- Process Return card -->
+                        <Button Command="{Binding ReturnCommand}" Padding="0" Margin="0,0,18,18">
+                            <Button.Template>
+                                <ControlTemplate TargetType="Button">
+                                    <ContentPresenter/>
+                                </ControlTemplate>
+                            </Button.Template>
+                            <Border Width="210" Height="130" CornerRadius="20" Cursor="Hand"
+                                    Style="{StaticResource DashCardStyle}">
+                                <Border.Background>
+                                    <LinearGradientBrush StartPoint="0,0" EndPoint="1,1">
+                                        <GradientStop Color="White" Offset="0.01"/>
+                                        <GradientStop Color="Lavender" Offset="0.4"/>
+                                    </LinearGradientBrush>
+                                </Border.Background>
+                                <Border.Effect>
+                                    <DropShadowEffect Color="#C8B6FF" BlurRadius="30" ShadowDepth="0" Opacity="0.35"/>
+                                </Border.Effect>
+                                <Grid Margin="18">
+                                    <StackPanel>
+                                        <TextBlock Text="🔄" FontSize="26"/>
+                                        <TextBlock Text="Process Return" FontWeight="Bold" Margin="0,12,0,2"/>
+                                        <TextBlock Text="Complete active returns" FontSize="12" Foreground="#5F5A87"/>
+                                    </StackPanel>
+                                </Grid>
+                            </Border>
+                        </Button>
 
-                        <Border Width="210" Height="130" CornerRadius="20"
-                                Margin="0,0,18,18" Cursor="Hand"
-                                MouseLeftButtonUp="AddCarBtn_Click"
-                                Style="{StaticResource DashCardStyle}">
-                            <Border.Background>
-                                <LinearGradientBrush StartPoint="0,0" EndPoint="1,1">
-                                    <GradientStop Color="White" Offset="0.01"/>
-                                    <GradientStop Color="Lavender" Offset="0.4"/>
-                                </LinearGradientBrush>
-                            </Border.Background>
-                            <Border.Effect>
-                                <DropShadowEffect Color="#C8B6FF" BlurRadius="30" ShadowDepth="0" Opacity="0.35"/>
-                            </Border.Effect>
-                            <Grid Margin="18">
-                                <StackPanel>
-                                    <TextBlock Text="➕" FontSize="26"/>
-                                    <TextBlock Text="Add/Delete Car" FontWeight="Bold" Margin="0,12,0,2"/>
-                                    <TextBlock Text="Register new vehicle and delete" FontSize="12" Foreground="#5F5A87"/>
-                                </StackPanel>
-                            </Grid>
-                        </Border>
+                        <!-- Add Car card -->
+                        <Button Command="{Binding AddCarCommand}" Padding="0" Margin="0,0,18,18">
+                            <Button.Template>
+                                <ControlTemplate TargetType="Button">
+                                    <ContentPresenter/>
+                                </ControlTemplate>
+                            </Button.Template>
+                            <Border Width="210" Height="130" CornerRadius="20" Cursor="Hand"
+                                    Style="{StaticResource DashCardStyle}">
+                                <Border.Background>
+                                    <LinearGradientBrush StartPoint="0,0" EndPoint="1,1">
+                                        <GradientStop Color="White" Offset="0.01"/>
+                                        <GradientStop Color="Lavender" Offset="0.4"/>
+                                    </LinearGradientBrush>
+                                </Border.Background>
+                                <Border.Effect>
+                                    <DropShadowEffect Color="#C8B6FF" BlurRadius="30" ShadowDepth="0" Opacity="0.35"/>
+                                </Border.Effect>
+                                <Grid Margin="18">
+                                    <StackPanel>
+                                        <TextBlock Text="➕" FontSize="26"/>
+                                        <TextBlock Text="Add/Delete Car" FontWeight="Bold" Margin="0,12,0,2"/>
+                                        <TextBlock Text="Register new vehicle and delete" FontSize="12" Foreground="#5F5A87"/>
+                                    </StackPanel>
+                                </Grid>
+                            </Border>
+                        </Button>
 
-                        <Border Width="210" Height="130" CornerRadius="20"
-                                Margin="0,0,18,18" Cursor="Hand"
-                                MouseLeftButtonUp="MaintenanceBtn_Click"
-                                Style="{StaticResource DashCardStyle}">
-                            <Border.Background>
-                                <LinearGradientBrush StartPoint="0,0" EndPoint="1,1">
-                                    <GradientStop Color="White" Offset="0.01"/>
-                                    <GradientStop Color="Lavender" Offset="0.4"/>
-                                </LinearGradientBrush>
-                            </Border.Background>
-                            <Border.Effect>
-                                <DropShadowEffect Color="#C8B6FF" BlurRadius="30" ShadowDepth="0" Opacity="0.35"/>
-                            </Border.Effect>
-                            <Grid Margin="18">
-                                <StackPanel>
-                                    <TextBlock Text="🔧" FontSize="26"/>
-                                    <TextBlock Text="Maintenance" FontWeight="Bold" Margin="0,12,0,2"/>
-                                    <TextBlock Text="Manage service records" FontSize="12" Foreground="#5F5A87"/>
-                                </StackPanel>
-                            </Grid>
-                        </Border>
-
-                      
-
+                        <!-- Maintenance card -->
+                        <Button Command="{Binding MaintenanceCommand}" Padding="0" Margin="0,0,18,18">
+                            <Button.Template>
+                                <ControlTemplate TargetType="Button">
+                                    <ContentPresenter/>
+                                </ControlTemplate>
+                            </Button.Template>
+                            <Border Width="210" Height="130" CornerRadius="20" Cursor="Hand"
+                                    Style="{StaticResource DashCardStyle}">
+                                <Border.Background>
+                                    <LinearGradientBrush StartPoint="0,0" EndPoint="1,1">
+                                        <GradientStop Color="White" Offset="0.01"/>
+                                        <GradientStop Color="Lavender" Offset="0.4"/>
+                                    </LinearGradientBrush>
+                                </Border.Background>
+                                <Border.Effect>
+                                    <DropShadowEffect Color="#C8B6FF" BlurRadius="30" ShadowDepth="0" Opacity="0.35"/>
+                                </Border.Effect>
+                                <Grid Margin="18">
+                                    <StackPanel>
+                                        <TextBlock Text="🔧" FontSize="26"/>
+                                        <TextBlock Text="Maintenance" FontWeight="Bold" Margin="0,12,0,2"/>
+                                        <TextBlock Text="Manage service records" FontSize="12" Foreground="#5F5A87"/>
+                                    </StackPanel>
+                                </Grid>
+                            </Border>
+                        </Button>
                     </WrapPanel>
+
+                    <!-- Revenue card below Fleet Status -->
                     <Border Width="210" Height="130" CornerRadius="20"
-         Margin="0,115,702,10" Cursor="Hand"
-         MouseLeftButtonUp="RevenueBtn_Click"
-         Style="{StaticResource DashCardStyle}" Grid.Row="2">
-                        <Border.Background>
-                            <LinearGradientBrush StartPoint="0,0" EndPoint="1,1">
-                                <GradientStop Color="White" Offset="0.01"/>
-                                <GradientStop Color="Lavender" Offset="0.4"/>
-                            </LinearGradientBrush>
-                        </Border.Background>
-                        <Border.Effect>
-                            <DropShadowEffect Color="#C8B6FF" BlurRadius="30" ShadowDepth="0" Opacity="0.35"/>
-                        </Border.Effect>
-                        <Grid Margin="18">
-                            <StackPanel>
-                                <TextBlock Text="💰" FontSize="26"/>
-                                <TextBlock Text="Revenue" FontWeight="Bold" Margin="0,12,0,2"/>
-                                <TextBlock Text="Earnings &amp; analytics" FontSize="12" Foreground="#5F5A87"/>
-                            </StackPanel>
-                        </Grid>
+                            Margin="0,115,702,10" Grid.Row="2">
+                        <Button Command="{Binding RevenueCommand}" Padding="0">
+                            <Button.Template>
+                                <ControlTemplate TargetType="Button">
+                                    <ContentPresenter/>
+                                </ControlTemplate>
+                            </Button.Template>
+                            <Border Width="210" Height="130" CornerRadius="20" Cursor="Hand"
+                                    Style="{StaticResource DashCardStyle}">
+                                <Border.Background>
+                                    <LinearGradientBrush StartPoint="0,0" EndPoint="1,1">
+                                        <GradientStop Color="White" Offset="0.01"/>
+                                        <GradientStop Color="Lavender" Offset="0.4"/>
+                                    </LinearGradientBrush>
+                                </Border.Background>
+                                <Border.Effect>
+                                    <DropShadowEffect Color="#C8B6FF" BlurRadius="30" ShadowDepth="0" Opacity="0.35"/>
+                                </Border.Effect>
+                                <Grid Margin="18">
+                                    <StackPanel>
+                                        <TextBlock Text="💰" FontSize="26"/>
+                                        <TextBlock Text="Revenue" FontWeight="Bold" Margin="0,12,0,2"/>
+                                        <TextBlock Text="Earnings &amp; analytics" FontSize="12" Foreground="#5F5A87"/>
+                                    </StackPanel>
+                                </Grid>
+                            </Border>
+                        </Button>
                     </Border>
                 </Grid>
             </Grid>

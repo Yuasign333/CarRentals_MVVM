@@ -9,6 +9,13 @@ namespace CarRentals_MVVM.ViewModels
         public string SelectedCategory { get; set; } = "All";
         public string SelectedFuel { get; set; } = "All";
 
+        // different  stub windows
+        public int Page { get; } = 1;  // 1 = car list, 2 = color picker, 3 = booking form
+
+        public bool IsPageList => Page == 1;
+        public bool IsPageColor => Page == 2;
+        public bool IsPageForm => Page == 3;
+
         public ObservableCollection<CarModel> FilteredCars { get; } = new()
         {
             new CarModel { CarId="C001", Name="Toyota Camry",   Category="Sedan", FuelType="Standard Engine", Status="Available", PricePerHour=40,
