@@ -84,18 +84,24 @@
                             <TextBlock Text="Work in progress — coming soon" FontSize="13" FontWeight="SemiBold" Foreground="{StaticResource TextMedium}" VerticalAlignment="Center"/>
                         </StackPanel>
                     </Border>
-                    <Border CornerRadius="12" Padding="20,10" Cursor="Hand" HorizontalAlignment="Center" MouseLeftButtonUp="BackBtn_Click">
-                        <Border.Background>
-                            <LinearGradientBrush StartPoint="0,0" EndPoint="1,0">
-                                <GradientStop Color="LavenderBlush" Offset="0"/>
-                                <GradientStop Color="#D4C5F0" Offset="1"/>
-                            </LinearGradientBrush>
-                        </Border.Background>
-                        <StackPanel Orientation="Horizontal">
-                            <TextBlock Text="← " FontSize="14" Foreground="{StaticResource TextMedium}" VerticalAlignment="Center"/>
-                            <TextBlock Text="Back to Dashboard" FontSize="13" FontWeight="SemiBold" Foreground="{StaticResource TextMedium}" VerticalAlignment="Center"/>
-                        </StackPanel>
-                    </Border>
+                    <Button Command="{Binding BackCommand}" 
+HorizontalAlignment="Center"
+Style="{StaticResource RoleCardButtonStyle}">
+                        <Border CornerRadius="12" Padding="20,10" Cursor="Hand">
+                            <Border.Background>
+                                <LinearGradientBrush StartPoint="0,0" EndPoint="1,0">
+                                    <GradientStop Color="LavenderBlush" Offset="0"/>
+                                    <GradientStop Color="#D4C5F0" Offset="1"/>
+                                </LinearGradientBrush>
+                            </Border.Background>
+                            <StackPanel Orientation="Horizontal">
+                                <TextBlock Text="← " FontSize="14" 
+               Foreground="{StaticResource TextMedium}" VerticalAlignment="Center"/>
+                                <TextBlock Text="Back to Dashboard" FontSize="13" FontWeight="SemiBold"
+               Foreground="{StaticResource TextMedium}" VerticalAlignment="Center"/>
+                            </StackPanel>
+                        </Border>
+                    </Button>
                 </StackPanel>
             </Border>
         </Grid>

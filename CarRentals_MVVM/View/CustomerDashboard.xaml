@@ -14,7 +14,6 @@
             </Grid.ColumnDefinitions>
 
             <!-- SIDEBAR -->
-            
             <Grid Grid.Column="0">
                 <Grid.Background>
                     <LinearGradientBrush EndPoint="0.5,1" StartPoint="0.5,0">
@@ -33,6 +32,7 @@
                         <BlurEffect Radius="18"/>
                     </Image.Effect>
                 </Image>
+
                 <StackPanel Grid.Row="0" Margin="0,26,0,28" HorizontalAlignment="Center">
                     <Border Width="150" Height="103" ClipToBounds="True">
                         <Image Source="https://i.imgur.com/yVApvuV.png"
@@ -41,7 +41,9 @@
                     <TextBlock Text="RENTAL REV." FontSize="28" FontWeight="Bold"
                                Foreground="Lavender" Margin="0,-38,0,0"/>
                 </StackPanel>
+
                 <StackPanel Grid.Row="1" Margin="16,0">
+                    <!-- Active item -->
                     <Border CornerRadius="14" Padding="14,12" Margin="0,0,0,8">
                         <Border.Background>
                             <LinearGradientBrush StartPoint="0,0" EndPoint="1,0">
@@ -54,46 +56,87 @@
                             <TextBlock Text="Dashboard" FontWeight="Bold" Foreground="White"/>
                         </StackPanel>
                     </Border>
-                    <Border CornerRadius="14" Padding="14,12" Margin="0,0,0,4"
-                            Cursor="Hand" Background="Transparent"
-                            MouseLeftButtonUp="BrowseCarsBtn_Click">
-                        <StackPanel Orientation="Horizontal">
-                            <TextBlock Text="🚗" Margin="0,0,8,0"/>
-                            <TextBlock Text="View Cars" Foreground="#FFFFFFCC"/>
-                        </StackPanel>
-                    </Border>
-                    <Border CornerRadius="14" Padding="14,12" Margin="0,0,0,4"
-                            Cursor="Hand" Background="Transparent"
-                            MouseLeftButtonUp="RentCarBtn_Click">
-                        <StackPanel Orientation="Horizontal">
-                            <TextBlock Text="🔑" Margin="0,0,8,0"/>
-                            <TextBlock Text="Rent a Car" Foreground="#FFFFFFCC"/>
-                        </StackPanel>
-                    </Border>
-                    <Border CornerRadius="14" Padding="14,12" Margin="0,0,0,4"
-                            Cursor="Hand" Background="Transparent"
-                            MouseLeftButtonUp="MyRentalsBtn_Click">
-                        <StackPanel Orientation="Horizontal">
-                            <TextBlock Text="📋" Margin="0,0,8,0"/>
-                            <TextBlock Text="My Rentals" Foreground="#FFFFFFCC"/>
-                        </StackPanel>
-                    </Border>
+
+                    <!-- View Cars -->
+                    <Button Command="{Binding BrowseCarsCommand}" Padding="0" Margin="0,0,0,4">
+                        <Button.Template>
+                            <ControlTemplate TargetType="Button">
+                                <ContentPresenter/>
+                            </ControlTemplate>
+                        </Button.Template>
+                        <Border CornerRadius="14" Padding="14,12" Cursor="Hand"
+                                Style="{StaticResource SidebarItemStyle}">
+                            <Border.Background>
+                                <SolidColorBrush Color="#00FFFFFF"/>
+                            </Border.Background>
+                            <StackPanel Orientation="Horizontal">
+                                <TextBlock Text="🚗" Margin="0,0,8,0"/>
+                                <TextBlock Text="View Cars" Foreground="#FFFFFFCC"/>
+                            </StackPanel>
+                        </Border>
+                    </Button>
+
+                    <!-- Rent a Car -->
+                    <Button Command="{Binding RentCarCommand}" Padding="0" Margin="0,0,0,4">
+                        <Button.Template>
+                            <ControlTemplate TargetType="Button">
+                                <ContentPresenter/>
+                            </ControlTemplate>
+                        </Button.Template>
+                        <Border CornerRadius="14" Padding="14,12" Cursor="Hand"
+                                Style="{StaticResource SidebarItemStyle}">
+                            <Border.Background>
+                                <SolidColorBrush Color="#00FFFFFF"/>
+                            </Border.Background>
+                            <StackPanel Orientation="Horizontal">
+                                <TextBlock Text="🔑" Margin="0,0,8,0"/>
+                                <TextBlock Text="Rent a Car" Foreground="#FFFFFFCC"/>
+                            </StackPanel>
+                        </Border>
+                    </Button>
+
+                    <!-- My Rentals -->
+                    <Button Command="{Binding MyRentalsCommand}" Padding="0" Margin="0,0,0,4">
+                        <Button.Template>
+                            <ControlTemplate TargetType="Button">
+                                <ContentPresenter/>
+                            </ControlTemplate>
+                        </Button.Template>
+                        <Border CornerRadius="14" Padding="14,12" Cursor="Hand"
+                                Style="{StaticResource SidebarItemStyle}">
+                            <Border.Background>
+                                <SolidColorBrush Color="#00FFFFFF"/>
+                            </Border.Background>
+                            <StackPanel Orientation="Horizontal">
+                                <TextBlock Text="📋" Margin="0,0,8,0"/>
+                                <TextBlock Text="My Rentals" Foreground="#FFFFFFCC"/>
+                            </StackPanel>
+                        </Border>
+                    </Button>
                 </StackPanel>
+
+                <!-- Logout -->
                 <StackPanel Grid.Row="2" Margin="16,0,16,24">
-                    <Border CornerRadius="14" Padding="14,12"
-                            Cursor="Hand" MouseLeftButtonUp="LogoutBtn_Click">
-                        <Border.Background>
-                            <LinearGradientBrush StartPoint="0,0" EndPoint="1,0">
-                                <GradientStop Color="#E8D8FF" Offset="0"/>
-                                <GradientStop Color="LavenderBlush" Offset="1"/>
-                            </LinearGradientBrush>
-                        </Border.Background>
-                        <StackPanel Orientation="Horizontal">
-                            <TextBlock Text="⏻" Margin="0,0,8,0"/>
-                            <TextBlock Text="Log Out" FontWeight="Bold"
-                                       Foreground="{StaticResource TextMedium}"/>
-                        </StackPanel>
-                    </Border>
+                    <Button Command="{Binding LogoutCommand}" Padding="0">
+                        <Button.Template>
+                            <ControlTemplate TargetType="Button">
+                                <ContentPresenter/>
+                            </ControlTemplate>
+                        </Button.Template>
+                        <Border CornerRadius="14" Padding="14,12" Cursor="Hand">
+                            <Border.Background>
+                                <LinearGradientBrush StartPoint="0,0" EndPoint="1,0">
+                                    <GradientStop Color="#E8D8FF" Offset="0"/>
+                                    <GradientStop Color="LavenderBlush" Offset="1"/>
+                                </LinearGradientBrush>
+                            </Border.Background>
+                            <StackPanel Orientation="Horizontal">
+                                <TextBlock Text="⏻" Margin="0,0,8,0"/>
+                                <TextBlock Text="Log Out" FontWeight="Bold"
+                                           Foreground="{StaticResource TextMedium}"/>
+                            </StackPanel>
+                        </Border>
+                    </Button>
                     <TextBlock Text="Made by Yuan" FontSize="10"
                                Foreground="LightGray" HorizontalAlignment="Center" Margin="0,10,0,0"/>
                 </StackPanel>
@@ -147,8 +190,8 @@
                         </Grid.ColumnDefinitions>
                         <Button Grid.Column="0" Content="☰"
                                 Style="{StaticResource HamburgerButtonStyle}"
-                                VerticalAlignment="Center"
-                                Click="Hamburger_Click" Margin="-10,0,10,0"/>
+                                Command="{Binding HamburgerCommand}"
+                                VerticalAlignment="Center" Margin="-10,0,10,0"/>
                         <TextBlock Text="Customer Dashboard"
                                    FontSize="16" FontWeight="Bold"
                                    Foreground="{StaticResource TextMedium}"
@@ -182,70 +225,91 @@
                         <TextBlock Text="Select an option to get started."
                                    Foreground="{StaticResource TextMuted}" Margin="0,6,0,0"/>
                     </StackPanel>
+
                     <WrapPanel Grid.Row="2">
-                        <Border Width="210" Height="130" CornerRadius="20"
-                                Margin="0,0,18,18" Cursor="Hand"
-                                MouseLeftButtonUp="BrowseCarsBtn_Click"
-                                Style="{StaticResource DashCardStyle}">
-                            <Border.Background>
-                                <LinearGradientBrush StartPoint="0,0" EndPoint="1,1">
-                                    <GradientStop Color="White" Offset="0.01"/>
-                                    <GradientStop Color="Lavender" Offset="0.4"/>
-                                </LinearGradientBrush>
-                            </Border.Background>
-                            <Border.Effect>
-                                <DropShadowEffect Color="#C8B6FF" BlurRadius="30" ShadowDepth="0" Opacity="0.35"/>
-                            </Border.Effect>
-                            <Grid Margin="18">
-                                <StackPanel>
-                                    <TextBlock Text="🚗" FontSize="26"/>
-                                    <TextBlock Text="View Cars" FontWeight="Bold" Margin="0,12,0,2"/>
-                                    <TextBlock Text="Browse available fleet" FontSize="12" Foreground="#5F5A87"/>
-                                </StackPanel>
-                            </Grid>
-                        </Border>
-                        <Border Width="210" Height="130" CornerRadius="20"
-                                Margin="0,0,18,18" Cursor="Hand"
-                                MouseLeftButtonUp="RentCarBtn_Click"
-                                Style="{StaticResource DashCardStyle}">
-                            <Border.Background>
-                                <LinearGradientBrush StartPoint="0,0" EndPoint="1,1">
-                                    <GradientStop Color="White" Offset="0.01"/>
-                                    <GradientStop Color="Lavender" Offset="0.4"/>
-                                </LinearGradientBrush>
-                            </Border.Background>
-                            <Border.Effect>
-                                <DropShadowEffect Color="#C8B6FF" BlurRadius="30" ShadowDepth="0" Opacity="0.35"/>
-                            </Border.Effect>
-                            <Grid Margin="18">
-                                <StackPanel>
-                                    <TextBlock Text="🔑" FontSize="26"/>
-                                    <TextBlock Text="Rent a Car" FontWeight="Bold" Margin="0,12,0,2"/>
-                                    <TextBlock Text="Start a new booking" FontSize="12" Foreground="#5F5A87"/>
-                                </StackPanel>
-                            </Grid>
-                        </Border>
-                        <Border Width="210" Height="130" CornerRadius="20"
-                                Margin="0,0,18,18" Cursor="Hand"
-                                MouseLeftButtonUp="MyRentalsBtn_Click"
-                                Style="{StaticResource DashCardStyle}">
-                            <Border.Background>
-                                <LinearGradientBrush StartPoint="0,0" EndPoint="1,1">
-                                    <GradientStop Color="White" Offset="0.01"/>
-                                    <GradientStop Color="Lavender" Offset="0.4"/>
-                                </LinearGradientBrush>
-                            </Border.Background>
-                            <Border.Effect>
-                                <DropShadowEffect Color="#C8B6FF" BlurRadius="30" ShadowDepth="0" Opacity="0.35"/>
-                            </Border.Effect>
-                            <Grid Margin="18">
-                                <StackPanel>
-                                    <TextBlock Text="📋" FontSize="26"/>
-                                    <TextBlock Text="My Rentals" FontWeight="Bold" Margin="0,12,0,2"/>
-                                    <TextBlock Text="View your rental history" FontSize="12" Foreground="#5F5A87"/>
-                                </StackPanel>
-                            </Grid>
-                        </Border>
+                        <!-- View Cars card -->
+                        <Button Command="{Binding BrowseCarsCommand}" Padding="0" Margin="0,0,18,18">
+                            <Button.Template>
+                                <ControlTemplate TargetType="Button">
+                                    <ContentPresenter/>
+                                </ControlTemplate>
+                            </Button.Template>
+                            <Border Width="210" Height="130" CornerRadius="20" Cursor="Hand"
+                                    Style="{StaticResource DashCardStyle}">
+                                <Border.Background>
+                                    <LinearGradientBrush StartPoint="0,0" EndPoint="1,1">
+                                        <GradientStop Color="White" Offset="0.01"/>
+                                        <GradientStop Color="Lavender" Offset="0.4"/>
+                                    </LinearGradientBrush>
+                                </Border.Background>
+                                <Border.Effect>
+                                    <DropShadowEffect Color="#C8B6FF" BlurRadius="30" ShadowDepth="0" Opacity="0.35"/>
+                                </Border.Effect>
+                                <Grid Margin="18">
+                                    <StackPanel>
+                                        <TextBlock Text="🚗" FontSize="26"/>
+                                        <TextBlock Text="View Cars" FontWeight="Bold" Margin="0,12,0,2"/>
+                                        <TextBlock Text="Browse available fleet" FontSize="12" Foreground="#5F5A87"/>
+                                    </StackPanel>
+                                </Grid>
+                            </Border>
+                        </Button>
+
+                        <!-- Rent a Car card -->
+                        <Button Command="{Binding RentCarCommand}" Padding="0" Margin="0,0,18,18">
+                            <Button.Template>
+                                <ControlTemplate TargetType="Button">
+                                    <ContentPresenter/>
+                                </ControlTemplate>
+                            </Button.Template>
+                            <Border Width="210" Height="130" CornerRadius="20" Cursor="Hand"
+                                    Style="{StaticResource DashCardStyle}">
+                                <Border.Background>
+                                    <LinearGradientBrush StartPoint="0,0" EndPoint="1,1">
+                                        <GradientStop Color="White" Offset="0.01"/>
+                                        <GradientStop Color="Lavender" Offset="0.4"/>
+                                    </LinearGradientBrush>
+                                </Border.Background>
+                                <Border.Effect>
+                                    <DropShadowEffect Color="#C8B6FF" BlurRadius="30" ShadowDepth="0" Opacity="0.35"/>
+                                </Border.Effect>
+                                <Grid Margin="18">
+                                    <StackPanel>
+                                        <TextBlock Text="🔑" FontSize="26"/>
+                                        <TextBlock Text="Rent a Car" FontWeight="Bold" Margin="0,12,0,2"/>
+                                        <TextBlock Text="Start a new booking" FontSize="12" Foreground="#5F5A87"/>
+                                    </StackPanel>
+                                </Grid>
+                            </Border>
+                        </Button>
+
+                        <!-- My Rentals card -->
+                        <Button Command="{Binding MyRentalsCommand}" Padding="0" Margin="0,0,18,18">
+                            <Button.Template>
+                                <ControlTemplate TargetType="Button">
+                                    <ContentPresenter/>
+                                </ControlTemplate>
+                            </Button.Template>
+                            <Border Width="210" Height="130" CornerRadius="20" Cursor="Hand"
+                                    Style="{StaticResource DashCardStyle}">
+                                <Border.Background>
+                                    <LinearGradientBrush StartPoint="0,0" EndPoint="1,1">
+                                        <GradientStop Color="White" Offset="0.01"/>
+                                        <GradientStop Color="Lavender" Offset="0.4"/>
+                                    </LinearGradientBrush>
+                                </Border.Background>
+                                <Border.Effect>
+                                    <DropShadowEffect Color="#C8B6FF" BlurRadius="30" ShadowDepth="0" Opacity="0.35"/>
+                                </Border.Effect>
+                                <Grid Margin="18">
+                                    <StackPanel>
+                                        <TextBlock Text="📋" FontSize="26"/>
+                                        <TextBlock Text="My Rentals" FontWeight="Bold" Margin="0,12,0,2"/>
+                                        <TextBlock Text="View your rental history" FontSize="12" Foreground="#5F5A87"/>
+                                    </StackPanel>
+                                </Grid>
+                            </Border>
+                        </Button>
                     </WrapPanel>
                 </Grid>
             </Grid>
