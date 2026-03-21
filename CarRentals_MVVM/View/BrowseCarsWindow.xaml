@@ -11,17 +11,13 @@
         WindowStartupLocation="CenterScreen" ResizeMode="CanResize">
 
     <Viewbox Stretch="UniformToFill">
-
-       
         <Grid Width="1020" Height="560">
             <Grid.RowDefinitions>
                 <RowDefinition Height="56"/>
                 <RowDefinition Height="*"/>
             </Grid.RowDefinitions>
 
-            <!-- ═══════════════════════════════════════════
-                 BACKGROUND  (spans all rows, behind everything)
-            ═══════════════════════════════════════════ -->
+            <!-- BACKGROUND -->
             <Rectangle Grid.RowSpan="2" Panel.ZIndex="0">
                 <Rectangle.Fill>
                     <LinearGradientBrush StartPoint="0,0" EndPoint="1,1">
@@ -46,16 +42,13 @@
                 </Ellipse.Fill>
             </Ellipse>
 
-            <!-- ═══════════════════════════════════════════
-                 ROW 0 — TOP BAR  (sticky, never scrolls)
-            ═══════════════════════════════════════════ -->
+            <!-- TOP BAR — always visible -->
             <Border Grid.Row="0" Panel.ZIndex="10">
                 <Grid Margin="24,0">
                     <Grid.ColumnDefinitions>
                         <ColumnDefinition Width="*"/>
                         <ColumnDefinition Width="Auto"/>
                     </Grid.ColumnDefinitions>
-
                     <StackPanel Orientation="Horizontal" VerticalAlignment="Center">
                         <Button Content="←" FontSize="16"
                                 Style="{StaticResource BackButtonStyle}"
@@ -64,10 +57,24 @@
                                    Foreground="#C9B8E8" VerticalAlignment="Center"/>
                         <TextBlock Text="  /  " FontSize="12"
                                    Foreground="#C4B0E0" VerticalAlignment="Center"/>
-                        <TextBlock Text="Browse Cars" FontSize="15" FontWeight="Bold"
-                                   Foreground="#2A1B5E" VerticalAlignment="Center"/>
+                        <!-- Title changes per page -->
+                        <TextBlock FontSize="15" FontWeight="Bold"
+                                   Foreground="#2A1B5E" VerticalAlignment="Center">
+                            <TextBlock.Style>
+                                <Style TargetType="TextBlock">
+                                    <Setter Property="Text" Value="Browse Cars"/>
+                                    <Style.Triggers>
+                                        <DataTrigger Binding="{Binding IsPageColor}" Value="True">
+                                            <Setter Property="Text" Value="Choose Color"/>
+                                        </DataTrigger>
+                                        <DataTrigger Binding="{Binding IsPageForm}" Value="True">
+                                            <Setter Property="Text" Value="Rent a Car"/>
+                                        </DataTrigger>
+                                    </Style.Triggers>
+                                </Style>
+                            </TextBlock.Style>
+                        </TextBlock>
                     </StackPanel>
-
                     <Border Grid.Column="1" Background="White" CornerRadius="20"
                             Padding="12,7" VerticalAlignment="Center">
                         <Border.Effect>
@@ -82,14 +89,54 @@
                 </Grid>
             </Border>
 
-            <!-- ═══════════════════════════════════════════
-                 ROW 1 — SCROLLABLE BODY
-                 Only this region scrolls; top bar stays put.
-            ═══════════════════════════════════════════ -->
+            <!-- Step dots — only show on page 2 and 3 -->
+            <StackPanel Grid.Row="0" Panel.ZIndex="11"
+                        Orientation="Horizontal"
+                        HorizontalAlignment="Center" VerticalAlignment="Center">
+                <StackPanel.Style>
+                    <Style TargetType="StackPanel">
+                        <Setter Property="Visibility" Value="Collapsed"/>
+                        <Style.Triggers>
+                            <DataTrigger Binding="{Binding IsPageColor}" Value="True">
+                                <Setter Property="Visibility" Value="Visible"/>
+                            </DataTrigger>
+                            <DataTrigger Binding="{Binding IsPageForm}" Value="True">
+                                <Setter Property="Visibility" Value="Visible"/>
+                            </DataTrigger>
+                        </Style.Triggers>
+                    </Style>
+                </StackPanel.Style>
+                <Ellipse Width="10" Height="10" Margin="5,0">
+                    <Ellipse.Style>
+                        <Style TargetType="Ellipse">
+                            <Setter Property="Fill" Value="#C9B8E8"/>
+                            <Style.Triggers>
+                                <DataTrigger Binding="{Binding IsPageColor}" Value="True">
+                                    <Setter Property="Fill" Value="#8A2BE2"/>
+                                </DataTrigger>
+                            </Style.Triggers>
+                        </Style>
+                    </Ellipse.Style>
+                </Ellipse>
+                <Ellipse Width="10" Height="10" Margin="5,0">
+                    <Ellipse.Style>
+                        <Style TargetType="Ellipse">
+                            <Setter Property="Fill" Value="#C9B8E8"/>
+                            <Style.Triggers>
+                                <DataTrigger Binding="{Binding IsPageForm}" Value="True">
+                                    <Setter Property="Fill" Value="#8A2BE2"/>
+                                </DataTrigger>
+                            </Style.Triggers>
+                        </Style>
+                    </Ellipse.Style>
+                </Ellipse>
+            </StackPanel>
+
+            <!-- ═══════════ PAGE 1 — CAR LIST ═══════════ -->
             <ScrollViewer Grid.Row="1" Panel.ZIndex="5"
                           VerticalScrollBarVisibility="Auto"
                           HorizontalScrollBarVisibility="Disabled"
-                          CanContentScroll="False">
+                          Visibility="{Binding IsPageList, Converter={StaticResource BoolToVisibility}}">
                 <Grid Margin="28,8,28,24">
                     <Grid.RowDefinitions>
                         <RowDefinition Height="Auto"/>
@@ -99,9 +146,7 @@
                         <RowDefinition Height="Auto"/>
                     </Grid.RowDefinitions>
 
-                    <!-- Page title -->
-                    <TextBlock Grid.Row="0"
-                               Text="Available Cars"
+                    <TextBlock Grid.Row="0" Text="Available Cars"
                                FontSize="18" FontWeight="Bold" Foreground="#2A1B5E"/>
 
                     <!-- Filter panel -->
@@ -125,9 +170,9 @@
                                               SelectedValuePath="Tag"
                                               SelectedValue="{Binding SelectedCategory}">
                                         <ComboBoxItem Content="All Categories" Tag="All" IsSelected="True"/>
-                                        <ComboBoxItem Content="SUV"            Tag="SUV"/>
-                                        <ComboBoxItem Content="Sedan"          Tag="Sedan"/>
-                                        <ComboBoxItem Content="Van"            Tag="Van"/>
+                                        <ComboBoxItem Content="SUV"   Tag="SUV"/>
+                                        <ComboBoxItem Content="Sedan" Tag="Sedan"/>
+                                        <ComboBoxItem Content="Van"   Tag="Van"/>
                                     </ComboBox>
                                 </StackPanel>
                                 <StackPanel>
@@ -158,13 +203,12 @@
                                         Margin="0,0,14,14" Background="White" Cursor="Hand"
                                         Style="{StaticResource DashCardStyle}">
                                     <Border.Effect>
-                                        <DropShadowEffect Color="#C8B6FF" BlurRadius="22"
-                                                          ShadowDepth="0" Opacity="0.22"/>
+                                        <DropShadowEffect Color="#C8B6FF" BlurRadius="22" ShadowDepth="0" Opacity="0.22"/>
                                     </Border.Effect>
                                     <Border.InputBindings>
                                         <MouseBinding MouseAction="LeftClick"
                                                       Command="{Binding DataContext.SelectCarCommand,
-                                                                RelativeSource={RelativeSource AncestorType=ItemsControl}}"
+                                                          RelativeSource={RelativeSource AncestorType=ItemsControl}}"
                                                       CommandParameter="{Binding}"/>
                                     </Border.InputBindings>
                                     <Grid>
@@ -213,8 +257,336 @@
                             </DataTemplate>
                         </ItemsControl.ItemTemplate>
                     </ItemsControl>
-
                 </Grid>
+            </ScrollViewer>
+
+            <!-- ═══════════ PAGE 2 — COLOR PICKER ═══════════ -->
+            <Border Grid.Row="1" Panel.ZIndex="5"
+                    Margin="28,12,28,16" CornerRadius="28" Background="White"
+                    Visibility="{Binding IsPageColor, Converter={StaticResource BoolToVisibility}}">
+                <Border.Effect>
+                    <DropShadowEffect Color="#C8B6FF" BlurRadius="40" ShadowDepth="0" Opacity="0.28"/>
+                </Border.Effect>
+                <Grid Margin="40,28">
+                    <Grid.ColumnDefinitions>
+                        <ColumnDefinition Width="*"/>
+                        <ColumnDefinition Width="340"/>
+                    </Grid.ColumnDefinitions>
+
+                    <!-- Left: color picker -->
+                    <StackPanel Grid.Column="0" VerticalAlignment="Center">
+                        <TextBlock Text="Rent a Car" FontSize="30" FontWeight="Bold" Foreground="#2A1B5E"/>
+                        <StackPanel Orientation="Horizontal" Margin="0,4,0,24">
+                            <TextBlock Text="Choose Your Car " FontSize="15" Foreground="#7E74A6"/>
+                            <TextBlock Text="Color" FontSize="15" FontWeight="Bold" Foreground="#2A1B5E"/>
+                        </StackPanel>
+
+                        <ListBox ItemsSource="{Binding SelectedCar.AvailableColors}"
+                                 SelectedItem="{Binding SelectedColor}"
+                                 Background="Transparent" BorderThickness="0"
+                                 ScrollViewer.HorizontalScrollBarVisibility="Disabled">
+                            <ListBox.ItemsPanel>
+                                <ItemsPanelTemplate>
+                                    <WrapPanel/>
+                                </ItemsPanelTemplate>
+                            </ListBox.ItemsPanel>
+                            <ListBox.ItemContainerStyle>
+                                <Style TargetType="ListBoxItem">
+                                    <Setter Property="Padding" Value="0"/>
+                                    <Setter Property="Margin" Value="0,0,10,10"/>
+                                    <Setter Property="Background" Value="Transparent"/>
+                                    <Setter Property="BorderThickness" Value="0"/>
+                                    <Setter Property="Template">
+                                        <Setter.Value>
+                                            <ControlTemplate TargetType="ListBoxItem">
+                                                <Grid Width="56" Height="56">
+                                                    <Ellipse Width="44" Height="44">
+                                                        <Ellipse.Fill>
+                                                            <SolidColorBrush Color="{Binding}"/>
+                                                        </Ellipse.Fill>
+                                                        <Ellipse.Effect>
+                                                            <DropShadowEffect Color="#00000040" BlurRadius="8" ShadowDepth="2" Opacity="0.3"/>
+                                                        </Ellipse.Effect>
+                                                    </Ellipse>
+                                                    <Ellipse Width="54" Height="54" StrokeThickness="2.5">
+                                                        <Ellipse.Style>
+                                                            <Style TargetType="Ellipse">
+                                                                <Setter Property="Stroke" Value="Transparent"/>
+                                                                <Style.Triggers>
+                                                                    <DataTrigger Value="True"
+                                                                        Binding="{Binding IsSelected,
+                                                                            RelativeSource={RelativeSource AncestorType=ListBoxItem}}">
+                                                                        <Setter Property="Stroke" Value="#8A2BE2"/>
+                                                                    </DataTrigger>
+                                                                </Style.Triggers>
+                                                            </Style>
+                                                        </Ellipse.Style>
+                                                    </Ellipse>
+                                                </Grid>
+                                            </ControlTemplate>
+                                        </Setter.Value>
+                                    </Setter>
+                                </Style>
+                            </ListBox.ItemContainerStyle>
+                        </ListBox>
+
+                        <TextBlock Text="{Binding SelectedColor}" FontSize="13"
+                                   Foreground="#7E74A6" Margin="0,4,0,0"/>
+
+                        <!-- Bottom bar -->
+                        <Grid Margin="0,24,0,0">
+                            <Grid.ColumnDefinitions>
+                                <ColumnDefinition Width="*"/>
+                                <ColumnDefinition Width="Auto"/>
+                                <ColumnDefinition Width="Auto"/>
+                            </Grid.ColumnDefinitions>
+                            <StackPanel Grid.Column="0" VerticalAlignment="Center">
+                                <TextBlock Text="{Binding SelectedCar.Name}"
+                                           FontSize="16" FontWeight="Bold" Foreground="#2A1B5E"/>
+                                <TextBlock Text="{Binding SelectedCar.Category}"
+                                           FontSize="12" Foreground="#7E74A6"/>
+                            </StackPanel>
+                            <StackPanel Grid.Column="1" VerticalAlignment="Center" Margin="0,0,20,0">
+                                <TextBlock Text="Price" FontSize="11" Foreground="#7E74A6"/>
+                                <StackPanel Orientation="Horizontal">
+                                    <TextBlock FontSize="18" FontWeight="Bold" Foreground="#2A1B5E">
+                                        <Run Text="$"/>
+                                        <Run Text="{Binding SelectedCar.PricePerHour, StringFormat='{}{0:F0}'}"/>
+                                    </TextBlock>
+                                    <TextBlock Text="/hr" FontSize="12" Foreground="#7E74A6"
+                                               VerticalAlignment="Bottom" Margin="2,0,0,1"/>
+                                </StackPanel>
+                            </StackPanel>
+                            <Button Grid.Column="2" Content="Continue →"
+                                    Height="44" Padding="28,0"
+                                    Foreground="White" FontWeight="Bold" FontSize="14"
+                                    BorderThickness="0" Cursor="Hand"
+                                    Command="{Binding NextPageCommand}"
+                                    Style="{StaticResource LoginButtonStyle}">
+                                <Button.Background>
+                                    <LinearGradientBrush StartPoint="0,0" EndPoint="1,0">
+                                        <GradientStop Color="#8A2BE2" Offset="0"/>
+                                        <GradientStop Color="#6A1FBB" Offset="1"/>
+                                    </LinearGradientBrush>
+                                </Button.Background>
+                            </Button>
+                        </Grid>
+                    </StackPanel>
+
+                    <!-- Right: car image -->
+                    <Border Grid.Column="1" CornerRadius="20" ClipToBounds="True" Margin="16,0,0,0">
+                        <Border.Background>
+                            <LinearGradientBrush StartPoint="0,0" EndPoint="1,1">
+                                <GradientStop Color="#EDE5FF" Offset="0"/>
+                                <GradientStop Color="#D8CCFF" Offset="1"/>
+                            </LinearGradientBrush>
+                        </Border.Background>
+                        <Image Source="{Binding SelectedCar.ImageUrl}" Stretch="UniformToFill"/>
+                    </Border>
+                </Grid>
+            </Border>
+
+            <!-- ═══════════ PAGE 3 — BOOKING FORM ═══════════ -->
+            <ScrollViewer Grid.Row="1" Panel.ZIndex="5"
+                          VerticalScrollBarVisibility="Auto"
+                          HorizontalScrollBarVisibility="Disabled"
+                          Visibility="{Binding IsPageForm, Converter={StaticResource BoolToVisibility}}">
+                <Border Margin="28,12,28,16" CornerRadius="28" Background="White">
+                    <Border.Effect>
+                        <DropShadowEffect Color="#C8B6FF" BlurRadius="40" ShadowDepth="0" Opacity="0.28"/>
+                    </Border.Effect>
+                    <Grid Margin="40,24">
+                        <Grid.RowDefinitions>
+                            <RowDefinition Height="Auto"/>
+                            <RowDefinition Height="12"/>
+                            <RowDefinition Height="170"/>
+                            <RowDefinition Height="12"/>
+                            <RowDefinition Height="Auto"/>
+                            <RowDefinition Height="12"/>
+                            <RowDefinition Height="Auto"/>
+                            <RowDefinition Height="12"/>
+                            <RowDefinition Height="Auto"/>
+                            <RowDefinition Height="16"/>
+                            <RowDefinition Height="Auto"/>
+                        </Grid.RowDefinitions>
+
+                        <TextBlock Grid.Row="0" Text="Rent a Car"
+                                   FontSize="22" FontWeight="Bold" Foreground="#2A1B5E"/>
+
+                        <!-- Car banner -->
+                        <Border Grid.Row="2" CornerRadius="16" ClipToBounds="True">
+                            <Grid>
+                                <Image Source="{Binding SelectedCar.ImageUrl}"
+                                       Stretch="UniformToFill" Opacity="0.92"/>
+                                <Border VerticalAlignment="Bottom" Background="#CCFFFFFF" Padding="18,10">
+                                    <Grid>
+                                        <Grid.ColumnDefinitions>
+                                            <ColumnDefinition Width="*"/>
+                                            <ColumnDefinition Width="Auto"/>
+                                        </Grid.ColumnDefinitions>
+                                        <StackPanel Orientation="Horizontal" VerticalAlignment="Center">
+                                            <TextBlock Text="{Binding SelectedCar.Name}"
+                                                       FontWeight="Bold" FontSize="15"
+                                                       Foreground="#2A1B5E" Margin="0,0,10,0"/>
+                                            <Border CornerRadius="8" Padding="7,3"
+                                                    Margin="0,0,6,0" Background="#E8F0FF">
+                                                <TextBlock Text="{Binding SelectedCar.Category}"
+                                                           FontSize="10" Foreground="#3D6FCC"/>
+                                            </Border>
+                                            <Border CornerRadius="8" Padding="7,3" Background="#F0EBFF">
+                                                <TextBlock Text="{Binding SelectedCar.FuelType}"
+                                                           FontSize="10" Foreground="#6B3FCC"/>
+                                            </Border>
+                                        </StackPanel>
+                                        <StackPanel Grid.Column="1" Orientation="Horizontal" VerticalAlignment="Center">
+                                            <TextBlock FontSize="16" FontWeight="Bold" Foreground="#8A2BE2">
+                                                <Run Text="$"/>
+                                                <Run Text="{Binding SelectedCar.PricePerHour, StringFormat='{}{0:F0}', Mode=OneWay}"/>
+                                            </TextBlock>
+                                            <TextBlock Text="/hr" FontSize="11" Foreground="#7E74A6"
+                                                       VerticalAlignment="Bottom" Margin="2,0,0,1"/>
+                                        </StackPanel>
+                                    </Grid>
+                                </Border>
+                            </Grid>
+                        </Border>
+
+                        <!-- Select Car read-only -->
+                        <StackPanel Grid.Row="4">
+                            <TextBlock Text="Select Car" FontSize="13"
+                                       Foreground="#2A1B5E" Margin="0,0,0,6"/>
+                            <Border CornerRadius="10" Padding="14,11"
+                                    BorderThickness="1" BorderBrush="#E0D4FF">
+                                <Border.Background>
+                                    <SolidColorBrush Color="#F8F4FF"/>
+                                </Border.Background>
+                                <TextBlock FontSize="13" Foreground="#3D1A7A">
+                                    <Run Text="{Binding SelectedCar.Name, Mode=OneWay}"/>
+                                    <Run Text=" ("/>
+                                    <Run Text="{Binding SelectedCar.CarId, Mode=OneWay}"/>
+                                    <Run Text=") — $"/>
+                                    <Run Text="{Binding SelectedCar.PricePerHour, StringFormat='{}{0:F0}', Mode=OneWay}"/>
+                                    <Run Text="/hr"/>
+                                </TextBlock>
+                            </Border>
+                        </StackPanel>
+
+                        <!-- Driver + Hours -->
+                        <Grid Grid.Row="6">
+                            <Grid.ColumnDefinitions>
+                                <ColumnDefinition Width="*"/>
+                                <ColumnDefinition Width="20"/>
+                                <ColumnDefinition Width="220"/>
+                            </Grid.ColumnDefinitions>
+                            <StackPanel Grid.Column="0">
+                                <TextBlock Text="Driver Name" FontSize="13"
+                                           Foreground="#2A1B5E" Margin="0,0,0,6"/>
+                                <Border CornerRadius="10" Padding="14,11"
+                                        BorderThickness="1" BorderBrush="#E0D4FF">
+                                    <Border.Background>
+                                        <SolidColorBrush Color="#F8F4FF"/>
+                                    </Border.Background>
+                                    <TextBox Text="{Binding DriverName, UpdateSourceTrigger=PropertyChanged}"
+                                             Style="{StaticResource InputTextBoxStyle}"
+                                             Height="22" Padding="0" Background="Transparent"
+                                             BorderThickness="0" Foreground="#2A1B5E" FontSize="13"
+                                             VerticalContentAlignment="Center"/>
+                                </Border>
+                            </StackPanel>
+                            <StackPanel Grid.Column="2">
+                                <TextBlock Text="Rental Duration (hours)" FontSize="13"
+                                           Foreground="#2A1B5E" Margin="0,0,0,6"/>
+                                <Border CornerRadius="10" Padding="14,11"
+                                        BorderThickness="1" BorderBrush="#E0D4FF">
+                                    <Border.Background>
+                                        <SolidColorBrush Color="#F8F4FF"/>
+                                    </Border.Background>
+                                    <TextBox Text="{Binding Hours, UpdateSourceTrigger=PropertyChanged}"
+                                             Style="{StaticResource InputTextBoxStyle}"
+                                             Height="22" Padding="0" Background="Transparent"
+                                             BorderThickness="0" Foreground="#2A1B5E" FontSize="13"
+                                             VerticalContentAlignment="Center"/>
+                                </Border>
+                            </StackPanel>
+                        </Grid>
+
+                        <!-- Rental Estimate -->
+                        <Border Grid.Row="8" CornerRadius="14" Padding="20,14"
+                                BorderThickness="1.5" BorderBrush="#D0C4F0">
+                            <Border.Background>
+                                <LinearGradientBrush StartPoint="0,0" EndPoint="1,1">
+                                    <GradientStop Color="#F8F4FF" Offset="0"/>
+                                    <GradientStop Color="#F0EBFF" Offset="1"/>
+                                </LinearGradientBrush>
+                            </Border.Background>
+                            <Grid>
+                                <Grid.RowDefinitions>
+                                    <RowDefinition Height="Auto"/>
+                                    <RowDefinition Height="8"/>
+                                    <RowDefinition Height="Auto"/>
+                                    <RowDefinition Height="6"/>
+                                    <RowDefinition Height="Auto"/>
+                                    <RowDefinition Height="8"/>
+                                    <RowDefinition Height="Auto"/>
+                                </Grid.RowDefinitions>
+                                <StackPanel Grid.Row="0" Orientation="Horizontal" HorizontalAlignment="Center">
+                                    <TextBlock Text="💵  " FontSize="14"/>
+                                    <TextBlock Text="Rental Estimate" FontSize="14"
+                                               FontWeight="Bold" Foreground="#8A2BE2"/>
+                                </StackPanel>
+                                <Grid Grid.Row="2">
+                                    <TextBlock Text="Base Price:" Foreground="#2A1B5E" FontSize="13"/>
+                                    <TextBlock HorizontalAlignment="Right" FontSize="13" Foreground="#2A1B5E">
+                                        <Run Text="$"/>
+                                        <Run Text="{Binding BasePrice, StringFormat='{}{0:F2}', Mode=OneWay}"/>
+                                    </TextBlock>
+                                </Grid>
+                                <Grid Grid.Row="4">
+                                    <TextBlock Text="Deposit:" Foreground="#2A1B5E" FontSize="13"/>
+                                    <TextBlock HorizontalAlignment="Right" FontSize="13" Foreground="#2A1B5E">
+                                        <Run Text="$"/>
+                                        <Run Text="{Binding Deposit, StringFormat='{}{0:F2}', Mode=OneWay}"/>
+                                    </TextBlock>
+                                </Grid>
+                                <Separator Grid.Row="5" Background="#D0C4F0"/>
+                                <Grid Grid.Row="6">
+                                    <TextBlock Text="Total Due:" FontWeight="Bold"
+                                               FontSize="14" Foreground="#8A2BE2"/>
+                                    <TextBlock HorizontalAlignment="Right" FontSize="16"
+                                               FontWeight="Bold" Foreground="#8A2BE2">
+                                        <Run Text="$"/>
+                                        <Run Text="{Binding TotalDue, StringFormat='{}{0:F2}', Mode=OneWay}"/>
+                                    </TextBlock>
+                                </Grid>
+                            </Grid>
+                        </Border>
+
+                        <!-- Buttons -->
+                        <StackPanel Grid.Row="10" Orientation="Horizontal">
+                            <Button Content="✅  Confirm Booking" Height="44" Padding="24,0"
+                                    Foreground="White" FontWeight="Bold" FontSize="13"
+                                    BorderThickness="0" Cursor="Hand" Margin="0,0,12,0"
+                                    Command="{Binding ConfirmCommand}"
+                                    Style="{StaticResource LoginButtonStyle}">
+                                <Button.Background>
+                                    <LinearGradientBrush StartPoint="0,0" EndPoint="1,0">
+                                        <GradientStop Color="#8A2BE2" Offset="0"/>
+                                        <GradientStop Color="#6A1FBB" Offset="1"/>
+                                    </LinearGradientBrush>
+                                </Button.Background>
+                            </Button>
+                            <Button Content="Back" Height="44" Padding="24,0"
+                                    FontWeight="Bold" FontSize="13"
+                                    BorderThickness="0" Cursor="Hand"
+                                    Command="{Binding PrevPageCommand}"
+                                    Style="{StaticResource LoginButtonStyle}">
+                                <Button.Background>
+                                    <SolidColorBrush Color="#6B6B6B"/>
+                                </Button.Background>
+                            </Button>
+                        </StackPanel>
+                    </Grid>
+                </Border>
             </ScrollViewer>
 
         </Grid>

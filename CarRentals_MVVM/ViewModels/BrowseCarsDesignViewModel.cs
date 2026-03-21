@@ -5,10 +5,36 @@ namespace CarRentals_MVVM.ViewModels
 {
     public class BrowseCarsDesignViewModel
     {
+        // ↓ CHANGE THIS to 1, 2, or 3 to preview pages in designer
+        public int Page { get; } = 1;
+
+        public bool IsPageList => Page == 1;
+        public bool IsPageColor => Page == 2;
+        public bool IsPageForm => Page == 3;
+
         public string UserLabel { get; } = "Customer: C001";
         public string SelectedCategory { get; set; } = "All";
         public string SelectedFuel { get; set; } = "All";
+        public string SelectedColor { get; set; } = "White";
+        public string DriverName { get; set; } = "Juan Dela Cruz";
+        public int Hours { get; set; } = 3;
+        public decimal Deposit { get; } = 50m;
+        public decimal BasePrice { get; } = 120m;
+        public decimal TotalDue { get; } = 170m;
 
+        // Used for Page 2 and 3 previews
+        public CarModel SelectedCar { get; } = new CarModel
+        {
+            CarId = "C001",
+            Name = "Toyota Camry",
+            Category = "Sedan",
+            FuelType = "Standard Engine",
+            PricePerHour = 40,
+            ImageUrl = "https://i.imgur.com/gMFP5tP.jpeg",
+            AvailableColors = ["White", "Gray"]
+        };
+
+        // Used for Page 1 preview — your existing cars kept exactly
         public ObservableCollection<CarModel> FilteredCars { get; } = new()
         {
             new CarModel { CarId="C001", Name="Toyota Camry",   Category="Sedan", FuelType="Standard Engine", Status="Available", PricePerHour=40,
