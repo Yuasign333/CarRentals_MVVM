@@ -184,6 +184,7 @@
                                         <ComboBoxItem Content="All Fuel Types"  Tag="All" IsSelected="True"/>
                                         <ComboBoxItem Content="Standard Engine" Tag="Standard Engine"/>
                                         <ComboBoxItem Content="EV"              Tag="EV"/>
+                                        <ComboBoxItem Content="Hybrid Engine"          Tag="Hybrid Engine"/>
                                     </ComboBox>
                                 </StackPanel>
                             </StackPanel>

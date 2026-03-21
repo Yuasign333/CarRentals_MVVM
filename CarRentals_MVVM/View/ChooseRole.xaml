@@ -147,7 +147,7 @@
                         </Border>
                     </Button>
                     <TextBlock Text="Made by Yuan" FontSize="12"
-                               Foreground="#CCC" HorizontalAlignment="Center" Margin="0,24,0,0"/>
+                               Foreground="MediumPurple" HorizontalAlignment="Center" Margin="0,24,0,0"/>
                 </StackPanel>
             </Border>
 

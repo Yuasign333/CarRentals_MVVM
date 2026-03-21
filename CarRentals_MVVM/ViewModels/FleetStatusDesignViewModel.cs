@@ -1,59 +1,29 @@
 ﻿// ─────────────────────────────────────────────────────────────────────────────
-// Design-time only ViewModel for AddCarWindow.xaml.
-// Provides fake car list data so the Visual Studio designer shows a preview
-// of the fleet table on the left side of the window.
+// Design-time only ViewModel for FleetStatusWindow.xaml.
+// Provides fake car data so the Visual Studio designer shows a preview
+// of the fleet table without needing to run the application.
 // This class is NEVER used at runtime — only in the XAML designer.
-// Connected to: AddCarWindow.xaml (via d:DataContext)
+// Connected to: FleetStatusWindow.xaml (via d:DataContext)
 // ─────────────────────────────────────────────────────────────────────────────
 
 using System.Collections.ObjectModel;
 using CarRentals_MVVM.Models;
 
+
 namespace CarRentals_MVVM.ViewModels
 {
-    public class AddCarDesignViewModel
+    public class FleetStatusDesignViewModel
     {
-        // ── Display labels ─────────────────────────────────────────────────────
-
         /// <summary>
         /// Fake user label shown in the top-right badge in the designer.
         /// </summary>
         public string UserLabel { get; } = "Agent: A001";
 
         /// <summary>
-        /// Fake auto-generated Car ID shown in the read-only Car ID field.
-        /// In the real ViewModel this is computed by GenerateNextId().
-        /// </summary>
-        public string NextCarId { get; } = "C007";
-
-        // ── Form field defaults (shown on the right side of the window) ────────
-
-        /// <summary>Fake car name shown in the Name field in the designer.</summary>
-        public string NewName { get; set; } = "Toyota Camry";
-
-        /// <summary>Fake category shown in the Category ComboBox in the designer.</summary>
-        public string NewCategory { get; set; } = "Sedan";
-
-        /// <summary>Fake fuel type shown in the Fuel Type ComboBox in the designer.</summary>
-        public string NewFuelType { get; set; } = "Standard Engine";
-
-        /// <summary>Fake price shown in the Price Per Hour field in the designer.</summary>
-        public decimal NewPricePerHour { get; set; } = 40;
-
-        /// <summary>Fake status shown in the Status ComboBox in the designer.</summary>
-        public string NewStatus { get; set; } = "Available";
-
-        /// <summary>Fake image URL shown in the Image URL field in the designer.</summary>
-        public string NewImageUrl { get; set; } = "https://i.imgur.com/gMFP5tP.jpeg";
-
-        // ── Car list (shown on the left side of the window) ───────────────────
-
-        /// <summary>
-        /// Fake car list shown in the table on the left side of AddCarWindow.
+        /// Fake car data shown in the fleet table in the designer.
         /// Includes all three status types so badge colors can be previewed.
-        /// Matches the seed data in CarDataService.
         /// </summary>
-        public ObservableCollection<CarModel> CarList { get; } = new()
+        public ObservableCollection<CarModel> Cars { get; } = new()
         {
             new CarModel
             {
@@ -83,7 +53,7 @@ namespace CarRentals_MVVM.ViewModels
                 Name            = "Honda Civic",
                 Category        = "Sedan",
                 FuelType        = "Standard Engine",
-                Status          = "Available",
+                Status          = "Rented",
                 PricePerHour    = 35,
                 ImageUrl        = "https://i.imgur.com/adLesJ3.jpeg",
                 AvailableColors = [ "White", "Red", "Blue" ]

@@ -74,12 +74,11 @@
                                 <TextBlock Text="Customer ID" FontSize="13"
                                            Foreground="{StaticResource TextMuted}" VerticalAlignment="Center"/>
                             </StackPanel>
-                            <Border CornerRadius="10" BorderBrush="{StaticResource BorderSoft}"
-                                    BorderThickness="1.5" Margin="0,0,0,16"
-                                    Background="{StaticResource SurfaceInput}">
+                            <Border Margin="0,0,0,16"
+        Style="{StaticResource InputBorderStyle}">
                                 <TextBox x:Name="UsernameBox"
-                                         Text="{Binding CurrentUser.UserID, UpdateSourceTrigger=PropertyChanged}"
-                                         Style="{StaticResource InputTextBoxStyle}" Height="35"/>
+             Text="{Binding CurrentUser.UserID, UpdateSourceTrigger=PropertyChanged}"
+             Style="{StaticResource InputTextBoxStyle}" Height="35"/>
                             </Border>
 
                             <StackPanel Orientation="Horizontal" Margin="0,0,0,6">
@@ -89,11 +88,10 @@
                                 <TextBlock Text="Password" FontSize="13"
                                            Foreground="{StaticResource TextMuted}" VerticalAlignment="Center"/>
                             </StackPanel>
-                            <Border CornerRadius="10" BorderBrush="{StaticResource BorderSoft}"
-                                    BorderThickness="1.5" Margin="0,0,0,16"
-                                    Background="{StaticResource SurfaceInput}">
+                            <Border Margin="0,0,0,16"
+        Style="{StaticResource InputBorderStyle}">
                                 <PasswordBox x:Name="PasswordBox"
-                                             Style="{StaticResource InputPasswordBoxStyle}" Height="35"/>
+                 Style="{StaticResource InputPasswordBoxStyle}" Height="35"/>
                             </Border>
 
                             <!-- ERROR BANNER: Collapsed by default -->

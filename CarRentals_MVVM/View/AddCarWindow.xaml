@@ -174,9 +174,10 @@
                                             <Run Text="$"/>
                                             <Run Text="{Binding PricePerHour, StringFormat='{}{0:F0}'}"/>
                                         </TextBlock>
+                                        
                                         <!-- Status badge -->
                                         <Border Grid.Column="4" CornerRadius="8" Padding="8,3"
-                                                HorizontalAlignment="Left">
+        HorizontalAlignment="Center">
                                             <Border.Style>
                                                 <Style TargetType="Border">
                                                     <Setter Property="Background" Value="#EDFBF0"/>
@@ -184,10 +185,14 @@
                                                         <DataTrigger Binding="{Binding Status}" Value="Rented">
                                                             <Setter Property="Background" Value="#FFF9E6"/>
                                                         </DataTrigger>
+                                                        <DataTrigger Binding="{Binding Status}" Value="Maintenance">
+                                                            <Setter Property="Background" Value="#FFF0F0"/>
+                                                        </DataTrigger>
                                                     </Style.Triggers>
                                                 </Style>
                                             </Border.Style>
-                                            <TextBlock Text="{Binding Status}" FontSize="10" FontWeight="SemiBold">
+                                            <TextBlock Text="{Binding Status}" FontSize="10" FontWeight="SemiBold"
+               TextAlignment="Center">
                                                 <TextBlock.Style>
                                                     <Style TargetType="TextBlock">
                                                         <Setter Property="Foreground" Value="#2E7D52"/>
@@ -195,11 +200,15 @@
                                                             <DataTrigger Binding="{Binding Status}" Value="Rented">
                                                                 <Setter Property="Foreground" Value="#B8860B"/>
                                                             </DataTrigger>
+                                                            <DataTrigger Binding="{Binding Status}" Value="Maintenance">
+                                                                <Setter Property="Foreground" Value="#C0304A"/>
+                                                            </DataTrigger>
                                                         </Style.Triggers>
                                                     </Style>
                                                 </TextBlock.Style>
                                             </TextBlock>
                                         </Border>
+
                                     </Grid>
                                 </DataTemplate>
                             </ListView.ItemTemplate>
@@ -328,7 +337,8 @@
           BorderThickness="0" FontSize="12">
                                     <ComboBoxItem Content="Available"/>
                                     <ComboBoxItem Content="Rented"/>
-                                </ComboBox>
+                                <ComboBoxItem Content="Maintenance"/> 
+                            </ComboBox>
                        
                         </StackPanel>
 

@@ -3,35 +3,80 @@
              xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
              StartupUri="View/ChooseRole.xaml"
              ShutdownMode="OnLastWindowClose">
+
     <Application.Resources>
         <ResourceDictionary>
 
+            <!-- ═══════════════════════════════════════════════════════════════
+                 CONVERTERS
+                 Global converters available to all XAML files in the project.
+            ═══════════════════════════════════════════════════════════════════ -->
+
+            <!-- Converts bool to Visibility — used for page switching in
+                 BrowseCarsWindow.xaml and error panels in login XAML files.
+                 Usage: Visibility="{Binding IsPageList, Converter={StaticResource BoolToVisibility}}" -->
             <BooleanToVisibilityConverter x:Key="BoolToVisibility"/>
 
-            <SolidColorBrush x:Key="BrandPrimary"     Color="#8A2BE2"/>
-            <SolidColorBrush x:Key="BrandDeep"        Color="#2D0B6B"/>
-            <SolidColorBrush x:Key="BrandMedium"      Color="#3D1A7A"/>
-            <SolidColorBrush x:Key="BrandLight"       Color="#C9B8E8"/>
-            <SolidColorBrush x:Key="BrandSoft"        Color="#D4C5F0"/>
-            <SolidColorBrush x:Key="BrandPale"        Color="#E8D8FF"/>
-            <SolidColorBrush x:Key="SurfaceInput"     Color="#F8F4FF"/>
-            <SolidColorBrush x:Key="TextDark"         Color="#2A1B5E"/>
-            <SolidColorBrush x:Key="TextMedium"       Color="#3D1A7A"/>
-            <SolidColorBrush x:Key="TextMuted"        Color="#7E74A6"/>
-            <SolidColorBrush x:Key="TextLight"        Color="#C9B8E8"/>
-            <SolidColorBrush x:Key="TextBreadcrumb"   Color="#C4B0E0"/>
-            <SolidColorBrush x:Key="TextHint"         Color="#AAA"/>
-            <SolidColorBrush x:Key="BorderSoft"       Color="#D0C4F0"/>
-            <SolidColorBrush x:Key="BorderInput"      Color="#E0D4FF"/>
+
+            <!-- ═══════════════════════════════════════════════════════════════
+                 COLOR PALETTE
+                 All brand and UI colors defined once here so they are
+                 consistent across every window in the application.
+                 Usage: Foreground="{StaticResource BrandPrimary}"
+            ═══════════════════════════════════════════════════════════════════ -->
+
+            <!-- Brand purple shades — used for buttons, accents, highlights -->
+            <SolidColorBrush x:Key="BrandPrimary"  Color="#8A2BE2"/>
+            <SolidColorBrush x:Key="BrandDeep"     Color="#2D0B6B"/>
+            <SolidColorBrush x:Key="BrandMedium"   Color="#3D1A7A"/>
+            <SolidColorBrush x:Key="BrandLight"    Color="#C9B8E8"/>
+            <SolidColorBrush x:Key="BrandSoft"     Color="#D4C5F0"/>
+            <SolidColorBrush x:Key="BrandPale"     Color="#E8D8FF"/>
+
+            <!-- Surface colors — used for input fields and card backgrounds -->
+            <SolidColorBrush x:Key="SurfaceInput"  Color="#F8F4FF"/>
+
+            <!-- Text colors — establishes visual hierarchy across the app -->
+            <SolidColorBrush x:Key="TextDark"       Color="#2A1B5E"/>
+            <SolidColorBrush x:Key="TextMedium"     Color="#3D1A7A"/>
+            <SolidColorBrush x:Key="TextMuted"      Color="#7E74A6"/>
+            <SolidColorBrush x:Key="TextLight"      Color="#C9B8E8"/>
+            <SolidColorBrush x:Key="TextBreadcrumb" Color="#C4B0E0"/>
+            <SolidColorBrush x:Key="TextHint"       Color="#AAA"/>
+
+            <!-- Border colors — used for input field outlines -->
+            <SolidColorBrush x:Key="BorderSoft"  Color="#D0C4F0"/>
+            <SolidColorBrush x:Key="BorderInput" Color="#E0D4FF"/>
+
+            <!-- Error colors — used in login error message panels -->
             <SolidColorBrush x:Key="ColorError"       Color="#C0304A"/>
             <SolidColorBrush x:Key="ColorErrorBg"     Color="#FFF0F5"/>
             <SolidColorBrush x:Key="ColorErrorBorder" Color="#F0C0D0"/>
+
+
+            <!-- ═══════════════════════════════════════════════════════════════
+                 GLOBAL TEXT STYLE
+                 Applied to every TextBlock in the app automatically.
+                 Individual TextBlocks can override FontSize as needed.
+            ═══════════════════════════════════════════════════════════════════ -->
 
             <Style TargetType="TextBlock">
                 <Setter Property="FontFamily" Value="Segoe UI"/>
                 <Setter Property="FontSize"   Value="13"/>
             </Style>
 
+
+            <!-- ═══════════════════════════════════════════════════════════════
+                 INPUT FIELD STYLES
+                 Applied to TextBox and PasswordBox inside input borders.
+                 These strip the default WPF styling for a cleaner look.
+                 Connected to: AdminLogin.xaml, CustomerLogin.xaml,
+                 AddCarWindow.xaml, BrowseCarsWindow.xaml (booking form)
+            ═══════════════════════════════════════════════════════════════════ -->
+
+            <!-- Used on all text input fields.
+                 Removes default border and background so only the
+                 outer InputBorderStyle border is visible. -->
             <Style x:Key="InputTextBoxStyle" TargetType="TextBox">
                 <Setter Property="Padding"                  Value="10,0"/>
                 <Setter Property="FontSize"                 Value="14"/>
@@ -51,6 +96,8 @@
                 </Setter>
             </Style>
 
+            <!-- Used on all password input fields.
+                 Same as InputTextBoxStyle but targets PasswordBox. -->
             <Style x:Key="InputPasswordBoxStyle" TargetType="PasswordBox">
                 <Setter Property="Padding"                  Value="10,0"/>
                 <Setter Property="FontSize"                 Value="14"/>
@@ -70,6 +117,34 @@
                 </Setter>
             </Style>
 
+            <!-- Outer wrapper Border for all input fields.
+                 Provides the rounded corner, border color, and background.
+                 On hover: border turns purple and background turns white.
+                 Connected to: AdminLogin.xaml, CustomerLogin.xaml,
+                 AddCarWindow.xaml, BrowseCarsWindow.xaml -->
+            <Style x:Key="InputBorderStyle" TargetType="Border">
+                <Setter Property="CornerRadius"    Value="10"/>
+                <Setter Property="BorderThickness" Value="1.5"/>
+                <Setter Property="BorderBrush"     Value="{StaticResource BorderSoft}"/>
+                <Setter Property="Background"      Value="{StaticResource SurfaceInput}"/>
+                <Style.Triggers>
+                    <Trigger Property="IsMouseOver" Value="True">
+                        <Setter Property="BorderBrush" Value="{StaticResource BrandPrimary}"/>
+                        <Setter Property="Background"  Value="White"/>
+                    </Trigger>
+                </Style.Triggers>
+            </Style>
+
+
+            <!-- ═══════════════════════════════════════════════════════════════
+                 BUTTON STYLES
+                 All interactive button styles used across the application.
+            ═══════════════════════════════════════════════════════════════════ -->
+
+            <!-- Primary action button — Login, Save, Confirm, Delete, etc.
+                 Scales up slightly on hover and down on press for tactile feel.
+                 Background is set per-button in each XAML file.
+                 Connected to: All windows with action buttons. -->
             <Style x:Key="LoginButtonStyle" TargetType="Button">
                 <Setter Property="Height"          Value="46"/>
                 <Setter Property="FontSize"        Value="16"/>
@@ -87,13 +162,17 @@
                 <Setter Property="Template">
                     <Setter.Value>
                         <ControlTemplate TargetType="Button">
-                            <Border x:Name="border" CornerRadius="10" Background="{TemplateBinding Background}">
+                            <Border x:Name="border" CornerRadius="10"
+                                    Background="{TemplateBinding Background}">
                                 <Border.Effect>
-                                    <DropShadowEffect Color="#C8B6FF" BlurRadius="20" ShadowDepth="0" Opacity="0.4"/>
+                                    <DropShadowEffect Color="#C8B6FF" BlurRadius="20"
+                                                      ShadowDepth="0" Opacity="0.4"/>
                                 </Border.Effect>
-                                <ContentPresenter HorizontalAlignment="Center" VerticalAlignment="Center"/>
+                                <ContentPresenter HorizontalAlignment="Center"
+                                                  VerticalAlignment="Center"/>
                             </Border>
                             <ControlTemplate.Triggers>
+                                <!-- Scale up on hover -->
                                 <Trigger Property="IsMouseOver" Value="True">
                                     <Trigger.EnterActions>
                                         <BeginStoryboard>
@@ -114,6 +193,7 @@
                                         </BeginStoryboard>
                                     </Trigger.ExitActions>
                                 </Trigger>
+                                <!-- Scale down on press for click feedback -->
                                 <Trigger Property="IsPressed" Value="True">
                                     <Trigger.EnterActions>
                                         <BeginStoryboard>
@@ -138,6 +218,9 @@
                 </Setter>
             </Style>
 
+            <!-- Back arrow button (←) used in the top bar of all windows.
+                 Transparent background, scales up and adds tint on hover.
+                 Connected to: All windows with a back navigation button. -->
             <Style x:Key="BackButtonStyle" TargetType="Button">
                 <Setter Property="Background"      Value="Transparent"/>
                 <Setter Property="BorderThickness" Value="0"/>
@@ -152,10 +235,13 @@
                 <Setter Property="Template">
                     <Setter.Value>
                         <ControlTemplate TargetType="Button">
-                            <Border x:Name="backBorder" Background="Transparent" CornerRadius="10" Padding="6">
-                                <ContentPresenter HorizontalAlignment="Center" VerticalAlignment="Center"/>
+                            <Border x:Name="backBorder" Background="Transparent"
+                                    CornerRadius="10" Padding="6">
+                                <ContentPresenter HorizontalAlignment="Center"
+                                                  VerticalAlignment="Center"/>
                             </Border>
                             <ControlTemplate.Triggers>
+                                <!-- Scale up and add subtle tint on hover -->
                                 <Trigger Property="IsMouseOver" Value="True">
                                     <Trigger.EnterActions>
                                         <BeginStoryboard>
@@ -181,6 +267,9 @@
                 </Setter>
             </Style>
 
+            <!-- Hamburger menu button (☰) in the top bar of dashboard windows.
+                 Scales up and adds subtle tint on hover.
+                 Connected to: AdminDashboard.xaml, CustomerDashboard.xaml -->
             <Style x:Key="HamburgerButtonStyle" TargetType="Button">
                 <Setter Property="Background"      Value="Transparent"/>
                 <Setter Property="BorderThickness" Value="0"/>
@@ -198,10 +287,13 @@
                 <Setter Property="Template">
                     <Setter.Value>
                         <ControlTemplate TargetType="Button">
-                            <Border x:Name="hamBorder" CornerRadius="8" Background="Transparent" Padding="4">
-                                <ContentPresenter HorizontalAlignment="Center" VerticalAlignment="Center"/>
+                            <Border x:Name="hamBorder" CornerRadius="8"
+                                    Background="Transparent" Padding="4">
+                                <ContentPresenter HorizontalAlignment="Center"
+                                                  VerticalAlignment="Center"/>
                             </Border>
                             <ControlTemplate.Triggers>
+                                <!-- Scale up and add subtle tint on hover -->
                                 <Trigger Property="IsMouseOver" Value="True">
                                     <Trigger.EnterActions>
                                         <BeginStoryboard>
@@ -227,6 +319,86 @@
                 </Setter>
             </Style>
 
+            <!-- Invisible button wrapper for Borders that need Command bindings.
+                 Used wherever a Border needs to be clickable with a Command
+                 but must keep its own visual styling intact.
+                 Scales up on hover and down on press.
+                 Connected to: ChooseRole.xaml (role cards),
+                 AdminDashboard.xaml, CustomerDashboard.xaml (cards + sidebar),
+                 All stub windows (back button),
+                 AddCarWindow.xaml, BrowseCarsWindow.xaml -->
+            <Style x:Key="RoleCardButtonStyle" TargetType="Button">
+                <Setter Property="Background"        Value="Transparent"/>
+                <Setter Property="BorderThickness"   Value="0"/>
+                <Setter Property="Cursor"            Value="Hand"/>
+                <Setter Property="Padding"           Value="0"/>
+                <Setter Property="RenderTransformOrigin" Value="0.5,0.5"/>
+                <Setter Property="RenderTransform">
+                    <Setter.Value>
+                        <ScaleTransform ScaleX="1" ScaleY="1"/>
+                    </Setter.Value>
+                </Setter>
+                <Setter Property="Template">
+                    <Setter.Value>
+                        <ControlTemplate TargetType="Button">
+                            <!-- ContentPresenter renders whatever Border is
+                                 placed inside the Button with no extra wrapping -->
+                            <ContentPresenter/>
+                            <ControlTemplate.Triggers>
+                                <!-- Scale up slightly on hover -->
+                                <Trigger Property="IsMouseOver" Value="True">
+                                    <Trigger.EnterActions>
+                                        <BeginStoryboard>
+                                            <Storyboard>
+                                                <DoubleAnimation Storyboard.TargetProperty="RenderTransform.(ScaleTransform.ScaleX)" To="1.03" Duration="0:0:0.18"/>
+                                                <DoubleAnimation Storyboard.TargetProperty="RenderTransform.(ScaleTransform.ScaleY)" To="1.03" Duration="0:0:0.18"/>
+                                            </Storyboard>
+                                        </BeginStoryboard>
+                                    </Trigger.EnterActions>
+                                    <Trigger.ExitActions>
+                                        <BeginStoryboard>
+                                            <Storyboard>
+                                                <DoubleAnimation Storyboard.TargetProperty="RenderTransform.(ScaleTransform.ScaleX)" To="1" Duration="0:0:0.18"/>
+                                                <DoubleAnimation Storyboard.TargetProperty="RenderTransform.(ScaleTransform.ScaleY)" To="1" Duration="0:0:0.18"/>
+                                            </Storyboard>
+                                        </BeginStoryboard>
+                                    </Trigger.ExitActions>
+                                </Trigger>
+                                <!-- Scale down on press for click feedback -->
+                                <Trigger Property="IsPressed" Value="True">
+                                    <Trigger.EnterActions>
+                                        <BeginStoryboard>
+                                            <Storyboard>
+                                                <DoubleAnimation Storyboard.TargetProperty="RenderTransform.(ScaleTransform.ScaleX)" To="0.97" Duration="0:0:0.08"/>
+                                                <DoubleAnimation Storyboard.TargetProperty="RenderTransform.(ScaleTransform.ScaleY)" To="0.97" Duration="0:0:0.08"/>
+                                            </Storyboard>
+                                        </BeginStoryboard>
+                                    </Trigger.EnterActions>
+                                    <Trigger.ExitActions>
+                                        <BeginStoryboard>
+                                            <Storyboard>
+                                                <DoubleAnimation Storyboard.TargetProperty="RenderTransform.(ScaleTransform.ScaleX)" To="1" Duration="0:0:0.08"/>
+                                                <DoubleAnimation Storyboard.TargetProperty="RenderTransform.(ScaleTransform.ScaleY)" To="1" Duration="0:0:0.08"/>
+                                            </Storyboard>
+                                        </BeginStoryboard>
+                                    </Trigger.ExitActions>
+                                </Trigger>
+                            </ControlTemplate.Triggers>
+                        </ControlTemplate>
+                    </Setter.Value>
+                </Setter>
+            </Style>
+
+
+            <!-- ═══════════════════════════════════════════════════════════════
+                 BORDER / CARD STYLES
+                 Animation styles applied to Border elements used as cards
+                 and sidebar navigation items.
+            ═══════════════════════════════════════════════════════════════════ -->
+
+            <!-- Dashboard card hover animation — scales up and fades slightly.
+                 Applied to the large feature cards in Admin and Customer dashboards.
+                 Connected to: AdminDashboard.xaml, CustomerDashboard.xaml -->
             <Style x:Key="DashCardStyle" TargetType="Border">
                 <Setter Property="RenderTransformOrigin" Value="0.5,0.5"/>
                 <Setter Property="RenderTransform">
@@ -235,6 +407,7 @@
                     </Setter.Value>
                 </Setter>
                 <Style.Triggers>
+                    <!-- Scale up and fade slightly on hover -->
                     <Trigger Property="IsMouseOver" Value="True">
                         <Trigger.EnterActions>
                             <BeginStoryboard>
@@ -258,6 +431,9 @@
                 </Style.Triggers>
             </Style>
 
+            <!-- Sidebar nav item hover animation — slides right on hover.
+                 Applied to navigation items inside the sidebar panel.
+                 Connected to: AdminDashboard.xaml, CustomerDashboard.xaml -->
             <Style x:Key="SidebarItemStyle" TargetType="Border">
                 <Setter Property="RenderTransformOrigin" Value="0.5,0.5"/>
                 <Setter Property="RenderTransform">
@@ -266,6 +442,7 @@
                     </Setter.Value>
                 </Setter>
                 <Style.Triggers>
+                    <!-- Slide right and brighten on hover -->
                     <Trigger Property="IsMouseOver" Value="True">
                         <Trigger.EnterActions>
                             <BeginStoryboard>
@@ -275,6 +452,7 @@
                                 </Storyboard>
                             </BeginStoryboard>
                         </Trigger.EnterActions>
+                        <!-- Slide back and dim when mouse leaves -->
                         <Trigger.ExitActions>
                             <BeginStoryboard>
                                 <Storyboard>
@@ -287,58 +465,40 @@
                 </Style.Triggers>
             </Style>
 
-           
 
-            <Style x:Key="RoleCardStyle" TargetType="Border">
-                <Setter Property="RenderTransformOrigin" Value="0.5,0.5"/>
-                <Setter Property="RenderTransform">
-                    <Setter.Value>
-                        <ScaleTransform ScaleX="1" ScaleY="1"/>
-                    </Setter.Value>
-                </Setter>
-                <Style.Triggers>
-                    <Trigger Property="IsMouseOver" Value="True">
-                        <Trigger.EnterActions>
-                            <BeginStoryboard>
-                                <Storyboard>
-                                    <DoubleAnimation Storyboard.TargetProperty="RenderTransform.(ScaleTransform.ScaleX)" To="1.03" Duration="0:0:0.18"/>
-                                    <DoubleAnimation Storyboard.TargetProperty="RenderTransform.(ScaleTransform.ScaleY)" To="1.03" Duration="0:0:0.18"/>
-                                </Storyboard>
-                            </BeginStoryboard>
-                        </Trigger.EnterActions>
-                        <Trigger.ExitActions>
-                            <BeginStoryboard>
-                                <Storyboard>
-                                    <DoubleAnimation Storyboard.TargetProperty="RenderTransform.(ScaleTransform.ScaleX)" To="1" Duration="0:0:0.18"/>
-                                    <DoubleAnimation Storyboard.TargetProperty="RenderTransform.(ScaleTransform.ScaleY)" To="1" Duration="0:0:0.18"/>
-                                </Storyboard>
-                            </BeginStoryboard>
-                        </Trigger.ExitActions>
-                    </Trigger>
-                </Style.Triggers>
-            </Style>
+            <!-- ═══════════════════════════════════════════════════════════════
+                 SCROLLBAR STYLE
+                 Makes the scrollbar thinner across all windows.
+            ═══════════════════════════════════════════════════════════════════ -->
 
             <Style TargetType="ScrollBar">
                 <Setter Property="Width" Value="6"/>
             </Style>
 
+
+            <!-- ═══════════════════════════════════════════════════════════════
+                 COMBOBOX STYLES
+                 Applied globally to all ComboBoxes and their items.
+                 Connected to: AddCarWindow.xaml, BrowseCarsWindow.xaml
+            ═══════════════════════════════════════════════════════════════════ -->
+
+            <!-- ComboBox base style — light purple background and border -->
             <Style TargetType="ComboBox">
-                <Setter Property="Background" Value="#F8F4FF"/>
+                <Setter Property="Background"  Value="#F8F4FF"/>
                 <Setter Property="BorderBrush" Value="#D0C4F0"/>
             </Style>
 
+            <!-- ComboBox dropdown item style — highlights purple on hover -->
             <Style TargetType="ComboBoxItem">
                 <Setter Property="Background" Value="White"/>
                 <Setter Property="Foreground" Value="#2A1B5E"/>
-                <Setter Property="Padding" Value="10,5"/>
+                <Setter Property="Padding"    Value="10,5"/>
                 <Style.Triggers>
                     <Trigger Property="IsMouseOver" Value="True">
                         <Setter Property="Background" Value="#E8D8FF"/>
                     </Trigger>
                 </Style.Triggers>
             </Style>
-
-
 
         </ResourceDictionary>
     </Application.Resources>
