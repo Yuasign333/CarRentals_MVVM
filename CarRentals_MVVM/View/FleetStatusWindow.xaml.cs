@@ -2,7 +2,7 @@
 // FILE: FleetStatusWindow.xaml.cs
 // Connected to: FleetStatusViewModel.cs
 // Purpose: Admin fleet table window. Sets DataContext to its own
-//          dedicated FleetStatusViewModel instead of shared StubWindowViewModel.
+//          dedicated FleetStatusViewModel
 // ─────────────────────────────────────────────────────────────────────────────
 
 using System.Windows;

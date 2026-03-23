@@ -10,7 +10,7 @@ namespace CarRentals_MVVM.Services
     /// Connected to: AddCarViewModel (create/delete cars),
     /// BrowseCarsViewModel (read cars, create rentals),
     /// MyRentalsViewModel (read rentals),
-    /// StubWindowViewModel / FleetStatusWindow (read all cars).
+    /// FleetStatusWindow (read all cars).
     /// </summary>
     public static class CarDataService
     {
