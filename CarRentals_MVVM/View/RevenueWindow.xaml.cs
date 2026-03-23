@@ -1,8 +1,7 @@
 ﻿// ─────────────────────────────────────────────────────────────────────────────
-// Connected to: StubWindowViewModel.cs
-// Purpose: Placeholder for the Revenue and Analytics feature.
-//          Full implementation (earnings reports, charts) is planned
-//          for a future release. Currently shows a "coming soon" card.
+// FILE: RevenueWindow.xaml.cs
+// Connected to: RevenueViewModel.cs
+// Purpose: Admin revenue placeholder window.
 // ─────────────────────────────────────────────────────────────────────────────
 
 using System.Windows;
@@ -20,9 +19,8 @@ namespace CarRentals_MVVM.View
             // Register this window as the current active window for NavigationService
             this.Loaded += (s, e) => NavigationService.SetCurrent(this);
 
-            // StubWindowViewModel provides BackCommand.
-            // isAdmin: true — BackCommand navigates to AdminDashboard
-            this.DataContext = new StubWindowViewModel(userId, isAdmin: true);
+            // Dedicated ViewModel for this window
+            this.DataContext = new RevenueViewModel(userId);
         }
     }
 }

@@ -1,8 +1,8 @@
-﻿// ─────────────────────────────────────────────────────────────────────────────
-// Connected to: StubWindowViewModel.cs
-// Purpose: Placeholder for the Maintenance management feature.
-//          Full implementation (scheduling, service records) is planned
-//          for a future release. Currently shows a "coming soon" card.
+﻿
+// ─────────────────────────────────────────────────────────────────────────────
+// FILE: MaintenanceWindow.xaml.cs
+// Connected to: MaintenanceViewModel.cs
+// Purpose: Admin maintenance placeholder window.
 // ─────────────────────────────────────────────────────────────────────────────
 
 using System.Windows;
@@ -20,9 +20,8 @@ namespace CarRentals_MVVM.View
             // Register this window as the current active window for NavigationService
             this.Loaded += (s, e) => NavigationService.SetCurrent(this);
 
-            // StubWindowViewModel provides BackCommand.
-            // isAdmin: true — BackCommand navigates to AdminDashboard
-            this.DataContext = new StubWindowViewModel(userId, isAdmin: true);
+            // Dedicated ViewModel for this window
+            this.DataContext = new MaintenanceViewModel(userId);
         }
     }
 }
