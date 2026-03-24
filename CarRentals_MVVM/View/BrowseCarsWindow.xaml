@@ -260,6 +260,8 @@
                     </ItemsControl>
                 </Grid>
             </ScrollViewer>
+ 
+
 
             <!-- ═══════════ PAGE 2 — COLOR PICKER ═══════════ -->
             <Border Grid.Row="1" Panel.ZIndex="5"

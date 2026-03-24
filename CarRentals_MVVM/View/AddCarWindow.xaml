@@ -118,10 +118,10 @@
                                            FontSize="11" FontWeight="Bold" Foreground="#6B4FA8"/>
                                 <TextBlock Grid.Column="2" Text="Category"
                                            FontSize="11" FontWeight="Bold" Foreground="#6B4FA8"/>
-                                <TextBlock Grid.Column="3" Text="Price/hr"
-                                           FontSize="11" FontWeight="Bold" Foreground="#6B4FA8"/>
+                                <TextBlock Grid.Column="2" Text="Price/hr"
+                                           FontSize="11" FontWeight="Bold" Foreground="#6B4FA8" Grid.ColumnSpan="2" Margin="75,0,5,0"/>
                                 <TextBlock Grid.Column="4" Text="Status"
-                                           FontSize="11" FontWeight="Bold" Foreground="#6B4FA8"/>
+                                           FontSize="11" FontWeight="Bold" Foreground="#6B4FA8" Margin="27,0,-27,0"/>
                             </Grid>
                         </Border>
 
@@ -174,7 +174,7 @@
                                             <Run Text="$"/>
                                             <Run Text="{Binding PricePerHour, StringFormat='{}{0:F0}'}"/>
                                         </TextBlock>
-                                        
+
                                         <!-- Status badge -->
                                         <Border Grid.Column="4" CornerRadius="8" Padding="8,3"
         HorizontalAlignment="Center">
@@ -298,16 +298,16 @@
                         <StackPanel Grid.Row="8">
                             <TextBlock Text="Fuel Type" FontSize="11" FontWeight="SemiBold"
                        Foreground="#2A1B5E" Margin="0,0,0,5"/>
-                         
-                                <ComboBox SelectedValue="{Binding NewFuelType}"
+
+                            <ComboBox SelectedValue="{Binding NewFuelType}"
           SelectedValuePath="Content"
           Height="32" Background="Transparent" 
           BorderThickness="0" FontSize="12">
-                                    <ComboBoxItem Content="Standard Engine"/>
-                                    <ComboBoxItem Content="EV"/>
-                                    <ComboBoxItem Content="Hybrid Engine"/>
-                                </ComboBox>
-                           
+                                <ComboBoxItem Content="Standard Engine"/>
+                                <ComboBoxItem Content="EV"/>
+                                <ComboBoxItem Content="Hybrid Engine"/>
+                            </ComboBox>
+
                         </StackPanel>
 
                         <!-- Price Per Hour -->
@@ -330,16 +330,16 @@
                         <StackPanel Grid.Row="12">
                             <TextBlock Text="Status" FontSize="11" FontWeight="SemiBold"
                        Foreground="#2A1B5E" Margin="0,0,0,5"/>
-                          
-                                <ComboBox SelectedValue="{Binding NewStatus}"
+
+                            <ComboBox SelectedValue="{Binding NewStatus}"
           SelectedValuePath="Content"
           Height="32" Background="Transparent"
           BorderThickness="0" FontSize="12">
-                                    <ComboBoxItem Content="Available"/>
-                                    <ComboBoxItem Content="Rented"/>
-                                <ComboBoxItem Content="Maintenance"/> 
+                                <ComboBoxItem Content="Available"/>
+                                <ComboBoxItem Content="Rented"/>
+                                <ComboBoxItem Content="Maintenance"/>
                             </ComboBox>
-                       
+
                         </StackPanel>
 
                         <!-- Buttons — Row 14, pushed to bottom by Row 13 Height="*" -->

@@ -349,10 +349,37 @@ namespace CarRentals_MVVM.ViewModels
                     return;
                 }
 
-                // Remove from both the data store and the visible table list
-                CarDataService.Cars.Remove(SelectedCar);
-                CarList.Remove(SelectedCar);
+                if (SelectedCar.Status == "Rented")
+                {
+                    MessageBox.Show(
+                        "Cannot delete a car that is currently rented.",
+                        "Invalid Action",
+                        MessageBoxButton.OK,
+                        MessageBoxImage.Warning
+                    );
+                    return;
+                }
+                else if (SelectedCar.Status == "Maintenance")
+                {
+                    MessageBox.Show(
+                        "Cannot delete a car that is currently under maintenance.",
+                        "Invalid Action",
+                        MessageBoxButton.OK,
+                        MessageBoxImage.Warning
+                    );
+                }
+                else
+                {
+                    MessageBox.Show("Are you sure you want to delete the selected car?",
+                        "Confirm Deletion",
+                        MessageBoxButton.YesNo,
+                        MessageBoxImage.Question);
 
+                    // Remove from both the data store and the visible table list
+                    CarDataService.Cars.Remove(SelectedCar);
+                    CarList.Remove(SelectedCar);
+
+                }
                 // Reset form after deletion
                 ExecuteClear();
             });
@@ -361,6 +388,14 @@ namespace CarRentals_MVVM.ViewModels
             ClearCommand = new RelayCommand(_ =>
             {
                 ExecuteClear();
+
+                // Inform the user that the form has been cleared
+                MessageBox.Show(
+                    "Form cleared.",
+                    "Cleared",
+                    MessageBoxButton.OK,
+                    MessageBoxImage.Information
+                );
             });
         }
 

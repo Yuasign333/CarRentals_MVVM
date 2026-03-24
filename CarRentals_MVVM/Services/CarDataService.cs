@@ -30,7 +30,8 @@ namespace CarRentals_MVVM.Services
                 Status          = "Available",
                 PricePerHour    = 40,
                 ImageUrl        = "https://i.imgur.com/gMFP5tP.jpeg",
-                AvailableColors = [ "White", "Gray" ]
+                AvailableColors = [ "White", "Gray" ],
+              
             },
             new CarModel
             {
@@ -41,7 +42,8 @@ namespace CarRentals_MVVM.Services
                 Status          = "Available",
                 PricePerHour    = 75,
                 ImageUrl        = "https://i.imgur.com/vgEvOtG.jpeg",
-                AvailableColors = [ "White" ]
+                AvailableColors = [ "White" ],
+    
             },
             new CarModel
             {
@@ -52,7 +54,8 @@ namespace CarRentals_MVVM.Services
                 Status          = "Available",
                 PricePerHour    = 35,
                 ImageUrl        = "https://i.imgur.com/adLesJ3.jpeg",
-                AvailableColors = [ "White", "Red", "Blue" ]
+                AvailableColors = [ "White", "Red", "Blue" ],
+                   
             },
             new CarModel
             {
@@ -63,7 +66,8 @@ namespace CarRentals_MVVM.Services
                 Status          = "Available",
                 PricePerHour    = 65,
                 ImageUrl        = "https://i.imgur.com/69GQ8YT.jpeg",
-                AvailableColors = [ "White" ]
+                AvailableColors = [ "White" ],
+             
             },
             new CarModel
             {
@@ -74,7 +78,8 @@ namespace CarRentals_MVVM.Services
                 Status          = "Available",
                 PricePerHour    = 80,
                 ImageUrl        = "https://i.imgur.com/UN1XHVO.jpeg",
-                AvailableColors = [ "White", "Black" ]
+                AvailableColors = [ "White", "Black" ],
+              
             },
             new CarModel
             {
@@ -85,7 +90,8 @@ namespace CarRentals_MVVM.Services
                 Status          = "Maintenance",
                 PricePerHour    = 55,
                 ImageUrl        = "https://i.imgur.com/iWOAwIV.jpeg",
-                AvailableColors = [ "White", "Black", "Blue" ]
+                AvailableColors = [ "White", "Black", "Blue" ],
+                   
             },
         };
 

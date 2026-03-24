@@ -8,7 +8,8 @@
         d:DataContext="{d:DesignInstance Type=vm:FleetStatusDesignViewModel, IsDesignTimeCreatable=True}"
         Title="Rental Rev. — Fleet Status"
         Height="620" Width="1020"
-        WindowStartupLocation="CenterScreen" ResizeMode="CanResize">    <Viewbox Stretch="UniformToFill">
+        WindowStartupLocation="CenterScreen" ResizeMode="CanResize">
+    <Viewbox Stretch="UniformToFill">
         <Grid Width="1020" Height="620">
             <Grid.RowDefinitions>
                 <RowDefinition Height="56"/>
@@ -114,10 +115,11 @@
                                            FontSize="11" FontWeight="Bold" Foreground="#6B4FA8"/>
                                 <TextBlock Grid.Column="4" Text="Fuel Type"
                                            FontSize="11" FontWeight="Bold" Foreground="#6B4FA8"/>
-                                <TextBlock Grid.Column="5" Text="Price/hr"
-                                           FontSize="11" FontWeight="Bold" Foreground="#6B4FA8"/>
+                                <TextBlock Grid.Column="4" Text="Price/hr"
+                                           FontSize="11" FontWeight="Bold" Foreground="#6B4FA8" Grid.ColumnSpan="2" Margin="115,0,5,0"/>
                                 <TextBlock Grid.Column="6" Text="Status"
-                                           FontSize="11" FontWeight="Bold" Foreground="#6B4FA8"/>
+                                           FontSize="11" FontWeight="Bold" Foreground="#6B4FA8" Margin="36,0,-36,0"/>
+
                             </Grid>
                         </Border>
 
@@ -190,6 +192,8 @@
                                             <Run Text="$"/>
                                             <Run Text="{Binding PricePerHour, StringFormat='{}{0:F0}'}"/>
                                         </TextBlock>
+
+
 
                                         <!-- Status badge -->
                                         <Border Grid.Column="6" CornerRadius="8" Padding="8,3"
