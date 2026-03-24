@@ -31,7 +31,9 @@ namespace CarRentals_MVVM.Services
                 PricePerHour    = 40,
                 ImageUrl        = "https://i.imgur.com/gMFP5tP.jpeg",
                 AvailableColors = [ "White", "Gray" ],
-              
+        
+
+
             },
             new CarModel
             {
@@ -43,7 +45,9 @@ namespace CarRentals_MVVM.Services
                 PricePerHour    = 75,
                 ImageUrl        = "https://i.imgur.com/vgEvOtG.jpeg",
                 AvailableColors = [ "White" ],
-    
+                   
+
+
             },
             new CarModel
             {
@@ -55,7 +59,9 @@ namespace CarRentals_MVVM.Services
                 PricePerHour    = 35,
                 ImageUrl        = "https://i.imgur.com/adLesJ3.jpeg",
                 AvailableColors = [ "White", "Red", "Blue" ],
-                   
+              
+
+
             },
             new CarModel
             {
@@ -67,7 +73,9 @@ namespace CarRentals_MVVM.Services
                 PricePerHour    = 65,
                 ImageUrl        = "https://i.imgur.com/69GQ8YT.jpeg",
                 AvailableColors = [ "White" ],
-             
+               
+
+
             },
             new CarModel
             {
@@ -79,7 +87,9 @@ namespace CarRentals_MVVM.Services
                 PricePerHour    = 80,
                 ImageUrl        = "https://i.imgur.com/UN1XHVO.jpeg",
                 AvailableColors = [ "White", "Black" ],
-              
+                   
+
+
             },
             new CarModel
             {
@@ -91,9 +101,14 @@ namespace CarRentals_MVVM.Services
                 PricePerHour    = 55,
                 ImageUrl        = "https://i.imgur.com/iWOAwIV.jpeg",
                 AvailableColors = [ "White", "Black", "Blue" ],
-                   
+                 
+
+
             },
         };
+
+
+
 
         /// <summary>
         /// The master list of all rental transactions.
@@ -203,5 +218,7 @@ namespace CarRentals_MVVM.Services
         {
             Rentals.Add(rental);
         }
+
+       
     }
 }

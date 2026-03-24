@@ -412,15 +412,16 @@
                     </Border>
                     <Border Width="210" Height="130" CornerRadius="20"
          Margin="0,115,702,10" Grid.Row="2">
-                        <Button Command="{Binding FleetLogCommand}" Padding="0">
+                        <Button Command="{Binding TotalCarStatusCommand }" Padding="0">
                             <Button.Template>
                                 <ControlTemplate TargetType="Button">
                                     <ContentPresenter/>
                                 </ControlTemplate>
                             </Button.Template>
-                           
                         </Button>
                     </Border>
+
+
                 </Grid>
             </Grid>
         </Grid>

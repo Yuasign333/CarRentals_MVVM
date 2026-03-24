@@ -424,5 +424,8 @@ namespace CarRentals_MVVM.ViewModels
                 FilteredCars.Add(car);
             }
         }
+
+       
+
     }
 }

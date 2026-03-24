@@ -119,7 +119,7 @@
                                            FontSize="11" FontWeight="Bold" Foreground="#6B4FA8" Grid.ColumnSpan="2" Margin="115,0,5,0"/>
                                 <TextBlock Grid.Column="6" Text="Status"
                                            FontSize="11" FontWeight="Bold" Foreground="#6B4FA8" Margin="36,0,-36,0"/>
-
+                 
                             </Grid>
                         </Border>
 
@@ -191,7 +191,9 @@
                                                    VerticalAlignment="Center">
                                             <Run Text="$"/>
                                             <Run Text="{Binding PricePerHour, StringFormat='{}{0:F0}'}"/>
+                                                        
                                         </TextBlock>
+                                
 
 
 

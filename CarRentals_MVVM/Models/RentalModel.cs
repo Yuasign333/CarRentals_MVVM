@@ -28,6 +28,9 @@ namespace CarRentals_MVVM.Models
         private decimal _totalAmount;
         private DateTime _rentalDate = DateTime.Now;
 
+
+      
+
         // ── Public properties with change notification ─────────────────────────
 
         /// <summary>

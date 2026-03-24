@@ -56,8 +56,7 @@ namespace CarRentals_MVVM.ViewModels
             {
                 Cars.Add(car);
             }
-   
-          
+
+        }
         }
     }
-}

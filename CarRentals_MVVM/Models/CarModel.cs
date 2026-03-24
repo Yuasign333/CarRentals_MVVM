@@ -1,4 +1,5 @@
-﻿using CarRentals_MVVM.ViewModels;
+﻿using CarRentals_MVVM.Services;
+using CarRentals_MVVM.ViewModels;
 
 namespace CarRentals_MVVM.Models
 {
@@ -13,6 +14,7 @@ namespace CarRentals_MVVM.Models
         // ── Private backing fields ─────────────────────────────────────────────
 
         private string _carId = string.Empty;
+
         private string _name = string.Empty;
         private string _category = string.Empty;
         private string _fuelType = string.Empty;
@@ -20,6 +22,19 @@ namespace CarRentals_MVVM.Models
         private decimal _pricePerHour;
         private string _imageUrl = string.Empty;
         private string[] _availableColors = [];
+
+        private bool _premiumCarBadge => PricePerHour > 70;
+
+        public bool PremiumCarBadge
+        {
+            get => _premiumCarBadge;
+            
+        }
+
+
+
+
+
 
 
         // ── Public properties with change notification ─────────────────────────

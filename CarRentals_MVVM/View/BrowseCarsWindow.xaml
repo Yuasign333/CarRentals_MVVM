@@ -243,6 +243,13 @@
                                                     <TextBlock Text="{Binding Status}"
                                                                FontSize="10" Foreground="#2E7D52"/>
                                                 </Border>
+                                                <Border CornerRadius="8" Padding="7,3" Background="#FFF3E0"  Margin="5,0,0,0"
+                                               Visibility="{Binding PremiumCarBadge, 
+                     Converter={StaticResource BoolToVisibility}}">
+                                                    <TextBlock Text="🔥 Premium" FontSize="10" Foreground="#E65100" Margin="0,0,5,0"/>
+                                                </Border>
+
+
                                             </StackPanel>
                                             <StackPanel Orientation="Horizontal">
                                                 <TextBlock FontSize="15" FontWeight="Bold" Foreground="#8A2BE2">

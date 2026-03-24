@@ -116,7 +116,6 @@ namespace CarRentals_MVVM.ViewModels
         /// <summary>Prompts for confirmation then logs out to ChooseRole.</summary>
         public ICommand LogoutCommand { get; }
 
-       
 
         /// <summary>
         /// Initializes the Admin Dashboard with user info and all navigation commands.
@@ -163,7 +162,9 @@ namespace CarRentals_MVVM.ViewModels
                 NavigationService.Navigate(new View.RevenueWindow(_userId));
             });
 
-          
+           
+
+
 
             // Logout — ask for confirmation before returning to role selection
             LogoutCommand = new RelayCommand(_ =>

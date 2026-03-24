@@ -370,18 +370,31 @@ namespace CarRentals_MVVM.ViewModels
                 }
                 else
                 {
-                    MessageBox.Show("Are you sure you want to delete the selected car?",
-                        "Confirm Deletion",
-                        MessageBoxButton.YesNo,
-                        MessageBoxImage.Question);
+                    var result = MessageBox.Show("Are you sure you want to delete the selected car?",
+                 "Confirm Deletion",
+                 MessageBoxButton.YesNo,
+                 MessageBoxImage.Question);
 
-                    // Remove from both the data store and the visible table list
-                    CarDataService.Cars.Remove(SelectedCar);
-                    CarList.Remove(SelectedCar);
-
+                    if (result == MessageBoxResult.Yes)
+                    {
+                        CarDataService.Cars.Remove(SelectedCar);
+                        CarList.Remove(SelectedCar);
+                        ExecuteClear();
+                    }
+                    else
+                    {
+                        // Inform the user that deletion was cancelled
+                        MessageBox.Show(
+                            "Car deletion cancelled.",
+                            "Cancelled",
+                            MessageBoxButton.OK,
+                            MessageBoxImage.Information
+                        );
+                    }
+                        // Reset form after deletion
+                        ExecuteClear();
                 }
-                // Reset form after deletion
-                ExecuteClear();
+                    
             });
 
             // Clear command — reset the form without saving or deleting
