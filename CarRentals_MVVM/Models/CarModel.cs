@@ -1,4 +1,4 @@
-﻿using CarRentals_MVVM.Services;
+using CarRentals_MVVM.Services;
 using CarRentals_MVVM.ViewModels;
 
 namespace CarRentals_MVVM.Models
@@ -22,20 +22,9 @@ namespace CarRentals_MVVM.Models
         private decimal _pricePerHour;
         private string _imageUrl = string.Empty;
         private string[] _availableColors = [];
-
         private bool _premiumCarBadge => PricePerHour > 70;
 
-        public bool PremiumCarBadge
-        {
-            get => _premiumCarBadge;
-            
-        }
-
-
-
-
-
-
+      
 
         // ── Public properties with change notification ─────────────────────────
 
@@ -176,5 +165,17 @@ namespace CarRentals_MVVM.Models
                 }
             }
         }
+        /// <summary>
+        ///  Premium badge is shown for cars with PricePerHour > $70.
+        /// </summary
+
+        public bool PremiumCarBadge
+        {
+            get => _premiumCarBadge;
+
+        }
+
+
+
     }
 }
