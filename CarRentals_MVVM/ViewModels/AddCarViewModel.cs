@@ -207,11 +207,13 @@ namespace CarRentals_MVVM.ViewModels
             _userId = userId;
             UserLabel = $"Agent: {userId}";
 
-            // Load all existing cars into the observable list for the table
-            foreach (var car in CarDataService.Cars)
+
+  
+            foreach (var car in CarDataService.GetAll())
             {
                 CarList.Add(car);
             }
+
 
             // Navigate back to the admin dashboard
             BackCommand = new RelayCommand(_ =>

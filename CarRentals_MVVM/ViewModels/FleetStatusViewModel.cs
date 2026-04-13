@@ -58,5 +58,5 @@ namespace CarRentals_MVVM.ViewModels
             }
 
         }
-        }
     }
+}

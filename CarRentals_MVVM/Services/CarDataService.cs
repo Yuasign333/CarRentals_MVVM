@@ -1,5 +1,7 @@
 ﻿using System.Collections.Generic;
+using System.Windows;
 using CarRentals_MVVM.Models;
+using Microsoft.Data.SqlClient;
 
 namespace CarRentals_MVVM.Services
 {
@@ -21,91 +23,93 @@ namespace CarRentals_MVVM.Services
         /// </summary>
         public static List<CarModel> Cars { get; } = new()
         {
-            new CarModel
-            {
-                CarId           = "C001",
-                Name            = "Toyota Camry",
-                Category        = "Sedan",
-                FuelType        = "Standard Engine",
-                Status          = "Available",
-                PricePerHour    = 40,
-                ImageUrl        = "https://i.imgur.com/gMFP5tP.jpeg",
-                AvailableColors = [ "White", "Gray" ],
-        
+            //new CarModel
+            //{
+            //    CarId           = "C001",
+            //    Name            = "Toyota Camry",
+            //    Category        = "Sedan",
+            //    FuelType        = "Standard Engine",
+            //    Status          = "Available",
+            //    PricePerHour    = 40,
+            //    ImageUrl        = "https://i.imgur.com/gMFP5tP.jpeg",
+            //    AvailableColors = [ "White", "Gray" ],
 
 
-            },
-            new CarModel
-            {
-                CarId           = "C002",
-                Name            = "Ford Explorer",
-                Category        = "SUV",
-                FuelType        = "Standard Engine",
-                Status          = "Available",
-                PricePerHour    = 75,
-                ImageUrl        = "https://i.imgur.com/vgEvOtG.jpeg",
-                AvailableColors = [ "White" ],
-                   
+
+            //},
+            //new CarModel
+            //{
+            //    CarId           = "C002",
+            //    Name            = "Ford Explorer",
+            //    Category        = "SUV",
+            //    FuelType        = "Standard Engine",
+            //    Status          = "Available",
+            //    PricePerHour    = 75,
+            //    ImageUrl        = "https://i.imgur.com/vgEvOtG.jpeg",
+            //    AvailableColors = [ "White" ],
 
 
-            },
-            new CarModel
-            {
-                CarId           = "C003",
-                Name            = "Honda Civic",
-                Category        = "Sedan",
-                FuelType        = "Standard Engine",
-                Status          = "Available",
-                PricePerHour    = 35,
-                ImageUrl        = "https://i.imgur.com/adLesJ3.jpeg",
-                AvailableColors = [ "White", "Red", "Blue" ],
-              
+
+            //},
+            //new CarModel
+            //{
+            //    CarId           = "C003",
+            //    Name            = "Honda Civic",
+            //    Category        = "Sedan",
+            //    FuelType        = "Standard Engine",
+            //    Status          = "Available",
+            //    PricePerHour    = 35,
+            //    ImageUrl        = "https://i.imgur.com/adLesJ3.jpeg",
+            //    AvailableColors = [ "White", "Red", "Blue" ],
 
 
-            },
-            new CarModel
-            {
-                CarId           = "C004",
-                Name            = "Tesla Model 3",
-                Category        = "Sedan",
-                FuelType        = "EV",
-                Status          = "Available",
-                PricePerHour    = 65,
-                ImageUrl        = "https://i.imgur.com/69GQ8YT.jpeg",
-                AvailableColors = [ "White" ],
-               
+
+            //},
+            //new CarModel
+            //{
+            //    CarId           = "C004",
+            //    Name            = "Tesla Model 3",
+            //    Category        = "Sedan",
+            //    FuelType        = "EV",
+            //    Status          = "Available",
+            //    PricePerHour    = 65,
+            //    ImageUrl        = "https://i.imgur.com/69GQ8YT.jpeg",
+            //    AvailableColors = [ "White" ],
 
 
-            },
-            new CarModel
-            {
-                CarId           = "C005",
-                Name            = "Toyota HiAce",
-                Category        = "Van",
-                FuelType        = "Standard Engine",
-                Status          = "Available",
-                PricePerHour    = 80,
-                ImageUrl        = "https://i.imgur.com/UN1XHVO.jpeg",
-                AvailableColors = [ "White", "Black" ],
-                   
+
+            //},
+            //new CarModel
+            //{
+            //    CarId           = "C005",
+            //    Name            = "Toyota HiAce",
+            //    Category        = "Van",
+            //    FuelType        = "Standard Engine",
+            //    Status          = "Available",
+            //    PricePerHour    = 80,
+            //    ImageUrl        = "https://i.imgur.com/UN1XHVO.jpeg",
+            //    AvailableColors = [ "White", "Black" ],
 
 
-            },
-            new CarModel
-            {
-                CarId           = "C006",
-                Name            = "Hyundai Tucson",
-                Category        = "SUV",
-                FuelType        = "Standard Engine",
-                Status          = "Maintenance",
-                PricePerHour    = 55,
-                ImageUrl        = "https://i.imgur.com/iWOAwIV.jpeg",
-                AvailableColors = [ "White", "Black", "Blue" ],
-                 
+
+            //},
+            //new CarModel
+            //{
+            //    CarId           = "C006",
+            //    Name            = "Hyundai Tucson",
+            //    Category        = "SUV",
+            //    FuelType        = "Standard Engine",
+            //    Status          = "Maintenance",
+            //    PricePerHour    = 55,
+            //    ImageUrl        = "https://i.imgur.com/iWOAwIV.jpeg",
+            //    AvailableColors = [ "White", "Black", "Blue" ],
 
 
-            },
+
+            //},
         };
+
+
 
 
 
@@ -124,8 +128,57 @@ namespace CarRentals_MVVM.Services
         /// </summary>
         public static List<CarModel> GetAll()
         {
-            return new List<CarModel>(Cars);
+            var cars = new List<CarModel>();
+
+
+            string connectionString = @"Server=.\MSSQLSERVER01;Database=RENTAL_REVS_DATABASE;User Id=sa;Password=ccl2;TrustServerCertificate=True;";
+
+            // 1. Define the SQL query
+            string query = "SELECT * FROM Cars";
+
+            try
+            {
+                using (SqlConnection connection = new SqlConnection(connectionString))
+                {
+
+
+                    connection.Open();
+                    using (SqlCommand command = new SqlCommand(query, connection))
+                    {
+                        using (SqlDataReader reader = command.ExecuteReader())
+                        {
+                            while (reader.Read())
+                            {
+                                var car = new CarModel
+                                {
+                                    CarId = reader["CarId"].ToString() ?? "",
+                                    Name = reader["Name"].ToString() ?? "",
+                                    Category = reader["Category"].ToString() ?? "",
+                                    FuelType = reader["FuelType"].ToString() ?? "",
+                                    Status = reader["Status"].ToString() ?? "",
+                                    PricePerHour = Convert.ToDecimal(reader["PricePerHour"]) ,
+                                    ImageUrl = reader["ImageUrl"].ToString() ?? "",
+                                    AvailableColors = (reader["AvailableColors"] == DBNull.Value ? ""  // This is the string-to-array converter inside the method where it belongs
+                                   : reader["AvailableColors"].ToString())
+                                   ?.Split(new[] { ", " }, StringSplitOptions.RemoveEmptyEntries)
+                                  ?? Array.Empty<string>()
+                                };
+                                cars.Add(car);
+                            }
+                        }
+                    }
+                }
+            }
+            catch (Exception ex)
+            {            
+            
+                MessageBox.Show("Database connection failed: " + ex.Message);
+            
+            }
+
+            return cars;
         }
+
 
         /// <summary>
         /// Returns only cars with Status = "Available".
@@ -133,18 +186,22 @@ namespace CarRentals_MVVM.Services
         /// </summary>
         public static List<CarModel> GetAvailable()
         {
-            var result = new List<CarModel>();
+            // 1. Get the fresh list from SQL
+            List<CarModel> allCars = GetAll();
+            List<CarModel> availableCars = new List<CarModel>();
 
-            foreach (var car in Cars)
+            // 2. Loop through the database results
+            foreach (var car in allCars)
             {
                 if (car.Status == "Available")
                 {
-                    result.Add(car);
+                    availableCars.Add(car);
                 }
             }
 
-            return result;
+            return availableCars;
         }
+
 
         /// <summary>
         /// Returns all rentals that belong to the given customer ID.
@@ -173,17 +230,20 @@ namespace CarRentals_MVVM.Services
         /// <param name="carId">The car ID to search for (e.g. "C003").</param>
         public static CarModel? GetById(string carId)
         {
-            foreach (var car in Cars)
+            // 1. Get the fresh list from SQL
+            List<CarModel> allCars = GetAll();
+
+            // 2. Search for the specific ID
+            foreach (var car in allCars)
             {
                 if (car.CarId == carId)
                 {
-                    return car;
+                    return car; // Found it!
                 }
             }
 
-            return null;
+            return null; // Not found in the database
         }
-
         /// <summary>
         /// Adds a new car to the fleet.
         /// Called by AddCarViewModel.SaveCommand after validation passes.
@@ -219,6 +279,6 @@ namespace CarRentals_MVVM.Services
             Rentals.Add(rental);
         }
 
-       
+        
     }
 }
