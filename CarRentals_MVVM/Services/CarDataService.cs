@@ -126,28 +126,26 @@ namespace CarRentals_MVVM.Services
         /// Returns a copy of all cars in the fleet.
         /// Used by FleetStatusWindow and BrowseCarsViewModel to display the full list.
         /// </summary>
-        public static List<CarModel> GetAll()
+        public static async Task<List<CarModel>> GetAll()
         {
             var cars = new List<CarModel>();
 
-
             string connectionString = @"Server=.\MSSQLSERVER01;Database=RENTAL_REVS_DATABASE;User Id=sa;Password=ccl2;TrustServerCertificate=True;";
-
-            // 1. Define the SQL query
             string query = "SELECT * FROM Cars";
 
             try
             {
+                // Use 'await' on the connection open and the reader execution
                 using (SqlConnection connection = new SqlConnection(connectionString))
                 {
+                    await connection.OpenAsync(); // Non-blocking open
 
-
-                    connection.Open();
                     using (SqlCommand command = new SqlCommand(query, connection))
                     {
-                        using (SqlDataReader reader = command.ExecuteReader())
+                        using (SqlDataReader reader = await command.ExecuteReaderAsync()) // Non-blocking execute
                         {
-                            while (reader.Read())
+                            // Use ReadAsync to keep the loop asynchronous
+                            while (await reader.ReadAsync())
                             {
                                 var car = new CarModel
                                 {
@@ -156,12 +154,12 @@ namespace CarRentals_MVVM.Services
                                     Category = reader["Category"].ToString() ?? "",
                                     FuelType = reader["FuelType"].ToString() ?? "",
                                     Status = reader["Status"].ToString() ?? "",
-                                    PricePerHour = Convert.ToDecimal(reader["PricePerHour"]) ,
+                                    PricePerHour = Convert.ToDecimal(reader["PricePerHour"]),
                                     ImageUrl = reader["ImageUrl"].ToString() ?? "",
-                                    AvailableColors = (reader["AvailableColors"] == DBNull.Value ? ""  // This is the string-to-array converter inside the method where it belongs
-                                   : reader["AvailableColors"].ToString())
-                                   ?.Split(new[] { ", " }, StringSplitOptions.RemoveEmptyEntries)
-                                  ?? Array.Empty<string>()
+                                    AvailableColors = (reader["AvailableColors"] == DBNull.Value ? ""
+                                        : reader["AvailableColors"].ToString())
+                                        ?.Split(new[] { ", " }, StringSplitOptions.RemoveEmptyEntries)
+                                        ?? Array.Empty<string>()
                                 };
                                 cars.Add(car);
                             }
@@ -170,27 +168,24 @@ namespace CarRentals_MVVM.Services
                 }
             }
             catch (Exception ex)
-            {            
-            
+            {
                 MessageBox.Show("Database connection failed: " + ex.Message);
-            
             }
 
             return cars;
         }
 
-
         /// <summary>
         /// Returns only cars with Status = "Available".
         /// Reserved for future use — BrowseCarsViewModel filters directly using LINQ.
         /// </summary>
-        public static List<CarModel> GetAvailable()
+
+        public static async Task<List<CarModel>> GetAvailable()
         {
-            // 1. Get the fresh list from SQL
-            List<CarModel> allCars = GetAll();
+            // Await the task to get the actual list
+            List<CarModel> allCars = await GetAll();
             List<CarModel> availableCars = new List<CarModel>();
 
-            // 2. Loop through the database results
             foreach (var car in allCars)
             {
                 if (car.Status == "Available")
@@ -198,7 +193,6 @@ namespace CarRentals_MVVM.Services
                     availableCars.Add(car);
                 }
             }
-
             return availableCars;
         }
 
@@ -228,22 +222,20 @@ namespace CarRentals_MVVM.Services
         /// Returns null if no match is found.
         /// </summary>
         /// <param name="carId">The car ID to search for (e.g. "C003").</param>
-        public static CarModel? GetById(string carId)
+        public static async Task<CarModel?> GetById(string carId)
         {
-            // 1. Get the fresh list from SQL
-            List<CarModel> allCars = GetAll();
+            List<CarModel> allCars = await GetAll();
 
-            // 2. Search for the specific ID
             foreach (var car in allCars)
             {
                 if (car.CarId == carId)
                 {
-                    return car; // Found it!
+                    return car;
                 }
             }
-
-            return null; // Not found in the database
+            return null;
         }
+
         /// <summary>
         /// Adds a new car to the fleet.
         /// Called by AddCarViewModel.SaveCommand after validation passes.
@@ -259,9 +251,9 @@ namespace CarRentals_MVVM.Services
         /// Called by AddCarViewModel.DeleteCommand when the admin confirms deletion.
         /// </summary>
         /// <param name="carId">The ID of the car to remove.</param>
-        public static void RemoveCar(string carId)
+        public static async void RemoveCar(string carId)
         {
-            var car = GetById(carId);
+            var car = await GetById(carId);
 
             if (car != null)
             {

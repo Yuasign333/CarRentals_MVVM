@@ -202,17 +202,27 @@ namespace CarRentals_MVVM.ViewModels
         /// Loads the existing car list and sets up all commands.
         /// </summary>
         /// <param name="userId">The logged-in admin's user ID.</param>
-        public AddCarViewModel(string userId)
+        public  AddCarViewModel(string userId)
         {
+
             _userId = userId;
             UserLabel = $"Agent: {userId}";
 
-
-  
-            foreach (var car in CarDataService.GetAll())
+            Task.Run(async () =>
             {
-                CarList.Add(car);
-            }
+                
+                var allCars = await CarDataService.GetAll();
+
+                // 2. Use the full path to the Dispatcher to update the UI
+                System.Windows.Application.Current.Dispatcher.Invoke(() =>
+                {
+                    CarList.Clear();
+                    foreach (var car in allCars)
+                    {
+                        CarList.Add(car);
+                    }
+                });
+            });
 
 
             // Navigate back to the admin dashboard

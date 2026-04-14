@@ -45,18 +45,26 @@ namespace CarRentals_MVVM.ViewModels
             _userId = userId;
             UserLabel = $"Agent: {userId}";
 
-            // Navigate back to the admin dashboard
             BackCommand = new RelayCommand(_ =>
             {
                 NavigationService.Navigate(new View.AdminDashboard(_userId));
             });
 
-            // Load all cars from the data service into the observable collection
-            foreach (var car in CarDataService.GetAll())
+            // We start a background task so we can use 'await' without freezing the UI
+            Task.Run(async () =>
             {
-                Cars.Add(car);
-            }
+                // 1. Await the data from the database
+                var allCars = await CarDataService.GetAll();
 
+                System.Windows.Application.Current.Dispatcher.Invoke(() =>
+                {
+                    Cars.Clear();
+                    foreach (var car in allCars)
+                    {
+                        Cars.Add(car);
+                    }
+                });
+            });
         }
     }
 }

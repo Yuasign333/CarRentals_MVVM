@@ -397,11 +397,15 @@ namespace CarRentals_MVVM.ViewModels
         /// Always excludes Rented and Maintenance cars — customers only see Available ones.
         /// Called automatically whenever SelectedCategory or SelectedFuel changes.
         /// </summary>
-        private void ApplyFilter()
+        private async void ApplyFilter()
         {
             FilteredCars.Clear();
 
-            var query = CarDataService.GetAll().AsEnumerable();
+          
+            var allCars = await CarDataService.GetAll();
+
+          
+            var query = allCars.AsEnumerable();
 
             // Customers should only see Available cars — Rented and Maintenance are hidden
             query = query.Where(c => c.Status == "Available");

@@ -102,7 +102,7 @@ namespace CarRentals_MVVM.ViewModels
         /// This is the only acceptable use of a UI element in ViewModel —
         /// PasswordBox cannot be bound directly due to security restrictions.
         /// </param>
-        private void ExecuteLogin(object? parameter)
+        private async void ExecuteLogin(object? parameter)
         {
             // Trusted_Connection=True replacement on user id and pasword if using laptop
 
@@ -142,9 +142,9 @@ namespace CarRentals_MVVM.ViewModels
                         //prevent injection attacks
                         command.Parameters.AddWithValue("@username", CurrentUser.UserID);
                         command.Parameters.AddWithValue("@password", CurrentUser.Password);
-                        connection.Open();
+                        await connection.OpenAsync();
 
-                        using (SqlDataReader reader = command.ExecuteReader())
+                        using (SqlDataReader reader =  await command.ExecuteReaderAsync())
                         {
                             if (reader.HasRows)
                             {
