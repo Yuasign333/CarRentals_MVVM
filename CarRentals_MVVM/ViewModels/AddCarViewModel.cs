@@ -45,6 +45,10 @@ namespace CarRentals_MVVM.ViewModels
         /// so the admin can see the car's current data.
         /// Bound to the ListView SelectedItem in AddCarWindow.xaml.
         /// </summary>
+        /// 
+
+        private readonly string[] _allowedColors = { "White", "Black", "Gray", "Blue", "Red" }; // only available colors of the company
+
         public CarModel? SelectedCar
         {
             get => _selectedCar;
@@ -62,6 +66,12 @@ namespace CarRentals_MVVM.ViewModels
                     NewPricePerHour = _selectedCar.PricePerHour;
                     NewStatus = _selectedCar.Status;
                     NewImageUrl = _selectedCar.ImageUrl;
+
+
+                    // Convert the array to a comma-separated string for the TextBox
+                    NewAvailableColors = _selectedCar.AvailableColors != null
+                        ? string.Join(", ", _selectedCar.AvailableColors)
+                        : string.Empty;
                 }
             }
         }
@@ -158,23 +168,26 @@ namespace CarRentals_MVVM.ViewModels
             }
         }
 
-        private string _newImageUrl = string.Empty;
+        private string _newAvailableColors = string.Empty; // Fixed!
+        public string NewAvailableColors
+        {
+            get => _newAvailableColors;
+            set
+            {
+                _newAvailableColors = value; OnPropertyChanged(nameof(NewAvailableColors));
+            }
+        }
 
-        /// <summary>
-        /// An optional direct image URL for the car (e.g. an Imgur link).
-        /// If left empty, the car will display a placeholder gradient in the browse view.
-        /// Bound to the Image URL TextBox in AddCarWindow.xaml.
-        /// </summary>
+        private string _newImageUrl = string.Empty; // Fixed!
+
         public string NewImageUrl
         {
             get => _newImageUrl;
             set
             {
-                _newImageUrl = value;
-                OnPropertyChanged();
+                _newImageUrl = value; OnPropertyChanged(nameof(NewImageUrl));
             }
         }
-
         // ── Commands ───────────────────────────────────────────────────────────
 
         /// <summary>Navigates back to AdminDashboard.</summary>
@@ -191,6 +204,12 @@ namespace CarRentals_MVVM.ViewModels
         /// Requires a car to be selected in the table first.
         /// </summary>
         public ICommand DeleteCommand { get; }
+
+        /// <summary>
+        /// Updates Car Information 
+        /// </summary>
+
+        public ICommand UpdateCommand { get; }
 
         /// <summary>
         /// Resets all form fields and clears the table selection.
@@ -210,10 +229,8 @@ namespace CarRentals_MVVM.ViewModels
 
             Task.Run(async () =>
             {
-                
                 var allCars = await CarDataService.GetAll();
 
-                // 2. Use the full path to the Dispatcher to update the UI
                 System.Windows.Application.Current.Dispatcher.Invoke(() =>
                 {
                     CarList.Clear();
@@ -221,6 +238,9 @@ namespace CarRentals_MVVM.ViewModels
                     {
                         CarList.Add(car);
                     }
+
+                    // CRITICAL: Tell the UI to refresh the ID display now that cars are loaded
+                    OnPropertyChanged(nameof(NextCarId));
                 });
             });
 
@@ -231,182 +251,217 @@ namespace CarRentals_MVVM.ViewModels
                 NavigationService.Navigate(new View.AdminDashboard(_userId));
             });
 
-            // Save command — validate inputs then create and store a new car
-            SaveCommand = new RelayCommand(_ =>
+
+            // Save command — validate inputs then create and store a new car in Database
+            // Save command — validate inputs then create and store a new car in Database
+            SaveCommand = new RelayCommand(async _ =>
             {
-                // Car name is required
-                if (string.IsNullOrWhiteSpace(NewName))
+                try
                 {
-                    MessageBox.Show(
-                        "Car Name is required.",
-                        "Validation",
-                        MessageBoxButton.OK,
-                        MessageBoxImage.Warning
-                    );
+                    // 1. Basic Validations
+                    if (string.IsNullOrWhiteSpace(NewName))
+                    {
+                        MessageBox.Show("Please enter a car name.", "Validation", MessageBoxButton.OK, MessageBoxImage.Warning);
+                        return;
+                    }
+
+                    if (string.IsNullOrWhiteSpace(NewAvailableColors))
+                    {
+                        MessageBox.Show("Please enter at least one available color.", "Validation", MessageBoxButton.OK, MessageBoxImage.Warning);
+                        return;
+                    }
+
+                    // --- IDIOT PROOF 1: PREVENT DUPLICATE CAR NAMES ---
+                    bool carAlreadyExists = CarList.Any(c => c.Name != null && c.Name.Equals(NewName, StringComparison.OrdinalIgnoreCase));
+
+                    if (carAlreadyExists)
+                    {
+                        MessageBox.Show($"'{NewName}' is already in the system.\n\nIf you are trying to change the status or details of an existing car, please click 'Update' instead of 'Save'.",
+                                        "Duplicate Car Prevented", MessageBoxButton.OK, MessageBoxImage.Warning);
+                        return;
+                    }
+
+                    // Split the text by commas and clean up spaces (removed .Distinct() so we can catch their mistakes)
+                    var inputColors = NewAvailableColors.Split(new[] { ',' }, StringSplitOptions.RemoveEmptyEntries)
+                                                        .Select(c => c.Trim())
+                                                        .ToArray();
+
+                    // --- IDIOT PROOF 2: CATCH DUPLICATE COLORS & SHOW ERROR ---
+                    var duplicateColors = inputColors.GroupBy(c => c, StringComparer.OrdinalIgnoreCase)
+                                                     .Where(g => g.Count() > 1)
+                                                     .Select(g => g.Key)
+                                                     .ToList();
+
+                    if (duplicateColors.Any())
+                    {
+                        MessageBox.Show($"You entered the same color multiple times: {string.Join(", ", duplicateColors)}.\n\nPlease list each color only once.",
+                                        "Duplicate Colors Detected", MessageBoxButton.OK, MessageBoxImage.Warning);
+                        return; // Stops the save process
+                    }
+
+                    // Check if any typed colors are NOT in the allowed list
+                    var invalidColors = inputColors.Where(c => !_allowedColors.Contains(c, StringComparer.OrdinalIgnoreCase)).ToList();
+
+                    if (invalidColors.Any())
+                    {
+                        MessageBox.Show($"Invalid colors entered: {string.Join(", ", invalidColors)}\n\nAllowed colors are ONLY: White, Black, Gray, Blue, Red.",
+                                        "Invalid Colors", MessageBoxButton.OK, MessageBoxImage.Warning);
+                        return;
+                    }
+
+                    // Format colors nicely (e.g., "white" becomes "White")
+                    string[] finalColorsArray = inputColors.Select(c => char.ToUpper(c[0]) + c.Substring(1).ToLower()).ToArray();
+
+                    // 2. Build the new car object
+                    var newCar = new CarModel
+                    {
+                        CarId = GenerateNextId(),
+                        Name = NewName,
+                        Category = NewCategory,
+                        FuelType = NewFuelType,
+                        PricePerHour = NewPricePerHour,
+                        Status = NewStatus,
+                        ImageUrl = NewImageUrl,
+                        AvailableColors = finalColorsArray
+                    };
+
+                    // 3. Save to database 
+                    await CarDataService.AddCar(newCar);
+
+                    // 4. Add to the UI list
+                    CarList.Add(newCar);
+
+                    // 5. Clear form and show success
+                    ExecuteClear();
+                    MessageBox.Show("Car saved successfully.", "Success", MessageBoxButton.OK, MessageBoxImage.Information);
+                }
+                catch (System.Exception ex)
+                {
+                    MessageBox.Show($"Error saving car: {ex.Message}", "Database Error", MessageBoxButton.OK, MessageBoxImage.Error);
+                }
+            });
+
+
+            // Delete command — remove the selected car from the database and the UI
+            DeleteCommand = new RelayCommand(async _ =>
+            {
+                // 1. Check if a car is actually selected
+                if (SelectedCar == null)
+                {
+                    MessageBox.Show("Please select a car from the list to delete.", "No Selection", MessageBoxButton.OK, MessageBoxImage.Warning);
                     return;
                 }
 
-                // Check for duplicate car name (case-insensitive)
-                bool isDuplicate = false;
-
-                foreach (var car in CarDataService.Cars)
+                // 2. Business Logic: Prevent deleting cars that are in use
+                if (SelectedCar.Status == "Rented")
                 {
-                    if (car.Name.ToLower() == NewName.ToLower())
+                    MessageBox.Show("Cannot delete a car that is currently rented.", "Invalid Action", MessageBoxButton.OK, MessageBoxImage.Warning);
+                    return;
+                }
+
+                // 3. Confirm with the user
+                var result = MessageBox.Show($"Are you sure you want to permanently delete {SelectedCar.Name} (ID: {SelectedCar.CarId})?",
+                                             "Confirm Deletion", MessageBoxButton.YesNo, MessageBoxImage.Question);
+
+                if (result == MessageBoxResult.Yes)
+                {
+                    try
                     {
-                        isDuplicate = true;
-                        break;
+                        // 4. THE DATABASE PART: Delete from SQL first
+                        await CarDataService.DeleteCar(SelectedCar.CarId);
+
+                        // 5. THE UI PART: Only remove from list if DB deletion succeeded
+                        CarList.Remove(SelectedCar);
+
+                        // Clear the form fields
+                        ExecuteClear();
+
+                        MessageBox.Show("Car deleted successfully.", "Success", MessageBoxButton.OK, MessageBoxImage.Information);
+                    }
+                    catch (System.Exception ex)
+                    {
+                        MessageBox.Show($"Error deleting car: {ex.Message}", "Database Error", MessageBoxButton.OK, MessageBoxImage.Error);
                     }
                 }
+            });
 
-                if (isDuplicate)
+            UpdateCommand = new RelayCommand(async _ =>
+            {
+                if (SelectedCar == null)
                 {
-                    MessageBox.Show(
-                        $"A car named '{NewName}' already exists.",
-                        "Duplicate",
-                        MessageBoxButton.OK,
-                        MessageBoxImage.Warning
-                    );
+                    MessageBox.Show("Please select a car from the list to update.", "Selection Required");
                     return;
                 }
 
-                // Category is required
-                if (string.IsNullOrWhiteSpace(NewCategory))
+                if (string.IsNullOrWhiteSpace(NewAvailableColors))
                 {
-                    MessageBox.Show(
-                        "Please select a Category.",
-                        "Validation",
-                        MessageBoxButton.OK,
-                        MessageBoxImage.Warning
-                    );
+                    MessageBox.Show("Please enter at least one available color.", "Validation", MessageBoxButton.OK, MessageBoxImage.Warning);
                     return;
                 }
 
-                // Fuel type is required
-                if (string.IsNullOrWhiteSpace(NewFuelType))
+                // Split and Validate Colors (removed .Distinct())
+                var inputColors = NewAvailableColors.Split(new[] { ',' }, StringSplitOptions.RemoveEmptyEntries)
+                                                    .Select(c => c.Trim())
+                                                    .ToArray();
+
+                // --- CATCH DUPLICATE COLORS IN UPDATE ---
+                var duplicateColors = inputColors.GroupBy(c => c, StringComparer.OrdinalIgnoreCase)
+                                                 .Where(g => g.Count() > 1)
+                                                 .Select(g => g.Key)
+                                                 .ToList();
+
+                if (duplicateColors.Any())
                 {
-                    MessageBox.Show(
-                        "Please select a Fuel Type.",
-                        "Validation",
-                        MessageBoxButton.OK,
-                        MessageBoxImage.Warning
-                    );
+                    MessageBox.Show($"You entered the same color multiple times: {string.Join(", ", duplicateColors)}.\n\nPlease list each color only once.",
+                                    "Duplicate Colors Detected", MessageBoxButton.OK, MessageBoxImage.Warning);
+                    return; // Stops the update process
+                }
+
+                // Catch invalid colors
+                var invalidColors = inputColors.Where(c => !_allowedColors.Contains(c, StringComparer.OrdinalIgnoreCase)).ToList();
+                if (invalidColors.Any())
+                {
+                    MessageBox.Show($"Invalid colors entered: {string.Join(", ", invalidColors)}\n\nAllowed colors are ONLY: White, Black, Gray, Blue, Red.",
+                                    "Invalid Colors", MessageBoxButton.OK, MessageBoxImage.Warning);
                     return;
                 }
 
-                // Status is required
-                if (string.IsNullOrWhiteSpace(NewStatus))
-                {
-                    MessageBox.Show(
-                        "Please select a Status.",
-                        "Validation",
-                        MessageBoxButton.OK,
-                        MessageBoxImage.Warning
-                    );
-                    return;
-                }
+                string[] finalColorsArray = inputColors.Select(c => char.ToUpper(c[0]) + c.Substring(1).ToLower()).ToArray();
 
-                // Price must be greater than zero
-                if (NewPricePerHour <= 0)
+                // Map the form fields back to a temporary object
+                var updatedCar = new CarModel
                 {
-                    MessageBox.Show(
-                        "Price Per Hour must be greater than 0.",
-                        "Validation",
-                        MessageBoxButton.OK,
-                        MessageBoxImage.Warning
-                    );
-                    return;
-                }
-
-                // Build the new car object from the form data
-                var newCar = new CarModel
-                {
-                    CarId = GenerateNextId(),
+                    CarId = SelectedCar.CarId,
                     Name = NewName,
                     Category = NewCategory,
                     FuelType = NewFuelType,
                     PricePerHour = NewPricePerHour,
                     Status = NewStatus,
                     ImageUrl = NewImageUrl,
-
-                    // Default color options for all newly added cars
-                    AvailableColors = ["White", "Black", "Silver"]
+                    AvailableColors = finalColorsArray
                 };
 
-                // Add to both the data store and the visible table list
-                CarDataService.Cars.Add(newCar);
-                CarList.Add(newCar);
-
-                MessageBox.Show(
-                    $"Car added with ID: {newCar.CarId}",
-                    "Success",
-                    MessageBoxButton.OK,
-                    MessageBoxImage.Information
-                );
-
-                // Reset the form after successful save
-                ExecuteClear();
-            });
-
-            // Delete command — remove the selected car from the fleet
-            DeleteCommand = new RelayCommand(_ =>
-            {
-                if (SelectedCar == null)
+                try
                 {
-                    MessageBox.Show(
-                        "Please select a car to delete.",
-                        "No Selection",
-                        MessageBoxButton.OK,
-                        MessageBoxImage.Warning
-                    );
-                    return;
-                }
+                    // 1. Send the update to the database 
+                    await CarDataService.UpdateCar(updatedCar);
 
-                if (SelectedCar.Status == "Rented")
-                {
-                    MessageBox.Show(
-                        "Cannot delete a car that is currently rented.",
-                        "Invalid Action",
-                        MessageBoxButton.OK,
-                        MessageBoxImage.Warning
-                    );
-                    return;
-                }
-                else if (SelectedCar.Status == "Maintenance")
-                {
-                    MessageBox.Show(
-                        "Cannot delete a car that is currently under maintenance.",
-                        "Invalid Action",
-                        MessageBoxButton.OK,
-                        MessageBoxImage.Warning
-                    );
-                }
-                else
-                {
-                    var result = MessageBox.Show("Are you sure you want to delete the selected car?",
-                 "Confirm Deletion",
-                 MessageBoxButton.YesNo,
-                 MessageBoxImage.Question);
-
-                    if (result == MessageBoxResult.Yes)
+                    // 2. Update the UI list 
+                    var existingCar = CarList.FirstOrDefault(c => c.CarId == updatedCar.CarId);
+                    if (existingCar != null)
                     {
-                        CarDataService.Cars.Remove(SelectedCar);
-                        CarList.Remove(SelectedCar);
-                        ExecuteClear();
+                        int index = CarList.IndexOf(existingCar);
+                        CarList[index] = updatedCar;
                     }
-                    else
-                    {
-                        // Inform the user that deletion was cancelled
-                        MessageBox.Show(
-                            "Car deletion cancelled.",
-                            "Cancelled",
-                            MessageBoxButton.OK,
-                            MessageBoxImage.Information
-                        );
-                    }
-                        // Reset form after deletion
-                        ExecuteClear();
+
+                    // 3. Clear form and show success
+                    ExecuteClear();
+                    MessageBox.Show("Car updated successfully.", "Success", MessageBoxButton.OK, MessageBoxImage.Information);
                 }
-                    
+                catch (System.Exception ex)
+                {
+                    MessageBox.Show($"Error updating car: {ex.Message}", "Database Error", MessageBoxButton.OK, MessageBoxImage.Error);
+                }
             });
 
             // Clear command — reset the form without saving or deleting
@@ -432,24 +487,22 @@ namespace CarRentals_MVVM.ViewModels
         /// </summary>
         private string GenerateNextId()
         {
-            // If no cars exist yet, start from C001
-            if (!CarDataService.Cars.Any())
+            // Look at CarList (the one bound to your UI) instead of the Service
+            if (CarList == null || !CarList.Any())
             {
                 return "C001";
             }
 
-            // Find the highest numeric suffix among all existing car IDs
-            var maxNumber = CarDataService.Cars
+            // Find the highest numeric suffix among currently loaded cars
+            var maxNumber = CarList
                 .Select(c => c.CarId)
-                .Where(id => id.StartsWith("C") && id.Length > 1)
+                .Where(id => id != null && id.StartsWith("C") && id.Length > 1)
                 .Select(id => int.TryParse(id.Substring(1), out int number) ? number : 0)
                 .DefaultIfEmpty(0)
                 .Max();
 
-            // Return the next ID formatted as C followed by 3 digits (e.g. C007)
             return $"C{(maxNumber + 1):D3}";
         }
-
         /// <summary>
         /// Resets all form input fields and clears the table selection.
         /// Also refreshes NextCarId so the new auto-generated ID is shown.
@@ -463,6 +516,7 @@ namespace CarRentals_MVVM.ViewModels
             NewPricePerHour = 0;
             NewStatus = string.Empty;
             NewImageUrl = string.Empty;
+            NewAvailableColors = string.Empty;
             SelectedCar = null;
 
             // Refresh the auto-generated ID display after any list change

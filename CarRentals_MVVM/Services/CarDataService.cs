@@ -174,6 +174,113 @@ namespace CarRentals_MVVM.Services
 
             return cars;
         }
+        public static async Task AddCar(CarModel car)
+        {
+            string connectionString = @"Server=.\MSSQLSERVER01;Database=RENTAL_REVS_DATABASE;User Id=sa;Password=ccl2;TrustServerCertificate=True;";
+
+            // 1. ADD AvailableColors and @colors TO THE SQL QUERY
+            string query = "INSERT INTO Cars (CarId, Name, Category, FuelType, Status, PricePerHour, ImageUrl, AvailableColors) " +
+                           "VALUES (@id, @name, @cat, @fuel, @status, @price, @img, @colors)";
+            try
+            {
+                using (SqlConnection connection = new SqlConnection(connectionString))
+                {
+                    await connection.OpenAsync();
+
+                    using (SqlCommand cmd = new SqlCommand(query, connection))
+                    {
+                        cmd.Parameters.AddWithValue("@id", car.CarId);
+                        cmd.Parameters.AddWithValue("@name", car.Name);
+                        cmd.Parameters.AddWithValue("@cat", car.Category);
+                        cmd.Parameters.AddWithValue("@fuel", car.FuelType);
+                        cmd.Parameters.AddWithValue("@status", car.Status);
+                        cmd.Parameters.AddWithValue("@price", car.PricePerHour);
+                        cmd.Parameters.AddWithValue("@img", car.ImageUrl);
+
+                        // ADD THE MISSING PARAMETER HERE (converts array to comma string)
+                        cmd.Parameters.AddWithValue("@colors", string.Join(", ", car.AvailableColors));
+
+                        await cmd.ExecuteNonQueryAsync();
+                    }
+                }
+            }
+            catch (Exception ex)
+            {
+                MessageBox.Show("Database connection failed: " + ex.Message);
+            }
+        }
+        public static async Task DeleteCar(string carId)
+        {
+            string connectionString = @"Server=.\MSSQLSERVER01;Database=RENTAL_REVS_DATABASE;User Id=sa;Password=ccl2;TrustServerCertificate=True;";
+
+            // Make sure the table name matches your SQL database
+            string query = "DELETE FROM Cars WHERE CarId = @id";
+
+            try
+            {
+                using (SqlConnection connection = new SqlConnection(connectionString))
+                {
+                    await connection.OpenAsync();
+                    using (SqlCommand cmd = new SqlCommand(query, connection))
+                    {
+                        // Map your parameter
+                        cmd.Parameters.AddWithValue("@id", carId);
+
+                        // ExecuteNonQuery is for DELETE, INSERT, and UPDATE
+                        await cmd.ExecuteNonQueryAsync();
+                    }
+                }
+            }
+            catch (Exception ex) 
+            {
+                MessageBox.Show("Database connection failed: " + ex.Message);
+            }
+
+           
+        }
+
+        public static async Task UpdateCar(CarModel car)
+        {
+            string connectionString = @"Server=.\MSSQLSERVER01;Database=RENTAL_REVS_DATABASE;User Id=sa;Password=ccl2;TrustServerCertificate=True;";
+
+            // 1. ADD AvailableColors = @colors TO THE SQL QUERY
+            string query = @"UPDATE Cars 
+                     SET Name = @name, 
+                         Category = @cat, 
+                         FuelType = @fuel, 
+                         PricePerHour = @price, 
+                         Status = @status, 
+                         ImageUrl = @img,
+                         AvailableColors = @colors
+                     WHERE CarId = @id";
+
+            try
+            {
+                using (SqlConnection conn = new SqlConnection(connectionString))
+                {
+                    await conn.OpenAsync();
+                    using (SqlCommand cmd = new SqlCommand(query, conn))
+                    {
+                        cmd.Parameters.AddWithValue("@id", car.CarId);
+                        cmd.Parameters.AddWithValue("@name", car.Name);
+                        cmd.Parameters.AddWithValue("@cat", car.Category);
+                        cmd.Parameters.AddWithValue("@fuel", car.FuelType);
+                        cmd.Parameters.AddWithValue("@price", car.PricePerHour);
+                        cmd.Parameters.AddWithValue("@status", car.Status);
+                        cmd.Parameters.AddWithValue("@img", car.ImageUrl);
+
+                        // 2. ADD THE MISSING PARAMETER HERE (converts array to comma string)
+                        cmd.Parameters.AddWithValue("@colors", string.Join(", ", car.AvailableColors));
+
+                        await cmd.ExecuteNonQueryAsync();
+                    }
+                }
+            }
+            catch (Exception ex)
+            {
+                MessageBox.Show("Database connection failed: " + ex.Message);
+            }
+        }
 
         /// <summary>
         /// Returns only cars with Status = "Available".
@@ -241,10 +348,10 @@ namespace CarRentals_MVVM.Services
         /// Called by AddCarViewModel.SaveCommand after validation passes.
         /// </summary>
         /// <param name="car">The CarModel to add.</param>
-        public static void AddCar(CarModel car)
-        {
-            Cars.Add(car);
-        }
+        //public static void AddCar(CarModel car)
+        //{
+        //    Cars.Add(car);
+        //}
 
         /// <summary>
         /// Removes a car from the fleet by its CarId.
