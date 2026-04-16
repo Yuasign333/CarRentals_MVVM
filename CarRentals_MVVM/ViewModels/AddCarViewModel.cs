@@ -345,21 +345,28 @@ namespace CarRentals_MVVM.ViewModels
             // Delete command — remove the selected car from the database and the UI
             DeleteCommand = new RelayCommand(async _ =>
             {
-                // 1. Check if a car is actually selected
+                //  Check if a car is actually selected
                 if (SelectedCar == null)
                 {
                     MessageBox.Show("Please select a car from the list to delete.", "No Selection", MessageBoxButton.OK, MessageBoxImage.Warning);
                     return;
                 }
 
-                // 2. Business Logic: Prevent deleting cars that are in use
+                // Business Logic: Prevent deleting cars that are in use
                 if (SelectedCar.Status == "Rented")
                 {
                     MessageBox.Show("Cannot delete a car that is currently rented.", "Invalid Action", MessageBoxButton.OK, MessageBoxImage.Warning);
                     return;
                 }
 
-                // 3. Confirm with the user
+                if (SelectedCar.Status == "Maintenance")
+                {
+                    MessageBox.Show("Cannot delete a car that is currently under maintenance.", "Invalid Action", MessageBoxButton.OK, MessageBoxImage.Warning);
+                    return;
+
+                }
+
+                // Confirm with the user
                 var result = MessageBox.Show($"Are you sure you want to permanently delete {SelectedCar.Name} (ID: {SelectedCar.CarId})?",
                                              "Confirm Deletion", MessageBoxButton.YesNo, MessageBoxImage.Question);
 
