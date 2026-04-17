@@ -202,6 +202,8 @@ namespace CarRentals_MVVM.ViewModels
         /// Loads the existing car list and sets up all commands.
         /// </summary>
         /// <param name="userId">The logged-in admin's user ID.</param>
+        /// 
+   
         public AddCarViewModel(string userId)
         {
             _userId = userId;
@@ -410,6 +412,7 @@ namespace CarRentals_MVVM.ViewModels
                     MessageBoxImage.Information
                 );
             });
+           
         }
 
         /// <summary>

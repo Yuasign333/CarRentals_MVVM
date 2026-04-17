@@ -122,6 +122,9 @@
                                            FontSize="11" FontWeight="Bold" Foreground="#6B4FA8" Grid.ColumnSpan="2" Margin="75,0,5,0"/>
                                 <TextBlock Grid.Column="4" Text="Status"
                                            FontSize="11" FontWeight="Bold" Foreground="#6B4FA8" Margin="27,0,-27,0"/>
+
+                                <TextBlock Grid.Column="3" Text="Speed"
+             FontSize="11" FontWeight="Bold" Foreground="#6B4FA8" Grid.ColumnSpan="2" Margin="52,0,28,0"/>
                             </Grid>
                         </Border>
 
@@ -169,11 +172,14 @@
                                         <TextBlock Grid.Column="2" Text="{Binding Category}"
                                                    FontSize="12" Foreground="#6B5A9E"
                                                    TextTrimming="CharacterEllipsis"/>
-                                        <TextBlock Grid.Column="3" FontSize="12" Foreground="#8A2BE2"
-                                                   FontWeight="SemiBold">
+                                        <TextBlock Grid.Column="2" FontSize="12" Foreground="#8A2BE2"
+                                                   FontWeight="SemiBold" Grid.ColumnSpan="2" Margin="70,0,10,0">
                                             <Run Text="$"/>
                                             <Run Text="{Binding PricePerHour, StringFormat='{}{0:F0}'}"/>
                                         </TextBlock>
+                                        <TextBlock Grid.Column="4" Text="{Binding CarSpeed}" Margin=" -20,0,0,0"
+             FontSize="12" Foreground="#6B5A9E"
+             TextTrimming="CharacterEllipsis"/>
 
                                         <!-- Status badge -->
                                         <Border Grid.Column="4" CornerRadius="8" Padding="8,3"

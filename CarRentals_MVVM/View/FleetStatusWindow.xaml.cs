@@ -23,5 +23,7 @@ namespace CarRentals_MVVM.View
             // Dedicated ViewModel for this window
             this.DataContext = new FleetStatusViewModel(userId);
         }
+
+        
     }
 }

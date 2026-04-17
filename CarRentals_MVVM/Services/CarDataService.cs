@@ -31,6 +31,7 @@ namespace CarRentals_MVVM.Services
                 PricePerHour    = 40,
                 ImageUrl        = "https://i.imgur.com/gMFP5tP.jpeg",
                 AvailableColors = [ "White", "Gray" ],
+                CarSpeed = 120,
         
 
 
@@ -45,7 +46,9 @@ namespace CarRentals_MVVM.Services
                 PricePerHour    = 75,
                 ImageUrl        = "https://i.imgur.com/vgEvOtG.jpeg",
                 AvailableColors = [ "White" ],
-                   
+                  CarSpeed = 80,
+
+
 
 
             },
@@ -59,7 +62,9 @@ namespace CarRentals_MVVM.Services
                 PricePerHour    = 35,
                 ImageUrl        = "https://i.imgur.com/adLesJ3.jpeg",
                 AvailableColors = [ "White", "Red", "Blue" ],
-              
+                   CarSpeed = 100,
+
+
 
 
             },
@@ -73,7 +78,9 @@ namespace CarRentals_MVVM.Services
                 PricePerHour    = 65,
                 ImageUrl        = "https://i.imgur.com/69GQ8YT.jpeg",
                 AvailableColors = [ "White" ],
-               
+                   CarSpeed = 90,
+
+
 
 
             },
@@ -87,7 +94,9 @@ namespace CarRentals_MVVM.Services
                 PricePerHour    = 80,
                 ImageUrl        = "https://i.imgur.com/UN1XHVO.jpeg",
                 AvailableColors = [ "White", "Black" ],
-                   
+                  CarSpeed = 120,
+
+
 
 
             },
@@ -101,7 +110,8 @@ namespace CarRentals_MVVM.Services
                 PricePerHour    = 55,
                 ImageUrl        = "https://i.imgur.com/iWOAwIV.jpeg",
                 AvailableColors = [ "White", "Black", "Blue" ],
-                 
+                  CarSpeed = 110
+
 
 
             },

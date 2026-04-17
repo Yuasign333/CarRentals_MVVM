@@ -29,9 +29,7 @@ namespace CarRentals_MVVM.Models
         private DateTime _rentalDate = DateTime.Now;
 
 
-      
-
-        // ── Public properties with change notification ─────────────────────────
+     
 
         /// <summary>
         /// Unique rental identifier (e.g. "R0001").

@@ -82,13 +82,17 @@
                         <DropShadowEffect Color="#C8B6FF" BlurRadius="32" ShadowDepth="0" Opacity="0.20"/>
                     </Border.Effect>
                     <Grid>
+                        <Grid.ColumnDefinitions>
+                            <ColumnDefinition Width="148*"/>
+                            <ColumnDefinition Width="95*"/>
+                        </Grid.ColumnDefinitions>
                         <Grid.RowDefinitions>
                             <RowDefinition Height="Auto"/>
                             <RowDefinition Height="*"/>
                         </Grid.RowDefinitions>
 
                         <!-- Table header -->
-                        <Border Grid.Row="0" CornerRadius="22,22,0,0" Padding="20,16,20,14">
+                        <Border Grid.Row="0" CornerRadius="22,22,0,0" Padding="20,16,20,14" Grid.ColumnSpan="2">
                             <Border.Background>
                                 <LinearGradientBrush StartPoint="0,0" EndPoint="1,0">
                                     <GradientStop Color="#F0EBFF" Offset="0"/>
@@ -107,7 +111,7 @@
                                 </Grid.ColumnDefinitions>
                                 <TextBlock Grid.Column="0" Text=""
                                            FontSize="11" FontWeight="Bold" Foreground="#6B4FA8"/>
-                                <TextBlock Grid.Column="1" Text="ID"
+                                <TextBlock Grid.Column="1" Text="ID" Margin=" -35,0,0,0"
                                            FontSize="11" FontWeight="Bold" Foreground="#6B4FA8"/>
                                 <TextBlock Grid.Column="2" Text="Name"
                                            FontSize="11" FontWeight="Bold" Foreground="#6B4FA8"/>
@@ -119,16 +123,17 @@
                                            FontSize="11" FontWeight="Bold" Foreground="#6B4FA8" Grid.ColumnSpan="2" Margin="115,0,5,0"/>
                                 <TextBlock Grid.Column="6" Text="Status"
                                            FontSize="11" FontWeight="Bold" Foreground="#6B4FA8" Margin="36,0,-36,0"/>
-                 
+
                             </Grid>
                         </Border>
 
                         <!-- Car rows -->
                         <ListView Grid.Row="1"
                                   ItemsSource="{Binding Cars}"
+                                  SelectedItem="{Binding SelectedCar}"
                                   Background="Transparent"
                                   BorderThickness="0"
-                                  ScrollViewer.HorizontalScrollBarVisibility="Disabled">
+                                  ScrollViewer.HorizontalScrollBarVisibility="Disabled" Grid.ColumnSpan="2">
                             <ListView.ItemContainerStyle>
                                 <Style TargetType="ListViewItem">
                                     <Setter Property="HorizontalContentAlignment" Value="Stretch"/>
@@ -191,9 +196,9 @@
                                                    VerticalAlignment="Center">
                                             <Run Text="$"/>
                                             <Run Text="{Binding PricePerHour, StringFormat='{}{0:F0}'}"/>
-                                                        
+
                                         </TextBlock>
-                                
+
 
 
 
@@ -230,13 +235,19 @@
                                                 </TextBlock.Style>
                                             </TextBlock>
                                         </Border>
+
                                     </Grid>
                                 </DataTemplate>
+
                             </ListView.ItemTemplate>
                         </ListView>
+                   
+
                     </Grid>
                 </Border>
             </Grid>
+
         </Grid>
+
     </Viewbox>
 </Window>

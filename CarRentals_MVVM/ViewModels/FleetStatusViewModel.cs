@@ -1,4 +1,6 @@
 ﻿using System.Collections.ObjectModel;
+using System.Linq.Expressions;
+using System.Windows;
 using System.Windows.Input;
 using CarRentals_MVVM.Commands;
 using CarRentals_MVVM.Models;
@@ -36,6 +38,16 @@ namespace CarRentals_MVVM.ViewModels
         /// </summary>
         public ICommand BackCommand { get; }
 
+
+        //private CarModel? _selectedCar;
+        //public CarModel? SelectedCar
+        //{
+        //    get => _selectedCar;
+        //    set { _selectedCar = value; OnPropertyChanged(); }
+        //}
+
+        //public ICommand ShowSpeedCommand { get; }
+
         /// <summary>
         /// Initializes the Fleet Status ViewModel for the given admin.
         /// </summary>
@@ -57,6 +69,19 @@ namespace CarRentals_MVVM.ViewModels
                 Cars.Add(car);
             }
 
+            //ShowSpeedCommand = new RelayCommand(_ =>
+            //{
+            //    if (SelectedCar == null) return;
+            //    MessageBox.Show(
+            //        $"{SelectedCar.Name} max speed is {SelectedCar.MaxSpeed} km/h.",
+            //        "Max Speed",
+            //        MessageBoxButton.OK,
+            //        MessageBoxImage.Information
+            //    );
+            //});
+
         }
-        }
+
     }
+}
+

@@ -25,5 +25,7 @@ namespace CarRentals_MVVM.View
             // ViewModel handles all car CRUD operations and form state
             this.DataContext = new AddCarViewModel(userId);
         }
+
+    
     }
 }
