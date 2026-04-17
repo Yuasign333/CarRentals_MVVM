@@ -1,4 +1,4 @@
-﻿using CarRentals_MVVM.Services;
+using CarRentals_MVVM.Services;
 using CarRentals_MVVM.ViewModels;
 
 namespace CarRentals_MVVM.Models
@@ -24,23 +24,8 @@ namespace CarRentals_MVVM.Models
         private string[] _availableColors = [];
         private bool _premiumCarBadge => PricePerHour > 70;
 
-        private int _carspeed;
-
-        public int CarSpeed
-        {
-            get => _carspeed;
-            set
-            {
-                if (_carspeed != value)
-                {
-                    _carspeed= value;
-                    OnPropertyChanged();
-                }
-            }
-        }
-    
-
       
+
         // ── Public properties with change notification ─────────────────────────
 
         /// <summary>

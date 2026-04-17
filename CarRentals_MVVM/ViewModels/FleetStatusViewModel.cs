@@ -1,6 +1,4 @@
 ﻿using System.Collections.ObjectModel;
-using System.Linq.Expressions;
-using System.Windows;
 using System.Windows.Input;
 using CarRentals_MVVM.Commands;
 using CarRentals_MVVM.Models;
@@ -38,16 +36,6 @@ namespace CarRentals_MVVM.ViewModels
         /// </summary>
         public ICommand BackCommand { get; }
 
-
-        //private CarModel? _selectedCar;
-        //public CarModel? SelectedCar
-        //{
-        //    get => _selectedCar;
-        //    set { _selectedCar = value; OnPropertyChanged(); }
-        //}
-
-        //public ICommand ShowSpeedCommand { get; }
-
         /// <summary>
         /// Initializes the Fleet Status ViewModel for the given admin.
         /// </summary>
@@ -57,31 +45,26 @@ namespace CarRentals_MVVM.ViewModels
             _userId = userId;
             UserLabel = $"Agent: {userId}";
 
-            // Navigate back to the admin dashboard
             BackCommand = new RelayCommand(_ =>
             {
                 NavigationService.Navigate(new View.AdminDashboard(_userId));
             });
 
-            // Load all cars from the data service into the observable collection
-            foreach (var car in CarDataService.GetAll())
+            // We start a background task so we can use 'await' without freezing the UI
+            Task.Run(async () =>
             {
-                Cars.Add(car);
-            }
+                // 1. Await the data from the database
+                var allCars = await CarDataService.GetAll();
 
-            //ShowSpeedCommand = new RelayCommand(_ =>
-            //{
-            //    if (SelectedCar == null) return;
-            //    MessageBox.Show(
-            //        $"{SelectedCar.Name} max speed is {SelectedCar.MaxSpeed} km/h.",
-            //        "Max Speed",
-            //        MessageBoxButton.OK,
-            //        MessageBoxImage.Information
-            //    );
-            //});
-
+                System.Windows.Application.Current.Dispatcher.Invoke(() =>
+                {
+                    Cars.Clear();
+                    foreach (var car in allCars)
+                    {
+                        Cars.Add(car);
+                    }
+                });
+            });
         }
-
     }
 }
-

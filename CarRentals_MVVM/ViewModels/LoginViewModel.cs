@@ -4,6 +4,7 @@ using System.Windows.Input;
 using CarRentals_MVVM.Commands;
 using CarRentals_MVVM.Models;
 using CarRentals_MVVM.Services;
+using Microsoft.Data.SqlClient;
 
 namespace CarRentals_MVVM.ViewModels
 {
@@ -101,27 +102,75 @@ namespace CarRentals_MVVM.ViewModels
         /// This is the only acceptable use of a UI element in ViewModel —
         /// PasswordBox cannot be bound directly due to security restrictions.
         /// </param>
-        private void ExecuteLogin(object? parameter)
+        private async void ExecuteLogin(object? parameter)
         {
+            // Trusted_Connection=True replacement on user id and pasword if using laptop
+
+            string connectionString = @"Server=CCL2-12\MSSQLSERVER01;Database=RENTAL_REVS_DATABASE; 
+        User Id=sa;Password=ccl2;TrustServerCertificate=True;";
+
+            // Validate credentials based on the user's role
+            bool isValid = false;
+
+
             // Extract the password from the PasswordBox if it was passed in
+
             if (parameter is PasswordBox passwordBox)
             {
                 CurrentUser.Password = passwordBox.Password;
             }
 
-            // Validate credentials based on the user's role
-            bool isValid = false;
+            // Validation: If there are spaces, fail immediately without calling the DB
 
-            if (CurrentUser.Role == "Admin")
+            if (CurrentUser.UserID.Contains(" ") || CurrentUser.Password.Contains(" "))
             {
-                isValid = CurrentUser.UserID.Trim() == "A001"
-                       && CurrentUser.Password.Trim() == "admin123";
+                ErrorMessage = "Spaces are not allowed in credentials.";
+                ErrorVisible = true;
+                return;
             }
-            else
+
+            //' OR '1'='1  || ' OR '1'='1' -- One of the text to bypass username or password
+
+            try
             {
-                isValid = CurrentUser.UserID.Trim() == "C001"
-                       && CurrentUser.Password.Trim() == "customer123";
+                using SqlConnection connection = new SqlConnection(connectionString);
+                {
+                    string query = "SELECT * FROM Users WHERE UserID = @username AND Password = @password"; // Pass parameters to ensure bypass prevention
+
+                    using (SqlCommand command = new SqlCommand(query, connection))
+                    {
+                        //prevent injection attacks
+                        command.Parameters.AddWithValue("@username", CurrentUser.UserID);
+                        command.Parameters.AddWithValue("@password", CurrentUser.Password);
+                        await connection.OpenAsync();
+
+                        using (SqlDataReader reader =  await command.ExecuteReaderAsync())
+                        {
+                            if (reader.HasRows)
+                            {
+                                isValid = true;
+                            }
+                        }
+                    }
+                }
             }
+            catch (Exception ex)
+            {
+                MessageBox.Show("Database connection failed: " + ex.Message);
+            }
+
+          
+
+            //if (CurrentUser.Role == "Admin")
+            //{
+            //    isValid = CurrentUser.UserID.Trim() == "A001"
+            //           && CurrentUser.Password.Trim() == "admin123";
+            //}
+            //else
+            //{
+            //    isValid = CurrentUser.UserID.Trim() == "C001"
+            //           && CurrentUser.Password.Trim() == "customer123";
+            //}
 
             if (isValid)
             {

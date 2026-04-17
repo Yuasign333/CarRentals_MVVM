@@ -229,179 +229,170 @@
                         <DropShadowEffect Color="#C8B6FF" BlurRadius="32" ShadowDepth="0" Opacity="0.20"/>
                     </Border.Effect>
 
-                    <Grid Margin="20,-10,20,14">
+                    <Grid Margin="20">
                         <Grid.RowDefinitions>
                             <RowDefinition Height="Auto"/>
-                            <RowDefinition Height="30"/>
-                            <RowDefinition Height="Auto"/>
-                            <RowDefinition Height="10"/>
-                            <RowDefinition Height="Auto"/>
-                            <RowDefinition Height="10"/>
-                            <RowDefinition Height="Auto"/>
-                            <RowDefinition Height="10"/>
-                            <RowDefinition Height="Auto"/>
-                            <RowDefinition Height="10"/>
-                            <RowDefinition Height="Auto"/>
-                            <RowDefinition Height="10"/>
-                            <RowDefinition Height="Auto"/>
                             <RowDefinition Height="*"/>
-                            <RowDefinition Height="Auto"/>
                         </Grid.RowDefinitions>
 
-
-                        <!-- Car ID -->
-                        <StackPanel Grid.Row="2">
+                        <StackPanel Grid.Row="0" Margin="0,0,0,15">
                             <TextBlock Text="Car ID (Auto-Generated)" FontSize="11" FontWeight="SemiBold"
-               Foreground="#2A1B5E" Margin="0,0,0,7"/>
+                       Foreground="#2A1B5E" Margin="0,0,0,5"/>
                             <Border CornerRadius="11" BorderThickness="1.5"
-        BorderBrush="#E0D4FF" Padding="12,0" Height="34">
+                    BorderBrush="#E0D4FF" Padding="12,0" Height="34">
                                 <Border.Background>
                                     <SolidColorBrush Color="#F0ECFF"/>
                                 </Border.Background>
                                 <TextBlock Text="{Binding NextCarId}"
-               Foreground="#8A2BE2"
-               FontSize="13" FontWeight="SemiBold"
-               Height="32"
-               VerticalAlignment="Center"
-               TextAlignment="Left"
-                 Margin="0,8,0,0"/>
+                           Foreground="#8A2BE2" FontSize="13" FontWeight="SemiBold"
+                           VerticalAlignment="Center" TextAlignment="Left"/>
                             </Border>
                         </StackPanel>
 
-                        <!-- Car Name -->
-                        <StackPanel Grid.Row="4">
-                            <TextBlock Text="Car Name" FontSize="11" FontWeight="SemiBold"
-                       Foreground="#2A1B5E" Margin="0,0,0,5"/>
-                            <Border CornerRadius="11" BorderThickness="1.5"
-                    BorderBrush="#E0D4FF" Padding="12,0">
-                                <Border.Background>
-                                    <SolidColorBrush Color="#F8F4FF"/>
-                                </Border.Background>
-                                <TextBox Text="{Binding NewName, UpdateSourceTrigger=PropertyChanged}"
-                         Height="32" Padding="0" Background="Transparent"
-                         BorderThickness="0" Foreground="#2A1B5E" FontSize="12"
-                         VerticalContentAlignment="Center"/>
-                            </Border>
-                        </StackPanel>
+                        <ScrollViewer Grid.Row="1" VerticalScrollBarVisibility="Auto" Padding="0,0,5,0">
+                            <StackPanel>
 
-                        <!-- Category -->
-                        <StackPanel Grid.Row="6">
-                            <TextBlock Text="Category" FontSize="11" FontWeight="SemiBold"
-                       Foreground="#2A1B5E" Margin="0,0,0,5"/>
+                                <StackPanel Margin="0,0,0,10">
+                                    <TextBlock Text="Car Name" FontSize="11" FontWeight="SemiBold"
+                               Foreground="#2A1B5E" Margin="0,0,0,5"/>
+                                    <Border CornerRadius="11" BorderThickness="1.5" BorderBrush="#E0D4FF" Padding="12,0">
+                                        <Border.Background>
+                                            <SolidColorBrush Color="#F8F4FF"/>
+                                        </Border.Background>
+                                        <TextBox Text="{Binding NewName, UpdateSourceTrigger=PropertyChanged}"
+                                 Height="32" Padding="0" Background="Transparent"
+                                 BorderThickness="0" Foreground="#2A1B5E" FontSize="12"
+                                 VerticalContentAlignment="Center"/>
+                                    </Border>
+                                </StackPanel>
 
-                            <ComboBox SelectedValue="{Binding NewCategory}"
-          SelectedValuePath="Content"
-          Height="32" Background="Transparent"
-          BorderThickness="0" FontSize="12">
-                                <ComboBoxItem Content="Sedan"/>
-                                <ComboBoxItem Content="SUV"/>
-                                <ComboBoxItem Content="Van"/>
-                            </ComboBox>
+                                <StackPanel Margin="0,0,0,10">
+                                    <TextBlock Text="Category" FontSize="11" FontWeight="SemiBold"
+                               Foreground="#2A1B5E" Margin="0,0,0,5"/>
+                                    <ComboBox SelectedValue="{Binding NewCategory}" SelectedValuePath="Content"
+                              Height="32" Background="Transparent" BorderThickness="0" FontSize="12">
+                                        <ComboBoxItem Content="Sedan"/>
+                                        <ComboBoxItem Content="SUV"/>
+                                        <ComboBoxItem Content="Van"/>
+                                    </ComboBox>
+                                </StackPanel>
 
-                        </StackPanel>
+                                <StackPanel Margin="0,0,0,10">
+                                    <TextBlock Text="Fuel Type" FontSize="11" FontWeight="SemiBold"
+                               Foreground="#2A1B5E" Margin="0,0,0,5"/>
+                                    <ComboBox SelectedValue="{Binding NewFuelType}" SelectedValuePath="Content"
+                              Height="32" Background="Transparent" BorderThickness="0" FontSize="12">
+                                        <ComboBoxItem Content="Standard Engine"/>
+                                        <ComboBoxItem Content="EV"/>
+                                        <ComboBoxItem Content="Hybrid Engine"/>
+                                    </ComboBox>
+                                </StackPanel>
 
-                        <!-- Fuel Type -->
-                        <StackPanel Grid.Row="8">
-                            <TextBlock Text="Fuel Type" FontSize="11" FontWeight="SemiBold"
-                       Foreground="#2A1B5E" Margin="0,0,0,5"/>
+                                <StackPanel Margin="0,0,0,10">
+                                    <TextBlock Text="Price Per Hour ($)" FontSize="11" FontWeight="SemiBold"
+                               Foreground="#2A1B5E" Margin="0,0,0,5"/>
+                                    <Border CornerRadius="11" BorderThickness="1.5" BorderBrush="#E0D4FF" Padding="12,0">
+                                        <Border.Background>
+                                            <SolidColorBrush Color="#F8F4FF"/>
+                                        </Border.Background>
+                                        <TextBox Text="{Binding NewPricePerHour, UpdateSourceTrigger=PropertyChanged}"
+                                 Height="32" Padding="0" Background="Transparent"
+                                 BorderThickness="0" Foreground="#2A1B5E" FontSize="12"
+                                 VerticalContentAlignment="Center"/>
+                                    </Border>
+                                </StackPanel>
 
-                            <ComboBox SelectedValue="{Binding NewFuelType}"
-          SelectedValuePath="Content"
-          Height="32" Background="Transparent" 
-          BorderThickness="0" FontSize="12">
-                                <ComboBoxItem Content="Standard Engine"/>
-                                <ComboBoxItem Content="EV"/>
-                                <ComboBoxItem Content="Hybrid Engine"/>
-                            </ComboBox>
+                                <StackPanel Margin="0,0,0,10">
+                                    <TextBlock Text="Status" FontSize="11" FontWeight="SemiBold"
+                               Foreground="#2A1B5E" Margin="0,0,0,5"/>
+                                    <ComboBox SelectedValue="{Binding NewStatus}" SelectedValuePath="Content"
+                              Height="32" Background="Transparent" BorderThickness="0" FontSize="12">
+                                        <ComboBoxItem Content="Available"/>
+                                        <ComboBoxItem Content="Rented"/>
+                                        <ComboBoxItem Content="Maintenance"/>
+                                    </ComboBox>
+                                </StackPanel>
 
-                        </StackPanel>
+                                <StackPanel Margin="0,0,0,10">
+                                    <TextBlock Text="Image URL" FontSize="11" FontWeight="SemiBold"
+                               Foreground="#2A1B5E" Margin="0,0,0,5"/>
+                                    <Border CornerRadius="11" BorderThickness="1.5" BorderBrush="#E0D4FF" Padding="12,0">
+                                        <Border.Background>
+                                            <SolidColorBrush Color="#F8F4FF"/>
+                                        </Border.Background>
+                                        <TextBox Text="{Binding NewImageUrl, UpdateSourceTrigger=PropertyChanged}"
+                                 Height="32" Padding="0" Background="Transparent"
+                                 BorderThickness="0" Foreground="#2A1B5E" FontSize="12"
+                                 VerticalContentAlignment="Center"/>
+                                    </Border>
+                                </StackPanel>
 
-                        <!-- Price Per Hour -->
-                        <StackPanel Grid.Row="10">
-                            <TextBlock Text="Price Per Hour ($)" FontSize="11" FontWeight="SemiBold"
-                       Foreground="#2A1B5E" Margin="0,0,0,5"/>
-                            <Border CornerRadius="11" BorderThickness="1.5"
-                    BorderBrush="#E0D4FF" Padding="12,0">
-                                <Border.Background>
-                                    <SolidColorBrush Color="#F8F4FF"/>
-                                </Border.Background>
-                                <TextBox Text="{Binding NewPricePerHour, UpdateSourceTrigger=PropertyChanged}"
-                         Height="32" Padding="0" Background="Transparent"
-                         BorderThickness="0" Foreground="#2A1B5E" FontSize="12"
-                         VerticalContentAlignment="Center"/>
-                            </Border>
-                        </StackPanel>
+                                <StackPanel Margin="0,0,0,20">
+                                    <TextBlock Text="Available Colors (e.g., White, Gray)" FontSize="11" FontWeight="SemiBold"
+                               Foreground="#2A1B5E" Margin="0,0,0,5"/>
+                                    <Border CornerRadius="11" BorderThickness="1.5" BorderBrush="#E0D4FF" Padding="12,0">
+                                        <Border.Background>
+                                            <SolidColorBrush Color="#F8F4FF"/>
+                                        </Border.Background>
+                                        <TextBox Text="{Binding NewAvailableColors, UpdateSourceTrigger=PropertyChanged}"
+                                 Height="32" Padding="0" Background="Transparent"
+                                 BorderThickness="0" Foreground="#2A1B5E" FontSize="12"
+                                 VerticalContentAlignment="Center"/>
+                                    </Border>
+                                </StackPanel>
 
-                        <!-- Status -->
-                        <StackPanel Grid.Row="12">
-                            <TextBlock Text="Status" FontSize="11" FontWeight="SemiBold"
-                       Foreground="#2A1B5E" Margin="0,0,0,5"/>
+                                <Grid Margin="0,0,0,50">
+                                    <Grid.ColumnDefinitions>
+                                        <ColumnDefinition Width="*"/>
+                                        <ColumnDefinition Width="8"/>
+                                        <ColumnDefinition Width="*"/>
+                                        <ColumnDefinition Width="8"/>
+                                        <ColumnDefinition Width="*"/>
+                                        <ColumnDefinition Width="8"/>
+                                        <ColumnDefinition Width="*"/>
+                                    </Grid.ColumnDefinitions>
 
-                            <ComboBox SelectedValue="{Binding NewStatus}"
-          SelectedValuePath="Content"
-          Height="32" Background="Transparent"
-          BorderThickness="0" FontSize="12">
-                                <ComboBoxItem Content="Available"/>
-                                <ComboBoxItem Content="Rented"/>
-                                <ComboBoxItem Content="Maintenance"/>
-                            </ComboBox>
+                                    <Button Grid.Column="0" Content="Save" Height="40" FontSize="12" FontWeight="Bold"
+                            Foreground="White" BorderThickness="0" Cursor="Hand"
+                            Command="{Binding SaveCommand}" Style="{StaticResource LoginButtonStyle}">
+                                        <Button.Background>
+                                            <LinearGradientBrush StartPoint="0,0" EndPoint="1,0">
+                                                <GradientStop Color="#8A2BE2" Offset="0"/>
+                                                <GradientStop Color="#6A1FBB" Offset="1"/>
+                                            </LinearGradientBrush>
+                                        </Button.Background>
+                                    </Button>
 
-                        </StackPanel>
+                                    <Button Grid.Column="2" Content="Delete" Height="40" FontSize="12" FontWeight="Bold"
+                            Foreground="White" BorderThickness="0" Cursor="Hand"
+                            Command="{Binding DeleteCommand}" Style="{StaticResource LoginButtonStyle}">
+                                        <Button.Background>
+                                            <SolidColorBrush Color="#C0304A"/>
+                                        </Button.Background>
+                                    </Button>
 
-                        <!-- Buttons — Row 14, pushed to bottom by Row 13 Height="*" -->
-                        <Grid Grid.Row="14">
-                            <Grid.ColumnDefinitions>
-                                <ColumnDefinition Width="29*"/>
-                                <ColumnDefinition Width="21*"/>
-                                <ColumnDefinition Width="8"/>
-                                <ColumnDefinition Width="8*"/>
-                                <ColumnDefinition Width="42*"/>
-                                <ColumnDefinition Width="8"/>
-                                <ColumnDefinition Width="33"/>
-                                <ColumnDefinition Width="6"/>
-                                <ColumnDefinition Width="16"/>
-                            </Grid.ColumnDefinitions>
+                                    <Button Grid.Column="4" Content="Update" Height="40" FontSize="12" FontWeight="Bold"
+                            Foreground="White" BorderThickness="0" Cursor="Hand"
+                            Command="{Binding UpdateCommand}" Style="{StaticResource LoginButtonStyle}">
+                                        <Button.Background>
+                                            <SolidColorBrush Color="#FFA4A4DE"/>
+                                        </Button.Background>
+                                    </Button>
 
-                            <!--Save Button -->
-                            <Button Grid.Column="0" Content="Save"
-                    Height="40" FontSize="12" FontWeight="Bold"
-                    Foreground="White" BorderThickness="0" Cursor="Hand"
-                    Command="{Binding SaveCommand}"
-                    Style="{StaticResource LoginButtonStyle}" Margin="-2,-30,2,65" Grid.ColumnSpan="2">
-                                <Button.Background>
-                                    <LinearGradientBrush StartPoint="0,0" EndPoint="1,0">
-                                        <GradientStop Color="#8A2BE2" Offset="0"/>
-                                        <GradientStop Color="#6A1FBB" Offset="1"/>
-                                    </LinearGradientBrush>
-                                </Button.Background>
-                            </Button>
+                                    <Button Grid.Column="6" Content="Clr" Height="40" FontSize="12" FontWeight="Bold"
+                            Foreground="White" BorderThickness="0" Cursor="Hand"
+                            Command="{Binding ClearCommand}" Style="{StaticResource LoginButtonStyle}">
+                                        <Button.Background>
+                                            <SolidColorBrush Color="#6B6B6B"/>
+                                        </Button.Background>
+                                    </Button>
+                                </Grid>
 
-                            <!--Delete Button -->
-                            <Button Grid.Column="3" Content="Delete"
-                    Height="40" FontSize="12" FontWeight="Bold"
-                    Foreground="White" BorderThickness="0" Cursor="Hand"
-                    Command="{Binding DeleteCommand}"
-                    Style="{StaticResource LoginButtonStyle}" Margin="1,-30,0,65" Grid.ColumnSpan="2">
-                                <Button.Background>
-                                    <SolidColorBrush Color="#C0304A"/>
-                                </Button.Background>
-                            </Button>
-
-                            <!--Clear Button -->
-                            <Button Grid.Column="6" Content="Clr"
-                    Height="40" FontSize="12" FontWeight="Bold"
-                    Foreground="White" BorderThickness="0" Cursor="Hand"
-                    Command="{Binding ClearCommand}"
-                    Style="{StaticResource LoginButtonStyle}" Margin="0,-40,0,54" Grid.ColumnSpan="3">
-                                <Button.Background>
-                                    <SolidColorBrush Color="#6B6B6B"/>
-                                </Button.Background>
-                            </Button>
-                        </Grid>
+                            </StackPanel>
+                        </ScrollViewer>
 
                     </Grid>
                 </Border>
-
             </Grid>
         </Grid>
     </Viewbox>

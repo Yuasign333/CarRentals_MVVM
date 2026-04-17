@@ -1,5 +1,7 @@
 ﻿using System.Collections.Generic;
+using System.Windows;
 using CarRentals_MVVM.Models;
+using Microsoft.Data.SqlClient;
 
 namespace CarRentals_MVVM.Services
 {
@@ -21,101 +23,93 @@ namespace CarRentals_MVVM.Services
         /// </summary>
         public static List<CarModel> Cars { get; } = new()
         {
-            new CarModel
-            {
-                CarId           = "C001",
-                Name            = "Toyota Camry",
-                Category        = "Sedan",
-                FuelType        = "Standard Engine",
-                Status          = "Available",
-                PricePerHour    = 40,
-                ImageUrl        = "https://i.imgur.com/gMFP5tP.jpeg",
-                AvailableColors = [ "White", "Gray" ],
-                CarSpeed = 120,
-        
-
-
-            },
-            new CarModel
-            {
-                CarId           = "C002",
-                Name            = "Ford Explorer",
-                Category        = "SUV",
-                FuelType        = "Standard Engine",
-                Status          = "Available",
-                PricePerHour    = 75,
-                ImageUrl        = "https://i.imgur.com/vgEvOtG.jpeg",
-                AvailableColors = [ "White" ],
-                  CarSpeed = 80,
+            //new CarModel
+            //{
+            //    CarId           = "C001",
+            //    Name            = "Toyota Camry",
+            //    Category        = "Sedan",
+            //    FuelType        = "Standard Engine",
+            //    Status          = "Available",
+            //    PricePerHour    = 40,
+            //    ImageUrl        = "https://i.imgur.com/gMFP5tP.jpeg",
+            //    AvailableColors = [ "White", "Gray" ],
 
 
 
-
-            },
-            new CarModel
-            {
-                CarId           = "C003",
-                Name            = "Honda Civic",
-                Category        = "Sedan",
-                FuelType        = "Standard Engine",
-                Status          = "Available",
-                PricePerHour    = 35,
-                ImageUrl        = "https://i.imgur.com/adLesJ3.jpeg",
-                AvailableColors = [ "White", "Red", "Blue" ],
-                   CarSpeed = 100,
+            //},
+            //new CarModel
+            //{
+            //    CarId           = "C002",
+            //    Name            = "Ford Explorer",
+            //    Category        = "SUV",
+            //    FuelType        = "Standard Engine",
+            //    Status          = "Available",
+            //    PricePerHour    = 75,
+            //    ImageUrl        = "https://i.imgur.com/vgEvOtG.jpeg",
+            //    AvailableColors = [ "White" ],
 
 
 
-
-            },
-            new CarModel
-            {
-                CarId           = "C004",
-                Name            = "Tesla Model 3",
-                Category        = "Sedan",
-                FuelType        = "EV",
-                Status          = "Available",
-                PricePerHour    = 65,
-                ImageUrl        = "https://i.imgur.com/69GQ8YT.jpeg",
-                AvailableColors = [ "White" ],
-                   CarSpeed = 90,
+            //},
+            //new CarModel
+            //{
+            //    CarId           = "C003",
+            //    Name            = "Honda Civic",
+            //    Category        = "Sedan",
+            //    FuelType        = "Standard Engine",
+            //    Status          = "Available",
+            //    PricePerHour    = 35,
+            //    ImageUrl        = "https://i.imgur.com/adLesJ3.jpeg",
+            //    AvailableColors = [ "White", "Red", "Blue" ],
 
 
 
-
-            },
-            new CarModel
-            {
-                CarId           = "C005",
-                Name            = "Toyota HiAce",
-                Category        = "Van",
-                FuelType        = "Standard Engine",
-                Status          = "Available",
-                PricePerHour    = 80,
-                ImageUrl        = "https://i.imgur.com/UN1XHVO.jpeg",
-                AvailableColors = [ "White", "Black" ],
-                  CarSpeed = 120,
+            //},
+            //new CarModel
+            //{
+            //    CarId           = "C004",
+            //    Name            = "Tesla Model 3",
+            //    Category        = "Sedan",
+            //    FuelType        = "EV",
+            //    Status          = "Available",
+            //    PricePerHour    = 65,
+            //    ImageUrl        = "https://i.imgur.com/69GQ8YT.jpeg",
+            //    AvailableColors = [ "White" ],
 
 
 
-
-            },
-            new CarModel
-            {
-                CarId           = "C006",
-                Name            = "Hyundai Tucson",
-                Category        = "SUV",
-                FuelType        = "Standard Engine",
-                Status          = "Maintenance",
-                PricePerHour    = 55,
-                ImageUrl        = "https://i.imgur.com/iWOAwIV.jpeg",
-                AvailableColors = [ "White", "Black", "Blue" ],
-                  CarSpeed = 110
+            //},
+            //new CarModel
+            //{
+            //    CarId           = "C005",
+            //    Name            = "Toyota HiAce",
+            //    Category        = "Van",
+            //    FuelType        = "Standard Engine",
+            //    Status          = "Available",
+            //    PricePerHour    = 80,
+            //    ImageUrl        = "https://i.imgur.com/UN1XHVO.jpeg",
+            //    AvailableColors = [ "White", "Black" ],
 
 
 
-            },
+            //},
+            //new CarModel
+            //{
+            //    CarId           = "C006",
+            //    Name            = "Hyundai Tucson",
+            //    Category        = "SUV",
+            //    FuelType        = "Standard Engine",
+            //    Status          = "Maintenance",
+            //    PricePerHour    = 55,
+            //    ImageUrl        = "https://i.imgur.com/iWOAwIV.jpeg",
+            //    AvailableColors = [ "White", "Black", "Blue" ],
+
+
+
+            //},
         };
+
+
 
 
 
@@ -132,29 +126,183 @@ namespace CarRentals_MVVM.Services
         /// Returns a copy of all cars in the fleet.
         /// Used by FleetStatusWindow and BrowseCarsViewModel to display the full list.
         /// </summary>
-        public static List<CarModel> GetAll()
+        public static async Task<List<CarModel>> GetAll()
         {
-            return new List<CarModel>(Cars);
+            var cars = new List<CarModel>();
+
+            string connectionString = @"Server=.\MSSQLSERVER01;Database=RENTAL_REVS_DATABASE;User Id=sa;Password=ccl2;TrustServerCertificate=True;";
+            string query = "SELECT * FROM Cars";
+
+            try
+            {
+                // Use 'await' on the connection open and the reader execution
+                using (SqlConnection connection = new SqlConnection(connectionString))
+                {
+                    await connection.OpenAsync(); // Non-blocking open
+
+                    using (SqlCommand command = new SqlCommand(query, connection))
+                    {
+                        using (SqlDataReader reader = await command.ExecuteReaderAsync()) // Non-blocking execute
+                        {
+                            // Use ReadAsync to keep the loop asynchronous
+                            while (await reader.ReadAsync())
+                            {
+                                var car = new CarModel
+                                {
+                                    CarId = reader["CarId"].ToString() ?? "",
+                                    Name = reader["Name"].ToString() ?? "",
+                                    Category = reader["Category"].ToString() ?? "",
+                                    FuelType = reader["FuelType"].ToString() ?? "",
+                                    Status = reader["Status"].ToString() ?? "",
+                                    PricePerHour = Convert.ToDecimal(reader["PricePerHour"]),
+                                    ImageUrl = reader["ImageUrl"].ToString() ?? "",
+                                    AvailableColors = (reader["AvailableColors"] == DBNull.Value ? ""
+                                        : reader["AvailableColors"].ToString())
+                                        ?.Split(new[] { ", " }, StringSplitOptions.RemoveEmptyEntries)
+                                        ?? Array.Empty<string>()
+                                };
+                                cars.Add(car);
+                            }
+                        }
+                    }
+                }
+            }
+            catch (Exception ex)
+            {
+                MessageBox.Show("Database connection failed: " + ex.Message);
+            }
+
+            return cars;
+        }
+        public static async Task AddCar(CarModel car)
+        {
+            string connectionString = @"Server=.\MSSQLSERVER01;Database=RENTAL_REVS_DATABASE;User Id=sa;Password=ccl2;TrustServerCertificate=True;";
+
+            // 1. ADD AvailableColors and @colors TO THE SQL QUERY
+            string query = "INSERT INTO Cars (CarId, Name, Category, FuelType, Status, PricePerHour, ImageUrl, AvailableColors) " +
+                           "VALUES (@id, @name, @cat, @fuel, @status, @price, @img, @colors)";
+            try
+            {
+                using (SqlConnection connection = new SqlConnection(connectionString))
+                {
+                    await connection.OpenAsync();
+
+                    using (SqlCommand cmd = new SqlCommand(query, connection))
+                    {
+                        cmd.Parameters.AddWithValue("@id", car.CarId);
+                        cmd.Parameters.AddWithValue("@name", car.Name);
+                        cmd.Parameters.AddWithValue("@cat", car.Category);
+                        cmd.Parameters.AddWithValue("@fuel", car.FuelType);
+                        cmd.Parameters.AddWithValue("@status", car.Status);
+                        cmd.Parameters.AddWithValue("@price", car.PricePerHour);
+                        cmd.Parameters.AddWithValue("@img", car.ImageUrl);
+
+                        // ADD THE MISSING PARAMETER HERE (converts array to comma string)
+                        cmd.Parameters.AddWithValue("@colors", string.Join(", ", car.AvailableColors));
+
+                        await cmd.ExecuteNonQueryAsync();
+                    }
+                }
+            }
+            catch (Exception ex)
+            {
+                MessageBox.Show("Database connection failed: " + ex.Message);
+            }
+        }
+        public static async Task DeleteCar(string carId)
+        {
+            string connectionString = @"Server=.\MSSQLSERVER01;Database=RENTAL_REVS_DATABASE;User Id=sa;Password=ccl2;TrustServerCertificate=True;";
+
+            // Make sure the table name matches your SQL database
+            string query = "DELETE FROM Cars WHERE CarId = @id";
+
+            try
+            {
+                using (SqlConnection connection = new SqlConnection(connectionString))
+                {
+                    await connection.OpenAsync();
+                    using (SqlCommand cmd = new SqlCommand(query, connection))
+                    {
+                        // Map your parameter
+                        cmd.Parameters.AddWithValue("@id", carId);
+
+                        // ExecuteNonQuery is for DELETE, INSERT, and UPDATE
+                        await cmd.ExecuteNonQueryAsync();
+                    }
+                }
+            }
+            catch (Exception ex) 
+            {
+                MessageBox.Show("Database connection failed: " + ex.Message);
+            }
+
+           
+        }
+
+        public static async Task UpdateCar(CarModel car)
+        {
+            string connectionString = @"Server=.\MSSQLSERVER01;Database=RENTAL_REVS_DATABASE;User Id=sa;Password=ccl2;TrustServerCertificate=True;";
+
+            // 1. ADD AvailableColors = @colors TO THE SQL QUERY
+            string query = @"UPDATE Cars 
+                     SET Name = @name, 
+                         Category = @cat, 
+                         FuelType = @fuel, 
+                         PricePerHour = @price, 
+                         Status = @status, 
+                         ImageUrl = @img,
+                         AvailableColors = @colors
+                     WHERE CarId = @id";
+
+            try
+            {
+                using (SqlConnection conn = new SqlConnection(connectionString))
+                {
+                    await conn.OpenAsync();
+                    using (SqlCommand cmd = new SqlCommand(query, conn))
+                    {
+                        cmd.Parameters.AddWithValue("@id", car.CarId);
+                        cmd.Parameters.AddWithValue("@name", car.Name);
+                        cmd.Parameters.AddWithValue("@cat", car.Category);
+                        cmd.Parameters.AddWithValue("@fuel", car.FuelType);
+                        cmd.Parameters.AddWithValue("@price", car.PricePerHour);
+                        cmd.Parameters.AddWithValue("@status", car.Status);
+                        cmd.Parameters.AddWithValue("@img", car.ImageUrl);
+
+                        // 2. ADD THE MISSING PARAMETER HERE (converts array to comma string)
+                        cmd.Parameters.AddWithValue("@colors", string.Join(", ", car.AvailableColors));
+
+                        await cmd.ExecuteNonQueryAsync();
+                    }
+                }
+            }
+            catch (Exception ex)
+            {
+                MessageBox.Show("Database connection failed: " + ex.Message);
+            }
         }
 
         /// <summary>
         /// Returns only cars with Status = "Available".
         /// Reserved for future use — BrowseCarsViewModel filters directly using LINQ.
         /// </summary>
-        public static List<CarModel> GetAvailable()
-        {
-            var result = new List<CarModel>();
 
-            foreach (var car in Cars)
+        public static async Task<List<CarModel>> GetAvailable()
+        {
+            // Await the task to get the actual list
+            List<CarModel> allCars = await GetAll();
+            List<CarModel> availableCars = new List<CarModel>();
+
+            foreach (var car in allCars)
             {
                 if (car.Status == "Available")
                 {
-                    result.Add(car);
+                    availableCars.Add(car);
                 }
             }
-
-            return result;
+            return availableCars;
         }
+
 
         /// <summary>
         /// Returns all rentals that belong to the given customer ID.
@@ -181,16 +329,17 @@ namespace CarRentals_MVVM.Services
         /// Returns null if no match is found.
         /// </summary>
         /// <param name="carId">The car ID to search for (e.g. "C003").</param>
-        public static CarModel? GetById(string carId)
+        public static async Task<CarModel?> GetById(string carId)
         {
-            foreach (var car in Cars)
+            List<CarModel> allCars = await GetAll();
+
+            foreach (var car in allCars)
             {
                 if (car.CarId == carId)
                 {
                     return car;
                 }
             }
-
             return null;
         }
 
@@ -199,19 +348,19 @@ namespace CarRentals_MVVM.Services
         /// Called by AddCarViewModel.SaveCommand after validation passes.
         /// </summary>
         /// <param name="car">The CarModel to add.</param>
-        public static void AddCar(CarModel car)
-        {
-            Cars.Add(car);
-        }
+        //public static void AddCar(CarModel car)
+        //{
+        //    Cars.Add(car);
+        //}
 
         /// <summary>
         /// Removes a car from the fleet by its CarId.
         /// Called by AddCarViewModel.DeleteCommand when the admin confirms deletion.
         /// </summary>
         /// <param name="carId">The ID of the car to remove.</param>
-        public static void RemoveCar(string carId)
+        public static async void RemoveCar(string carId)
         {
-            var car = GetById(carId);
+            var car = await GetById(carId);
 
             if (car != null)
             {
@@ -229,6 +378,6 @@ namespace CarRentals_MVVM.Services
             Rentals.Add(rental);
         }
 
-       
+        
     }
 }
