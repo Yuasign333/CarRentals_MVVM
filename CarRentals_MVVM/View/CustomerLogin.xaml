@@ -62,7 +62,7 @@
                         <Border.Effect>
                             <DropShadowEffect Color="#C8B6FF" BlurRadius="30" ShadowDepth="0" Opacity="0.35"/>
                         </Border.Effect>
-                        <StackPanel>
+                        <StackPanel Margin="0,0,0,-10">
                             <TextBlock Text="Customer Login" FontSize="22" FontWeight="Bold"
                                        Foreground="{StaticResource TextDark}"
                                        HorizontalAlignment="Center" Margin="0,0,0,24"/>
@@ -88,11 +88,16 @@
                                 <TextBlock Text="Password" FontSize="13"
                                            Foreground="{StaticResource TextMuted}" VerticalAlignment="Center"/>
                             </StackPanel>
-                            <Border Margin="0,0,0,16"
+                            <Border Margin="0,0,0,0"
         Style="{StaticResource InputBorderStyle}">
                                 <PasswordBox x:Name="PasswordBox"
                  Style="{StaticResource InputPasswordBoxStyle}" Height="35"/>
                             </Border>
+                            <Button Content="Forgot Password?"                                  
+Background="Transparent" BorderThickness="0" HorizontalAlignment="Right"
+Foreground="#7E74A6" FontSize="10" Cursor="Hand"
+Height="32"
+Command="{Binding ForgotPasswordCommand}" Margin="0,1.8,0,2"/>
 
                             <!-- ERROR BANNER: Collapsed by default -->
                             <Border Visibility="{Binding ErrorVisible, Converter={StaticResource BoolToVisibility}}"
@@ -118,12 +123,17 @@
                                 </Button.Background>
                             </Button>
 
-                            <TextBlock Text="Default: C001 / customer123" FontSize="11"
-                                       Foreground="{StaticResource TextHint}"
-                                       HorizontalAlignment="Center" Margin="0,10,0,0"/>
+                        
+                            <Button Content="Don't have an account? Sign Up" FontStyle="Italic"
+                                    Margin=" 0,6,0,0"                                  
+        Background="Transparent" BorderThickness="0"
+        Foreground="#7E74A6" FontSize="12" Cursor="Hand"
+        Height="32"
+        Command="{Binding SignUpCommand}"/>
+
                             <TextBlock Text="Made by Yuan" FontSize="12"
-                                       Foreground="{StaticResource TextMuted}"
-                                       HorizontalAlignment="Center" Margin="0,8,0,0"/>
+               Foreground="{StaticResource TextMuted}"
+               HorizontalAlignment="Center" Margin="0,8,0,0"/>
                         </StackPanel>
                     </Border>
                 </StackPanel>

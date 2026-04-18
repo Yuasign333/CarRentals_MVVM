@@ -22,5 +22,10 @@ namespace CarRentals_MVVM.View
             // Dedicated ViewModel for this window
             this.DataContext = new ProcessReturnViewModel(userId);
         }
+
+        private void TextBox_TextChanged(object sender, System.Windows.Controls.TextChangedEventArgs e)
+        {
+
+        }
     }
 }

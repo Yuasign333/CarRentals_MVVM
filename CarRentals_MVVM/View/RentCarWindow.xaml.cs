@@ -7,7 +7,6 @@ namespace CarRentals_MVVM.View
 {
     public partial class RentCarWindow : Window
     {
-        // Only one constructor now — always called with a selected car
         public RentCarWindow(string userId, CarModel car)
         {
             InitializeComponent();

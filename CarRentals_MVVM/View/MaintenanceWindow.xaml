@@ -2,10 +2,17 @@
         xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
         xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
         Title="Rental Rev. — Maintenance"
+        Height="620" Width="1020"
         WindowStartupLocation="CenterScreen" ResizeMode="CanResize">
+
     <Viewbox Stretch="UniformToFill">
-        <Grid>
-            <Rectangle Height="620" Width="1020">
+        <Grid Width="1020" Height="620">
+            <Grid.RowDefinitions>
+                <RowDefinition Height="56"/>
+                <RowDefinition Height="*"/>
+            </Grid.RowDefinitions>
+
+            <Rectangle Grid.RowSpan="2">
                 <Rectangle.Fill>
                     <LinearGradientBrush StartPoint="0,0" EndPoint="1,1">
                         <GradientStop Color="#F0EBFF" Offset="0"/>
@@ -14,8 +21,10 @@
                     </LinearGradientBrush>
                 </Rectangle.Fill>
             </Rectangle>
-            <Image Source="https://i.imgur.com/vTJAlag.jpeg" Opacity="0.10" Stretch="UniformToFill"/>
-            <Ellipse Width="420" Height="420" Opacity="0.18" HorizontalAlignment="Right" VerticalAlignment="Top" Margin="0,-120,-120,0">
+            <Image Grid.RowSpan="2" Source="https://i.imgur.com/vTJAlag.jpeg"
+                   Opacity="0.06" Stretch="UniformToFill"/>
+            <Ellipse Grid.RowSpan="2" Width="420" Height="420" Opacity="0.13"
+                     HorizontalAlignment="Right" VerticalAlignment="Top" Margin="0,-120,-120,0">
                 <Ellipse.Fill>
                     <RadialGradientBrush>
                         <GradientStop Color="#C9B8E8" Offset="0"/>
@@ -23,87 +32,264 @@
                     </RadialGradientBrush>
                 </Ellipse.Fill>
             </Ellipse>
-            <Ellipse Width="320" Height="320" Opacity="0.12" HorizontalAlignment="Left" VerticalAlignment="Bottom" Margin="-60,0,0,-60">
-                <Ellipse.Fill>
-                    <RadialGradientBrush>
-                        <GradientStop Color="#B8D4F0" Offset="0"/>
-                        <GradientStop Color="Transparent" Offset="1"/>
-                    </RadialGradientBrush>
-                </Ellipse.Fill>
-            </Ellipse>
-            <Border VerticalAlignment="Top" Height="60" BorderThickness="0">
-                <Grid Margin="28,0">
+
+            <Border Grid.Row="0" Panel.ZIndex="10">
+                <Grid Margin="24,0">
                     <Grid.ColumnDefinitions>
                         <ColumnDefinition Width="*"/>
                         <ColumnDefinition Width="Auto"/>
                     </Grid.ColumnDefinitions>
                     <StackPanel Orientation="Horizontal" VerticalAlignment="Center">
-                        <TextBlock Text="RENTAL REV." FontSize="13" FontWeight="Black" Foreground="{StaticResource TextLight}"/>
-                        <TextBlock Text="  /  " FontSize="13" Foreground="{StaticResource TextBreadcrumb}"/>
-                        <TextBlock Text="Maintenance" FontSize="15" FontWeight="Bold" Foreground="{StaticResource TextDark}"/>
+                        <Button Content="←" FontSize="16" Style="{StaticResource BackButtonStyle}"
+                                Command="{Binding BackCommand}" Margin="0,0,10,0"/>
+                        <TextBlock Text="RENTAL REV." FontSize="12" FontWeight="Black"
+                                   Foreground="#C9B8E8" VerticalAlignment="Center"/>
+                        <TextBlock Text="  /  " FontSize="12" Foreground="#C4B0E0" VerticalAlignment="Center"/>
+                        <TextBlock Text="Maintenance" FontSize="15" FontWeight="Bold"
+                                   Foreground="#2A1B5E" VerticalAlignment="Center"/>
                     </StackPanel>
-                    <Border Grid.Column="1" Background="White" CornerRadius="20" Padding="12,7" VerticalAlignment="Center">
+                    <Border Grid.Column="1" Background="White" CornerRadius="20"
+                            Padding="12,7" VerticalAlignment="Center">
                         <Border.Effect>
                             <DropShadowEffect Color="#C9B8E8" BlurRadius="25" ShadowDepth="0" Opacity="0.25"/>
                         </Border.Effect>
                         <StackPanel Orientation="Horizontal">
                             <TextBlock Text="🔐" Margin="0,0,6,0"/>
-                            <TextBlock Text="{Binding UserLabel}" FontWeight="SemiBold" Foreground="{StaticResource TextMedium}"/>
+                            <TextBlock Text="{Binding UserLabel}" FontWeight="SemiBold" Foreground="#3D1A7A"/>
                         </StackPanel>
                     </Border>
                 </Grid>
             </Border>
-            <Border HorizontalAlignment="Center" VerticalAlignment="Center" Width="420" CornerRadius="20" Padding="44,40" Background="White">
-                <Border.Effect>
-                    <DropShadowEffect Color="#C8B6FF" BlurRadius="30" ShadowDepth="0" Opacity="0.35"/>
-                </Border.Effect>
-                <StackPanel HorizontalAlignment="Center">
-                    <Border Width="72" Height="72" CornerRadius="18" HorizontalAlignment="Center" Margin="0,0,0,18">
-                        <Border.Background>
-                            <LinearGradientBrush StartPoint="0,0" EndPoint="1,1">
-                                <GradientStop Color="#E8D8FF" Offset="0"/>
-                                <GradientStop Color="#C9B8E8" Offset="1"/>
-                            </LinearGradientBrush>
-                        </Border.Background>
+
+            <ScrollViewer Grid.Row="1" VerticalScrollBarVisibility="Auto" HorizontalScrollBarVisibility="Disabled">
+
+                <Grid Margin="24,14,24,120" MinHeight="500">
+                    <Grid.ColumnDefinitions>
+                        <ColumnDefinition Width="*"/>
+                        <ColumnDefinition Width="16"/>
+                        <ColumnDefinition Width="300"/>
+                    </Grid.ColumnDefinitions>
+
+                    <Border Grid.Column="0" CornerRadius="22" Background="White">
                         <Border.Effect>
-                            <DropShadowEffect Color="#C8B6FF" BlurRadius="16" ShadowDepth="0" Opacity="0.4"/>
+                            <DropShadowEffect Color="#C8B6FF" BlurRadius="32" ShadowDepth="0" Opacity="0.20"/>
                         </Border.Effect>
-                        <TextBlock Text="🔧" FontSize="34" HorizontalAlignment="Center" VerticalAlignment="Center"/>
+                        <Grid>
+                            <Grid.RowDefinitions>
+                                <RowDefinition Height="Auto"/>
+                                <RowDefinition Height="*"/>
+                            </Grid.RowDefinitions>
+                            <Border Grid.Row="0" CornerRadius="22,22,0,0" Padding="20,14,20,12">
+                                <Border.Background>
+                                    <LinearGradientBrush StartPoint="0,0" EndPoint="1,0">
+                                        <GradientStop Color="#F0EBFF" Offset="0"/>
+                                        <GradientStop Color="#E8E0FF" Offset="1"/>
+                                    </LinearGradientBrush>
+                                </Border.Background>
+                                <Grid>
+                                    <Grid.ColumnDefinitions>
+                                        <ColumnDefinition Width="90"/>
+                                        <ColumnDefinition Width="80"/>
+                                        <ColumnDefinition Width="*"/>
+                                        <ColumnDefinition Width="110"/>
+                                        <ColumnDefinition Width="90"/>
+                                    </Grid.ColumnDefinitions>
+                                    <TextBlock Grid.Column="0" Text="Maint ID"    FontSize="11" FontWeight="Bold" Foreground="#6B4FA8"/>
+                                    <TextBlock Grid.Column="1" Text="Car ID"      FontSize="11" FontWeight="Bold" Foreground="#6B4FA8"/>
+                                    <TextBlock Grid.Column="2" Text="Technician"  FontSize="11" FontWeight="Bold" Foreground="#6B4FA8"/>
+                                    <TextBlock Grid.Column="3" Text="Start Date"  FontSize="11" FontWeight="Bold" Foreground="#6B4FA8"/>
+                                    <TextBlock Grid.Column="4" Text="Status"      FontSize="11" FontWeight="Bold" Foreground="#6B4FA8"/>
+                                </Grid>
+                            </Border>
+                            <ListView Grid.Row="1" ItemsSource="{Binding MaintenanceList}"
+                                      SelectedItem="{Binding SelectedMaintenance}"
+                                      Background="Transparent" BorderThickness="0"
+                                      ScrollViewer.HorizontalScrollBarVisibility="Disabled">
+                                <ListView.ItemContainerStyle>
+                                    <Style TargetType="ListViewItem">
+                                        <Setter Property="HorizontalContentAlignment" Value="Stretch"/>
+                                        <Setter Property="Padding" Value="20,9"/>
+                                        <Setter Property="Background" Value="Transparent"/>
+                                        <Setter Property="BorderThickness" Value="0,0,0,1"/>
+                                        <Setter Property="BorderBrush" Value="#F0EBFF"/>
+                                        <Style.Triggers>
+                                            <Trigger Property="IsMouseOver" Value="True">
+                                                <Setter Property="Background" Value="#FAF7FF"/>
+                                            </Trigger>
+                                            <Trigger Property="IsSelected" Value="True">
+                                                <Setter Property="Background" Value="#F0EBFF"/>
+                                            </Trigger>
+                                        </Style.Triggers>
+                                    </Style>
+                                </ListView.ItemContainerStyle>
+                                <ListView.ItemTemplate>
+                                    <DataTemplate>
+                                        <Grid>
+                                            <Grid.ColumnDefinitions>
+                                                <ColumnDefinition Width="90"/>
+                                                <ColumnDefinition Width="80"/>
+                                                <ColumnDefinition Width="*"/>
+                                                <ColumnDefinition Width="110"/>
+                                                <ColumnDefinition Width="90"/>
+                                            </Grid.ColumnDefinitions>
+                                            <TextBlock Grid.Column="0" Text="{Binding MaintenanceId}"
+                                                       FontSize="12" Foreground="#9E8FC0" TextTrimming="CharacterEllipsis"/>
+                                            <TextBlock Grid.Column="1" Text="{Binding CarId}"
+                                                       FontSize="12" Foreground="#2A1B5E"/>
+                                            <TextBlock Grid.Column="2" Text="{Binding TechnicianName}"
+                                                       FontWeight="SemiBold" FontSize="12" Foreground="#2A1B5E" TextTrimming="CharacterEllipsis"/>
+                                            <TextBlock Grid.Column="3"
+                                                       Text="{Binding StartDate, StringFormat='{}{0:MM/dd/yy HH:mm}'}"
+                                                       FontSize="11" Foreground="#6B5A9E"/>
+                                            <Border Grid.Column="4" CornerRadius="8" Padding="8,3" HorizontalAlignment="Left">
+                                                <Border.Style>
+                                                    <Style TargetType="Border">
+                                                        <Setter Property="Background" Value="#FFF0F0"/>
+                                                        <Style.Triggers>
+                                                            <DataTrigger Binding="{Binding Status}" Value="Completed">
+                                                                <Setter Property="Background" Value="#EDFBF0"/>
+                                                            </DataTrigger>
+                                                        </Style.Triggers>
+                                                    </Style>
+                                                </Border.Style>
+                                                <TextBlock Text="{Binding Status}" FontSize="10" FontWeight="SemiBold">
+                                                    <TextBlock.Style>
+                                                        <Style TargetType="TextBlock">
+                                                            <Setter Property="Foreground" Value="#C0304A"/>
+                                                            <Style.Triggers>
+                                                                <DataTrigger Binding="{Binding Status}" Value="Completed">
+                                                                    <Setter Property="Foreground" Value="#2E7D52"/>
+                                                                </DataTrigger>
+                                                            </Style.Triggers>
+                                                        </Style>
+                                                    </TextBlock.Style>
+                                                </TextBlock>
+                                            </Border>
+                                        </Grid>
+                                    </DataTemplate>
+                                </ListView.ItemTemplate>
+                            </ListView>
+                        </Grid>
                     </Border>
-                    <TextBlock Text="Maintenance" FontSize="24" FontWeight="Bold" Foreground="{StaticResource TextDark}" HorizontalAlignment="Center" Margin="0,0,0,8"/>
-                    <TextBlock Text="Manage car maintenance and service records." FontSize="13" Foreground="{StaticResource TextMuted}" HorizontalAlignment="Center" TextAlignment="Center" Margin="0,0,0,28"/>
-                    <Border HorizontalAlignment="Center" CornerRadius="12" Padding="20,10" Margin="0,0,0,16">
-                        <Border.Background>
-                            <LinearGradientBrush StartPoint="0,0" EndPoint="1,1">
-                                <GradientStop Color="#D4C5F0" Offset="0"/>
-                                <GradientStop Color="#C9B8E8" Offset="1"/>
-                            </LinearGradientBrush>
-                        </Border.Background>
-                        <StackPanel Orientation="Horizontal">
-                            <TextBlock Text="🚧 " FontSize="14" VerticalAlignment="Center"/>
-                            <TextBlock Text="Work in progress — coming soon" FontSize="13" FontWeight="SemiBold" Foreground="{StaticResource TextMedium}" VerticalAlignment="Center"/>
-                        </StackPanel>
-                    </Border>
-                    <Button Command="{Binding BackCommand}" 
-        HorizontalAlignment="Center"
-        Style="{StaticResource RoleCardButtonStyle}">
-                        <Border CornerRadius="12" Padding="20,10" Cursor="Hand">
-                            <Border.Background>
-                                <LinearGradientBrush StartPoint="0,0" EndPoint="1,0">
-                                    <GradientStop Color="LavenderBlush" Offset="0"/>
-                                    <GradientStop Color="#D4C5F0" Offset="1"/>
-                                </LinearGradientBrush>
-                            </Border.Background>
-                            <StackPanel Orientation="Horizontal">
-                                <TextBlock Text="← " FontSize="14" 
-                       Foreground="{StaticResource TextMedium}" VerticalAlignment="Center"/>
-                                <TextBlock Text="Back to Dashboard" FontSize="13" FontWeight="SemiBold"
-                       Foreground="{StaticResource TextMedium}" VerticalAlignment="Center"/>
+
+                    <Border Grid.Column="2" CornerRadius="22" Background="White">
+                        <Border.Effect>
+                            <DropShadowEffect Color="#C8B6FF" BlurRadius="32" ShadowDepth="0" Opacity="0.20"/>
+                        </Border.Effect>
+                        <Grid Margin="20,16,20,16">
+                            <Grid.RowDefinitions>
+                                <RowDefinition Height="Auto"/>
+                                <RowDefinition Height="12"/>
+                                <RowDefinition Height="Auto"/>
+                                <RowDefinition Height="10"/>
+                                <RowDefinition Height="Auto"/>
+                                <RowDefinition Height="10"/>
+                                <RowDefinition Height="Auto"/>
+                                <RowDefinition Height="10"/>
+                                <RowDefinition Height="Auto"/>
+                                <RowDefinition Height="*" MinHeight="20"/>
+                                <RowDefinition Height="Auto"/>
+                                <RowDefinition Height="8"/>
+                                <RowDefinition Height="Auto"/>
+                            </Grid.RowDefinitions>
+
+                            <StackPanel Grid.Row="0">
+                                <TextBlock Text="🔧  Maintenance" FontSize="14" FontWeight="Bold" Foreground="#2A1B5E"/>
+                                <TextBlock Text="Send a car to maintenance or complete one."
+                                           FontSize="10" Foreground="#9E8FC0" Margin="0,3,0,0"/>
                             </StackPanel>
-                        </Border>
-                    </Button>
-                </StackPanel>
-            </Border>
+
+                            <StackPanel Grid.Row="2">
+                                <TextBlock Text="Car ID" FontSize="10" FontWeight="SemiBold"
+                                           Foreground="#2A1B5E" Margin="0,0,0,4"/>
+
+                                <ComboBox ItemsSource="{Binding CarList}"
+                                              SelectedValuePath="CarId"
+                                              SelectedValue="{Binding SelectedCarId}"
+                                              Height="30" Background="Transparent" BorderThickness="0" FontSize="12">
+                                    <ComboBox.ItemTemplate>
+                                        <DataTemplate>
+                                            <TextBlock>
+                                                    <Run Text="{Binding CarId}"/>
+                                                    <Run Text=" — "/>
+                                                    <Run Text="{Binding Name}"/>
+                                                    <Run Text=" ("/>
+                                                    <Run Text="{Binding Status}"/>
+                                                    <Run Text=")"/>
+                                            </TextBlock>
+                                        </DataTemplate>
+                                    </ComboBox.ItemTemplate>
+                                </ComboBox>
+
+                            </StackPanel>
+
+                            <StackPanel Grid.Row="4">
+                                <TextBlock Text="Technician Name" FontSize="10" FontWeight="SemiBold"
+                                           Foreground="#2A1B5E" Margin="0,0,0,4"/>
+                                <Border CornerRadius="10" BorderThickness="1.5" BorderBrush="#E0D4FF" Padding="10,0">
+                                    <Border.Background>
+                                        <SolidColorBrush Color="#F8F4FF"/>
+                                    </Border.Background>
+                                    <TextBox Text="{Binding TechnicianName, UpdateSourceTrigger=PropertyChanged}"
+                                             Height="30" Background="Transparent" BorderThickness="0"
+                                             Foreground="#2A1B5E" FontSize="12" VerticalContentAlignment="Center"/>
+                                </Border>
+                            </StackPanel>
+
+                            <StackPanel Grid.Row="6">
+                                <TextBlock Text="Description" FontSize="10" FontWeight="SemiBold"
+                                           Foreground="#2A1B5E" Margin="0,0,0,4"/>
+                                <Border CornerRadius="10" BorderThickness="1.5" BorderBrush="#E0D4FF" Padding="10,6">
+                                    <Border.Background>
+                                        <SolidColorBrush Color="#F8F4FF"/>
+                                    </Border.Background>
+                                    <TextBox Text="{Binding Description, UpdateSourceTrigger=PropertyChanged}"
+                                             Height="50" Background="Transparent" BorderThickness="0"
+                                             Foreground="#2A1B5E" FontSize="12" TextWrapping="Wrap"
+                                             AcceptsReturn="True" VerticalContentAlignment="Top"/>
+                                </Border>
+                            </StackPanel>
+
+                            <Button Grid.Row="8" Content="🔧 Send to Maintenance"
+                                    Height="38" FontSize="12" FontWeight="Bold"
+                                    Foreground="White" BorderThickness="0" Cursor="Hand"
+                                    Command="{Binding SendToMaintCommand}"
+                                    Style="{StaticResource LoginButtonStyle}">
+                                <Button.Background>
+                                    <SolidColorBrush Color="#C0304A"/>
+                                </Button.Background>
+                            </Button>
+
+                            <Border Grid.Row="9" Height="1" Background="#E0D4FF"
+                                    VerticalAlignment="Center" Margin="0,0"/>
+
+                            <StackPanel Grid.Row="10">
+                                <TextBlock Text="Completion Cost ($)" FontSize="10" FontWeight="SemiBold"
+                                           Foreground="#2A1B5E" Margin="0,2,0,15"/>
+                                <Border CornerRadius="10" BorderThickness="1.5" BorderBrush="#E0D4FF" Padding="10,0" Background="#F8F4FF">
+                                    <TextBox Text="{Binding CompletionCost, UpdateSourceTrigger=PropertyChanged}"
+                                             Height="30" Background="Transparent" BorderThickness="0" Margin=" 0,0,0,0"
+                                             Foreground="#2A1B5E" FontSize="12" VerticalContentAlignment="Center"/>
+                                </Border>
+                            </StackPanel>
+
+                            <Button Grid.Row="12" Content="✅ Complete Maintenance" Margin="0,40,0,0"
+                                    Height="38" FontSize="12" FontWeight="Bold"
+                                    VerticalAlignment="Bottom"
+                                    Foreground="White" BorderThickness="0" Cursor="Hand"
+                                    Command="{Binding CompleteCommand}"
+                                    Style="{StaticResource LoginButtonStyle}">
+                                <Button.Background>
+                                    <LinearGradientBrush StartPoint="0,0" EndPoint="1,0">
+                                        <GradientStop Color="#8A2BE2" Offset="0"/>
+                                        <GradientStop Color="#6A1FBB" Offset="1"/>
+                                    </LinearGradientBrush>
+                                </Button.Background>
+                            </Button>
+                        </Grid>
+                    </Border>
+                </Grid>
+            </ScrollViewer>
         </Grid>
     </Viewbox>
 </Window>

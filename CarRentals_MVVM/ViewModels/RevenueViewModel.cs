@@ -1,45 +1,82 @@
-﻿using System.Windows.Input;
+﻿using System;
+using System.Collections.ObjectModel;
+using System.Linq;
+using System.Windows;
+using System.Windows.Input;
 using CarRentals_MVVM.Commands;
+using CarRentals_MVVM.Models;
 using CarRentals_MVVM.Services;
 
 namespace CarRentals_MVVM.ViewModels
 {
-    /// <summary>
-    /// ViewModel for RevenueWindow.xaml.
-    /// Placeholder — full revenue analytics planned for a future release.
-    /// Connected to: RevenueWindow.xaml (View),
-    /// RevenueWindow.xaml.cs (sets DataContext),
-    /// AdminDashboard (navigates back here on Back).
-    /// </summary>
     public class RevenueViewModel : ObservableObject
     {
-        // The logged-in admin's user ID
         private readonly string _userId;
-
-        /// <summary>
-        /// Label shown in the top-right badge (e.g. "Agent: A001").
-        /// </summary>
         public string UserLabel { get; }
 
-        /// <summary>
-        /// Navigates back to AdminDashboard.
-        /// Bound to the Back button in RevenueWindow.xaml.
-        /// </summary>
-        public ICommand BackCommand { get; }
+        public ObservableCollection<RentalModel> AllRentals { get; } = new();
 
-        /// <summary>
-        /// Initializes the Revenue ViewModel for the given admin.
-        /// </summary>
-        /// <param name="userId">The logged-in admin's user ID.</param>
+        private decimal _totalRevenue;
+        public decimal TotalRevenue
+        {
+            get => _totalRevenue;
+            set { _totalRevenue = value; OnPropertyChanged(); }
+        }
+
+        private decimal _avgPerRental;
+        public decimal AvgPerRental
+        {
+            get => _avgPerRental;
+            set { _avgPerRental = value; OnPropertyChanged(); }
+        }
+
+        private int _totalRentals;
+        public int TotalRentals
+        {
+            get => _totalRentals;
+            set { _totalRentals = value; OnPropertyChanged(); }
+        }
+
+        private int _activeRentals;
+        public int ActiveRentals
+        {
+            get => _activeRentals;
+            set { _activeRentals = value; OnPropertyChanged(); }
+        }
+
+        public ICommand BackCommand { get; }
+        public ICommand ExportReportCommand { get; }
+
         public RevenueViewModel(string userId)
         {
             _userId = userId;
             UserLabel = $"Agent: {userId}";
 
-            // Navigate back to the admin dashboard
             BackCommand = new RelayCommand(_ =>
+                NavigationService.Navigate(new View.AdminDashboard(_userId)));
+
+            ExportReportCommand = new RelayCommand(_ =>
             {
-                NavigationService.Navigate(new View.AdminDashboard(_userId));
+                CarDataService.GenerateRevenueReport(
+                    AllRentals.ToList(), TotalRevenue, AvgPerRental);
+                MessageBox.Show("Revenue report saved to Admin/RevenueReports folder.",
+                    "Exported", MessageBoxButton.OK, MessageBoxImage.Information);
+            });
+
+            Task.Run(async () =>
+            {
+                var rentals = await CarDataService.GetAllRentals();
+                Application.Current.Dispatcher.Invoke(() =>
+                {
+                    AllRentals.Clear();
+                    foreach (var r in rentals) AllRentals.Add(r);
+
+                    TotalRentals = AllRentals.Count;
+                    ActiveRentals = AllRentals.Count(r => r.Status == "Active");
+                    TotalRevenue = AllRentals.Sum(r => r.TotalAmount);
+                    AvgPerRental = TotalRentals > 0
+                        ? TotalRevenue / TotalRentals : 0;
+                });
             });
         }
     }

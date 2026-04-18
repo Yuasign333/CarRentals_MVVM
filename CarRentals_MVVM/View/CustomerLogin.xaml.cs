@@ -25,5 +25,7 @@ namespace CarRentals_MVVM.View
             // and which dashboard to navigate to on success.
             this.DataContext = new LoginViewModel("Customer");
         }
+
+    
     }
 }

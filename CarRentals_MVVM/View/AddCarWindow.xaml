@@ -305,8 +305,12 @@
                                 <StackPanel Margin="0,0,0,10">
                                     <TextBlock Text="Status" FontSize="11" FontWeight="SemiBold"
                                Foreground="#2A1B5E" Margin="0,0,0,5"/>
-                                    <ComboBox SelectedValue="{Binding NewStatus}" SelectedValuePath="Content"
-                              Height="32" Background="Transparent" BorderThickness="0" FontSize="12">
+                                    <ComboBox SelectedValue="{Binding NewStatus, Mode=TwoWay, UpdateSourceTrigger=PropertyChanged}" 
+          SelectedValuePath="Content"
+          Height="32" 
+          Background="Transparent" 
+          BorderThickness="0" 
+          FontSize="12">
                                         <ComboBoxItem Content="Available"/>
                                         <ComboBoxItem Content="Rented"/>
                                         <ComboBoxItem Content="Maintenance"/>

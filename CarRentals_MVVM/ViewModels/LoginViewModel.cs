@@ -41,6 +41,8 @@ namespace CarRentals_MVVM.ViewModels
         /// </summary>
         public ICommand ForgotPasswordCommand { get; }
 
+        public ICommand SignUpCommand { get; }
+
         // ── Error display properties ───────────────────────────────────────────
 
         private bool _errorVisible = false;
@@ -90,6 +92,7 @@ namespace CarRentals_MVVM.ViewModels
             LoginCommand = new RelayCommand(ExecuteLogin);
             BackCommand = new RelayCommand(ExecuteBack);
             ForgotPasswordCommand = new RelayCommand(ExecuteForgotPassword);
+            SignUpCommand = new RelayCommand(_ => NavigationService.Navigate(new View.SignUpWindow()));
         }
 
         /// <summary>
@@ -106,8 +109,14 @@ namespace CarRentals_MVVM.ViewModels
         {
             // Trusted_Connection=True replacement on user id and pasword if using laptop
 
-            string connectionString = @"Server=CCL2-12\MSSQLSERVER01;Database=RENTAL_REVS_DATABASE; 
-        User Id=sa;Password=ccl2;TrustServerCertificate=True;";
+            // for laptop
+            string connectionString = @"Server=DESKTOP-8P1VJSE;Database=RENTAL_REVS_DATABASE;Trusted_Connection=True;TrustServerCertificate=True;";
+
+
+            //For school pc
+
+            //    string connectionString = @"Server=CCL2-12\MSSQLSERVER01;Database=RENTAL_REVS_DATABASE; 
+            //User Id=sa;Password=ccl2;TrustServerCertificate=True;";
 
             // Validate credentials based on the user's role
             bool isValid = false;
@@ -161,16 +170,6 @@ namespace CarRentals_MVVM.ViewModels
 
           
 
-            //if (CurrentUser.Role == "Admin")
-            //{
-            //    isValid = CurrentUser.UserID.Trim() == "A001"
-            //           && CurrentUser.Password.Trim() == "admin123";
-            //}
-            //else
-            //{
-            //    isValid = CurrentUser.UserID.Trim() == "C001"
-            //           && CurrentUser.Password.Trim() == "customer123";
-            //}
 
             if (isValid)
             {
@@ -218,12 +217,7 @@ namespace CarRentals_MVVM.ViewModels
         /// </summary>
         private void ExecuteForgotPassword(object? parameter)
         {
-            MessageBox.Show(
-                "Instructions sent to your campus email.",
-                "Forgot Password",
-                MessageBoxButton.OK,
-                MessageBoxImage.Information
-            );
+            NavigationService.Navigate(new View.ForgotPasswordWindow(CurrentUser.Role));
         }
     }
 }

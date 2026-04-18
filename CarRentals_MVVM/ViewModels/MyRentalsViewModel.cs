@@ -53,17 +53,22 @@ namespace CarRentals_MVVM.ViewModels
             _userId = userId;
             UserLabel = $"Customer: {userId}";
 
-            // Navigate back to the customer dashboard
             BackCommand = new RelayCommand(_ =>
-            {
-                NavigationService.Navigate(new View.CustomerDashboard(_userId));
-            });
+                NavigationService.Navigate(new View.CustomerDashboard(_userId)));
 
-            // Load only the rentals that belong to this customer
-            foreach (var rental in CarDataService.GetByCustomer(userId))
+            // run sql query on a background thread to avoid freezing the UI, then update the Rentals collection on the main thread
+
+            Task.Run(async () =>
             {
-                Rentals.Add(rental);
-            }
+                var rentals = await CarDataService.GetRentalsByCustomer(_userId);
+
+                // Grabs the Dispatcher from whatever the Main Window is
+                System.Windows.Application.Current.MainWindow.Dispatcher.Invoke(() =>
+                {
+                    Rentals.Clear();
+                    foreach (var r in rentals) Rentals.Add(r);
+                });
+            });
         }
     }
 }
