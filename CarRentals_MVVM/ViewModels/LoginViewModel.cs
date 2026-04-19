@@ -107,98 +107,98 @@ namespace CarRentals_MVVM.ViewModels
         /// </param>
         private async void ExecuteLogin(object? parameter)
         {
-            // Trusted_Connection=True replacement on user id and pasword if using laptop
-
-            // for laptop
             string connectionString = @"Server=DESKTOP-8P1VJSE;Database=RENTAL_REVS_DATABASE;Trusted_Connection=True;TrustServerCertificate=True;";
+            // school pc: @"Server=CCL2-12\MSSQLSERVER01;Database=RENTAL_REVS_DATABASE;User Id=sa;Password=ccl2;TrustServerCertificate=True;"
 
-
-            //For school pc
-
-            //    string connectionString = @"Server=CCL2-12\MSSQLSERVER01;Database=RENTAL_REVS_DATABASE; 
-            //User Id=sa;Password=ccl2;TrustServerCertificate=True;";
-
-            // Validate credentials based on the user's role
             bool isValid = false;
-
-
-            // Extract the password from the PasswordBox if it was passed in
+            string matchedUserId = string.Empty;
+            string matchedFullName = string.Empty;
+            string matchedUsername = string.Empty;
 
             if (parameter is PasswordBox passwordBox)
-            {
                 CurrentUser.Password = passwordBox.Password;
-            }
 
-            // Validation: If there are spaces, fail immediately without calling the DB
-
-            if (CurrentUser.UserID.Contains(" ") || CurrentUser.Password.Contains(" "))
+            if (string.IsNullOrWhiteSpace(CurrentUser.UserID) ||
+                CurrentUser.UserID.Contains(" ") ||
+                CurrentUser.Password.Contains(" "))
             {
-                ErrorMessage = "Spaces are not allowed in credentials.";
+                ErrorMessage = "Username cannot be empty or contain spaces.";
                 ErrorVisible = true;
                 return;
             }
 
-            //' OR '1'='1  || ' OR '1'='1' -- One of the text to bypass username or password
-
             try
             {
                 using SqlConnection connection = new SqlConnection(connectionString);
+                await connection.OpenAsync();
+
+                if (CurrentUser.Role == "Admin")
                 {
-                    string query = "SELECT * FROM Users WHERE UserID = @username AND Password = @password"; // Pass parameters to ensure bypass prevention
-
-                    using (SqlCommand command = new SqlCommand(query, connection))
+                    string query = "SELECT * FROM Users WHERE UserID = @username AND Password = @password";
+                    using var cmd = new SqlCommand(query, connection);
+                    cmd.Parameters.AddWithValue("@username", CurrentUser.UserID);
+                    cmd.Parameters.AddWithValue("@password", CurrentUser.Password);
+                    using var reader = await cmd.ExecuteReaderAsync();
+                    if (reader.HasRows)
                     {
-                        //prevent injection attacks
-                        command.Parameters.AddWithValue("@username", CurrentUser.UserID);
-                        command.Parameters.AddWithValue("@password", CurrentUser.Password);
-                        await connection.OpenAsync();
-
-                        using (SqlDataReader reader =  await command.ExecuteReaderAsync())
-                        {
-                            if (reader.HasRows)
-                            {
-                                isValid = true;
-                            }
-                        }
+                        isValid = true;
+                        matchedUserId = CurrentUser.UserID;
+                    }
+                }
+                else
+                {
+                    // Customer: join Customers + Users tables, login by Username
+                    string query = @"
+                SELECT c.CustomerID, c.FullName, c.Username
+                FROM Customers c
+                INNER JOIN Users u ON u.UserID = c.CustomerID
+                WHERE c.Username = @username AND u.Password = @password";
+                    using var cmd = new SqlCommand(query, connection);
+                    cmd.Parameters.AddWithValue("@username", CurrentUser.UserID);
+                    cmd.Parameters.AddWithValue("@password", CurrentUser.Password);
+                    using var reader = await cmd.ExecuteReaderAsync();
+                    if (await reader.ReadAsync())
+                    {
+                        isValid = true;
+                        matchedUserId = reader["CustomerID"].ToString() ?? "";
+                        matchedFullName = reader["FullName"].ToString() ?? "";
+                        matchedUsername = reader["Username"].ToString() ?? "";
                     }
                 }
             }
             catch (Exception ex)
             {
                 MessageBox.Show("Database connection failed: " + ex.Message);
+                return;
             }
-
-          
-
 
             if (isValid)
             {
-                // Clear any previous error and navigate to the correct dashboard
                 ErrorVisible = false;
 
                 if (CurrentUser.Role == "Admin")
                 {
-                    var dashboard = new View.AdminDashboard(CurrentUser.UserID);
-                    NavigationService.Navigate(dashboard);
+                    UserSession.UserId = matchedUserId;
+                    UserSession.Username = matchedUserId;
+                    UserSession.FullName = "Admin";
+                    UserSession.Role = "Admin";
+                    NavigationService.Navigate(new View.AdminDashboard(matchedUserId));
                 }
                 else
                 {
-                    var dashboard = new View.CustomerDashboard(CurrentUser.UserID);
-                    NavigationService.Navigate(dashboard);
+                    // Populate global session so all windows can access it
+                    UserSession.UserId = matchedUserId;
+                    UserSession.Username = matchedUsername;
+                    UserSession.FullName = matchedFullName;
+                    UserSession.Role = "Customer";
+                    NavigationService.Navigate(new View.CustomerDashboard(matchedUserId));
                 }
             }
             else
             {
-                // Show a role-appropriate error message with credential hint
-                if (CurrentUser.Role == "Admin")
-                {
-                    ErrorMessage = "Invalid Agent ID or password. Hint: A001 / admin123";
-                }
-                else
-                {
-                    ErrorMessage = "Invalid Customer ID or password. Hint: C001 / customer123";
-                }
-
+                ErrorMessage = CurrentUser.Role == "Admin"
+                    ? "Invalid Agent ID or password."
+                    : "Invalid username or password. Hint: use your registered Username.";
                 ErrorVisible = true;
             }
         }

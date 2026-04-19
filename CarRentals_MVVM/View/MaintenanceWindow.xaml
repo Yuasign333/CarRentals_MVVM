@@ -1,6 +1,11 @@
 ﻿<Window x:Class="CarRentals_MVVM.View.MaintenanceWindow"
         xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
         xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
+        xmlns:d="http://schemas.microsoft.com/expression/blend/2008"
+        xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
+        xmlns:vm="clr-namespace:CarRentals_MVVM.ViewModels"
+        mc:Ignorable="d"
+        d:DataContext="{d:DesignInstance Type=vm:MaintenanceDesignViewModel, IsDesignTimeCreatable=True}"
         Title="Rental Rev. — Maintenance"
         Height="620" Width="1020"
         WindowStartupLocation="CenterScreen" ResizeMode="CanResize">
@@ -281,8 +286,8 @@
                                     Style="{StaticResource LoginButtonStyle}">
                                 <Button.Background>
                                     <LinearGradientBrush StartPoint="0,0" EndPoint="1,0">
-                                        <GradientStop Color="#8A2BE2" Offset="0"/>
-                                        <GradientStop Color="#6A1FBB" Offset="1"/>
+                                        <GradientStop Color="#FFA4A4DE" Offset="0"/>
+                                        <GradientStop Color="#6A1FBB" Offset="1.5"/>
                                     </LinearGradientBrush>
                                 </Button.Background>
                             </Button>

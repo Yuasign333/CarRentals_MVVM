@@ -1,6 +1,11 @@
 ﻿<Window x:Class="CarRentals_MVVM.View.ProcessReturnWindow"
         xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
         xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
+        xmlns:d="http://schemas.microsoft.com/expression/blend/2008"
+        xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
+        xmlns:vm="clr-namespace:CarRentals_MVVM.ViewModels"
+        mc:Ignorable="d"
+        d:DataContext="{d:DesignInstance Type=vm:ProcessReturnDesignViewModel, IsDesignTimeCreatable=True}"
         Title="Rental Rev. — Process Return"
         Height="620" Width="1020"
         WindowStartupLocation="CenterScreen" ResizeMode="CanResize">
@@ -219,8 +224,8 @@
                                     </Grid>
                                 </StackPanel>
                             </Border>
-                            
-                            
+
+
 
                             <Button Grid.Row="4" Content="✅ Confirm Return"
                                     Height="44" FontSize="13" FontWeight="Bold"
@@ -229,8 +234,9 @@
                                     Style="{StaticResource LoginButtonStyle}">
                                 <Button.Background>
                                     <LinearGradientBrush StartPoint="0,0" EndPoint="1,0">
-                                        <GradientStop Color="#8A2BE2" Offset="0"/>
-                                        <GradientStop Color="#6A1FBB" Offset="1"/>
+                                        <GradientStop Color="#4158D0" Offset="0"/>
+                                        <GradientStop Color="MediumPurple" Offset="0.5"/>
+                                        <GradientStop Color="Purple" Offset="1"/>
                                     </LinearGradientBrush>
                                 </Button.Background>
                             </Button>
@@ -238,15 +244,15 @@
                                 <TextBlock Text="Actual Hours Returned:" FontSize="13"
 Foreground="{StaticResource TextDark}"
 VerticalAlignment="Center" Margin="0,0,12,0"/>
-                                <Border Style="{StaticResource InputBorderStyle}" Width="100">
+                                <Border Style="{StaticResource InputBorderStyle}" Width="90">
                                     <TextBox Text="{Binding ActualHours, UpdateSourceTrigger=PropertyChanged}"
-  Style="{StaticResource InputTextBoxStyle}" Height="35" TextChanged="TextBox_TextChanged"/>
+  Style="{StaticResource InputTextBoxStyle}" Height="34" TextChanged="TextBox_TextChanged" Margin="0,0,2,0"/>
                                 </Border>
                             </StackPanel>
 
                         </Grid>
                     </Border>
-                    
+
                 </Grid>
             </Grid>
         </Viewbox>

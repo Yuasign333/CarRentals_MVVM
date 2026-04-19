@@ -38,9 +38,33 @@ namespace CarRentals_MVVM.Services
         /// </summary>
         public static List<RentalModel> Rentals { get; } = new();
 
-    
 
-        
+        public static async Task<CustomerModel?> GetCustomerByUsername(string username)
+        {
+            try
+            {
+                using var conn = new SqlConnection(_conn);
+                await conn.OpenAsync();
+                using var cmd = new SqlCommand(
+                    "SELECT * FROM Customers WHERE Username = @u", conn);
+                cmd.Parameters.AddWithValue("@u", username);
+                using var reader = await cmd.ExecuteReaderAsync();
+                if (await reader.ReadAsync())
+                {
+                    return new CustomerModel
+                    {
+                        CustomerId = reader["CustomerID"].ToString() ?? "",
+                        FullName = reader["FullName"].ToString() ?? "",
+                        Username = reader["Username"].ToString() ?? "",
+                        ContactNumber = reader["ContactNumber"].ToString() ?? "",
+                        LicenseNumber = reader["LicenseNumber"].ToString() ?? ""
+                    };
+                }
+            }
+            catch (Exception ex) { MessageBox.Show("GetCustomerByUsername failed: " + ex.Message); }
+            return null;
+        }
+
         //If driver duplicates
         public static bool IsDriverNameInUse(string driverName)
         {

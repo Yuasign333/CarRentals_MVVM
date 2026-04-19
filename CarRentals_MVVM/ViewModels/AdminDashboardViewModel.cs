@@ -116,7 +116,8 @@ namespace CarRentals_MVVM.ViewModels
         /// <summary>Prompts for confirmation then logs out to ChooseRole.</summary>
         public ICommand LogoutCommand { get; }
 
-  
+        public ICommand ChatCommand { get; }
+
 
 
         /// <summary>
@@ -164,10 +165,6 @@ namespace CarRentals_MVVM.ViewModels
                 NavigationService.Navigate(new View.RevenueWindow(_userId));
             });
 
-          
-
-
-
 
             // Logout — ask for confirmation before returning to role selection
             LogoutCommand = new RelayCommand(_ =>
@@ -186,6 +183,12 @@ namespace CarRentals_MVVM.ViewModels
                 {
                     NavigationService.Navigate(new View.ChooseRole());
                 }
+            });
+
+            ChatCommand = new RelayCommand(_ =>
+            {
+                var chat = new View.ChatWindow(_userId, "Admin");
+                chat.Show();
             });
         }
     }

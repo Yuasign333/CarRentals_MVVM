@@ -3,70 +3,54 @@ using System.Windows.Input;
 using CarRentals_MVVM.Commands;
 using CarRentals_MVVM.Models;
 using CarRentals_MVVM.Services;
+using System.Windows;
 
 namespace CarRentals_MVVM.ViewModels
 {
-    /// <summary>
-    /// ViewModel for MyRentalsWindow.xaml.
-    /// Loads and displays all rental transactions that belong to the logged-in customer.
-    /// Connected to: MyRentalsWindow.xaml (View),
-    /// MyRentalsWindow.xaml.cs (sets DataContext to this ViewModel),
-    /// CarDataService.GetByCustomer() (data source),
-    /// BrowseCarsViewModel.ConfirmCommand (creates the rentals shown here).
-    /// </summary>
     public class MyRentalsViewModel : ObservableObject
     {
-        // The logged-in customer's user ID
         private readonly string _userId;
 
-        /// <summary>
-        /// Label shown in the top-right of the window (e.g. "Customer: C001").
-        /// Bound to the user badge TextBlock in MyRentalsWindow.xaml.
-        /// </summary>
         public string UserLabel { get; }
 
-        /// <summary>
-        /// The list of all rentals made by the current customer.
-        /// Populated from CarDataService.GetByCustomer() on initialization.
-        /// Bound to the rentals list in MyRentalsWindow.xaml.
-        /// </summary>
         public ObservableCollection<RentalModel> Rentals { get; } = new();
 
-        /// <summary>
-        /// Returns true if the customer has at least one rental.
-        /// Used to toggle the empty-state message vs. the rentals list in the XAML.
-        /// </summary>
-        public bool HasRentals => Rentals.Count > 0;
+        // ← Must be a full property with OnPropertyChanged, NOT computed
+        private bool _hasRentals = false;
+        public bool HasRentals
+        {
+            get => _hasRentals;
+            set { _hasRentals = value; OnPropertyChanged(); }
+        }
 
-        /// <summary>
-        /// Navigates back to the Customer Dashboard.
-        /// Bound to the Back button in MyRentalsWindow.xaml.
-        /// </summary>
         public ICommand BackCommand { get; }
 
-        /// <summary>
-        /// Initializes the My Rentals view with the customer's rental history.
-        /// </summary>
-        /// <param name="userId">The logged-in customer's ID (e.g. "C001").</param>
         public MyRentalsViewModel(string userId)
         {
             _userId = userId;
-            UserLabel = $"Customer: {userId}";
+
+            // Show username from session if available
+            string displayName = !string.IsNullOrEmpty(UserSession.Username)
+                ? UserSession.Username : userId;
+            UserLabel = $"Customer: {displayName}";
 
             BackCommand = new RelayCommand(_ =>
                 NavigationService.Navigate(new View.CustomerDashboard(_userId)));
 
-            // run sql query on a background thread to avoid freezing the UI, then update the Rentals collection on the main thread
-
             Task.Run(async () =>
             {
-                var rentals = await CarDataService.GetRentalsByCustomer(_userId);
+                // Always query by the actual CustomerID (C001 etc), not username
+                string queryId = !string.IsNullOrEmpty(UserSession.UserId)
+                    ? UserSession.UserId : userId;
 
-                // Grabs the Dispatcher from whatever the Main Window is
-                System.Windows.Application.Current.MainWindow.Dispatcher.Invoke(() =>
+                var rentals = await CarDataService.GetRentalsByCustomer(queryId);
+
+            
+                Application.Current.Dispatcher.Invoke(() =>
                 {
                     Rentals.Clear();
                     foreach (var r in rentals) Rentals.Add(r);
+                    HasRentals = Rentals.Count > 0; // ← triggers OnPropertyChanged
                 });
             });
         }

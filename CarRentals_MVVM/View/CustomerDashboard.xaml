@@ -77,25 +77,25 @@
                         </Border>
                     </Button>
 
-                    <!-- Rent a Car -->
-                    <Button Command="{Binding RentCarCommand}" Padding="0" Margin="0,0,0,4">
+
+                    <!-- My Account -->
+                    <Button Command="{Binding MyAccountCommand}" Padding="0" Margin="0,0,0,4">
                         <Button.Template>
                             <ControlTemplate TargetType="Button">
                                 <ContentPresenter/>
                             </ControlTemplate>
                         </Button.Template>
                         <Border CornerRadius="14" Padding="14,12" Cursor="Hand"
-                                Style="{StaticResource SidebarItemStyle}">
+            Style="{StaticResource SidebarItemStyle}">
                             <Border.Background>
                                 <SolidColorBrush Color="#00FFFFFF"/>
                             </Border.Background>
                             <StackPanel Orientation="Horizontal">
-                                <TextBlock Text="🔑" Margin="0,0,8,0"/>
-                                <TextBlock Text="Rent a Car" FontWeight="Bold" Foreground="White"/>
+                                <TextBlock Text="👤" Margin="0,0,8,0"/>
+                                <TextBlock Text="My Account" FontWeight="Bold" Foreground="White"/>
                             </StackPanel>
                         </Border>
                     </Button>
-
                     <!-- My Rentals -->
                     <Button Command="{Binding MyRentalsCommand}" Padding="0" Margin="0,0,0,4">
                         <Button.Template>
@@ -253,7 +253,7 @@
                         </Button>
 
                         <!-- Rent a Car card -->
-                        <Button Command="{Binding RentCarCommand}" Padding="0" Margin="0,0,18,18">
+                        <Button Command="{Binding MyAccountCommand}" Padding="0" Margin="0,0,18,18">
                             <Button.Template>
                                 <ControlTemplate TargetType="Button">
                                     <ContentPresenter/>
@@ -272,41 +272,39 @@
                                 </Border.Effect>
                                 <Grid Margin="18">
                                     <StackPanel>
-                                        <TextBlock Text="🔑" FontSize="26"/>
-                                        <TextBlock Text="Rent a Car" FontWeight="Bold" Margin="0,12,0,2"/>
-                                        <TextBlock Text="Start a new booking" FontSize="12" Foreground="#5F5A87"/>
+                                        <TextBlock Text="👤" FontSize="26"/>
+                                        <TextBlock Text="My Account" FontWeight="Bold" Margin="0,12,0,2"/>
+                                        <TextBlock Text="Manage your Account and" FontSize="12" Foreground="#5F5A87" Margin=" 0,-3,0,4"/>
+                                        <TextBlock Text="Rental History" FontSize="12" Foreground="#5F5A87" Margin=" 0,-3,0,0"/>
                                     </StackPanel>
                                 </Grid>
                             </Border>
                         </Button>
+                        <!-- Chat Support card -->
+                        <Border Width="210" Height="130" CornerRadius="20" Cursor="Hand"
+        Style="{StaticResource DashCardStyle}" Margin="0,0,0,20">
+                            <Border.InputBindings>
+                                <MouseBinding MouseAction="LeftClick" Command="{Binding ChatCommand}"/>
+                            </Border.InputBindings>
+                            <Border.Background>
+                                <LinearGradientBrush StartPoint="0,0" EndPoint="1,1">
+                                    <GradientStop Color="White" Offset="0.01"/>
+                                    <GradientStop Color="Lavender" Offset="0.4"/>
+                                </LinearGradientBrush>
+                            </Border.Background>
+                            <Border.Effect>
+                                <DropShadowEffect Color="#C8B6FF" BlurRadius="30" ShadowDepth="0" Opacity="0.35"/>
+                            </Border.Effect>
+                            <Grid Margin="18">
+                                <StackPanel>
+                                    <TextBlock Text="💬" FontSize="26"/>
+                                    <TextBlock Text="Chat Support" FontWeight="Bold" Margin="0,12,0,2"/>
+                                    <TextBlock Text="Get help now" FontSize="12" Foreground="#5F5A87"/>
+                                </StackPanel>
+                            </Grid>
+                        </Border>
 
-                        <!-- My Rentals card -->
-                        <Button Command="{Binding MyRentalsCommand}" Padding="0" Margin="0,0,18,18">
-                            <Button.Template>
-                                <ControlTemplate TargetType="Button">
-                                    <ContentPresenter/>
-                                </ControlTemplate>
-                            </Button.Template>
-                            <Border Width="210" Height="130" CornerRadius="20" Cursor="Hand"
-                                    Style="{StaticResource DashCardStyle}">
-                                <Border.Background>
-                                    <LinearGradientBrush StartPoint="0,0" EndPoint="1,1">
-                                        <GradientStop Color="White" Offset="0.01"/>
-                                        <GradientStop Color="Lavender" Offset="0.4"/>
-                                    </LinearGradientBrush>
-                                </Border.Background>
-                                <Border.Effect>
-                                    <DropShadowEffect Color="#C8B6FF" BlurRadius="30" ShadowDepth="0" Opacity="0.35"/>
-                                </Border.Effect>
-                                <Grid Margin="18">
-                                    <StackPanel>
-                                        <TextBlock Text="📋" FontSize="26"/>
-                                        <TextBlock Text="My Rentals" FontWeight="Bold" Margin="0,12,0,2"/>
-                                        <TextBlock Text="View your rental history" FontSize="12" Foreground="#5F5A87"/>
-                                    </StackPanel>
-                                </Grid>
-                            </Border>
-                        </Button>
+                        
                     </WrapPanel>
                 </Grid>
             </Grid>

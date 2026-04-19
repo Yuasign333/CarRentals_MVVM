@@ -380,6 +380,31 @@
                         </Button>
                     </WrapPanel>
 
+
+                    <Border Width="210" Height="130" CornerRadius="20" Cursor="Hand"
+        Style="{StaticResource DashCardStyle}" Margin="226,165,476,61" Grid.Row="2">
+                        <Border.InputBindings>
+                            <MouseBinding MouseAction="LeftClick" Command="{Binding ChatCommand}"/>
+                        </Border.InputBindings>
+                        <Border.Background>
+                            <LinearGradientBrush StartPoint="0,0" EndPoint="1,1">
+                                <GradientStop Color="White" Offset="0.01"/>
+                                <GradientStop Color="Lavender" Offset="0.4"/>
+                            </LinearGradientBrush>
+                        </Border.Background>
+                        <Border.Effect>
+                            <DropShadowEffect Color="#C8B6FF" BlurRadius="30" ShadowDepth="0" Opacity="0.35"/>
+                        </Border.Effect>
+                        <Grid Margin="18">
+                            <StackPanel>
+                                <TextBlock Text="💬" FontSize="26"/>
+                                <TextBlock Text="Chat Support" FontWeight="Bold" Margin="0,12,0,2"/>
+                                <TextBlock Text="Get help now" FontSize="12" Foreground="#5F5A87"/>
+                            </StackPanel>
+                        </Grid>
+                    </Border>
+
+
                     <!-- Revenue card below Fleet Status -->
                     <Border Width="210" Height="130" CornerRadius="20"
                             Margin="0,115,702,10" Grid.Row="2">
@@ -410,6 +435,15 @@
                             </Border>
                         </Button>
                     </Border>
+                    
+                    
+                    
+                    
+                    
+                    
+                    
+                    
+                    
                     <Border Width="210" Height="130" CornerRadius="20"
          Margin="0,115,702,10" Grid.Row="2">
                         <Button Command="{Binding TotalCarStatusCommand }" Padding="0">
@@ -420,6 +454,8 @@
                             </Button.Template>
                         </Button>
                     </Border>
+                    
+                    
 
 
 

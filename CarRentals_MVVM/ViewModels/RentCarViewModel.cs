@@ -119,7 +119,9 @@ namespace CarRentals_MVVM.ViewModels
         {
             _userId = userId;
             SelectedCar = car;
-            UserLabel = $"Customer: {userId}";
+            UserLabel = !string.IsNullOrEmpty(UserSession.Username)
+            ? $"Customer: {UserSession.Username}"
+            : $"Customer: {userId}";
 
             BackCommand = new RelayCommand(_ =>
                 NavigationService.Navigate(new View.BrowseCarsWindow(_userId)));
@@ -152,7 +154,8 @@ namespace CarRentals_MVVM.ViewModels
                     var rental = new RentalModel
                     {
                         RentalId = rentalId,
-                        CustomerId = _userId,
+                        CustomerId = !string.IsNullOrEmpty(UserSession.UserId)
+                     ? UserSession.UserId : _userId,  // ← KEY FIX
                         CarId = SelectedCar.CarId,
                         CarName = SelectedCar.Name,
                         DriverName = DriverName,
@@ -164,7 +167,6 @@ namespace CarRentals_MVVM.ViewModels
                         RentalDate = DateTime.Now,
                         Status = "Active"
                     };
-
                     await CarDataService.SaveRental(rental);
 
                     SelectedCar.Status = "Rented";
@@ -176,7 +178,7 @@ namespace CarRentals_MVVM.ViewModels
                         $"Booking confirmed!\nRental ID: {rental.RentalId}\nTotal: ${TotalDue:F2}\n\nReceipt saved.",
                         "Success", MessageBoxButton.OK, MessageBoxImage.Information);
 
-                    NavigationService.Navigate(new View.MyRentalsWindow(_userId));
+                    NavigationService.Navigate(new View.MyAccountWindow(_userId));
                 }
                 catch (Exception ex)
                 {

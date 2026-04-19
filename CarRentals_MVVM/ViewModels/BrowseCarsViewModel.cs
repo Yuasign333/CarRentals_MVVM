@@ -34,7 +34,9 @@ namespace CarRentals_MVVM.ViewModels
         public BrowseCarsViewModel(string userId)
         {
             _userId = userId;
-            UserLabel = $"Customer: {userId}";
+            UserLabel = !string.IsNullOrEmpty(UserSession.Username)
+       ? $"Customer: {UserSession.Username}"
+       : $"Customer: {userId}";
 
             BackCommand = new RelayCommand(_ =>
                 NavigationService.Navigate(new View.CustomerDashboard(_userId)));

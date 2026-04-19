@@ -71,7 +71,7 @@
                                 <TextBlock Text="👤" FontSize="13" VerticalAlignment="Center"
                                            Foreground="{StaticResource TextMuted}" Margin="0,0,6,0"/>
                                 <Border Width="1" Background="{StaticResource BorderInput}" Margin="0,2,8,2"/>
-                                <TextBlock Text="Customer ID" FontSize="13"
+                                <TextBlock Text="Username" FontSize="13"
                                            Foreground="{StaticResource TextMuted}" VerticalAlignment="Center"/>
                             </StackPanel>
                             <Border Margin="0,0,0,16"

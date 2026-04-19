@@ -118,21 +118,33 @@ namespace CarRentals_MVVM.ViewModels
                     ErrorVisible = true;
                     return;
                 }
-                if (string.IsNullOrWhiteSpace(NewPassword) || NewPassword.Length < 6)
+                if (string.IsNullOrWhiteSpace(NewPassword))
                 {
-                    ErrorMessage = "Password must be at least 6 characters.";
+                    ErrorMessage = "Please enter a new password.";
                     ErrorVisible = true;
                     return;
                 }
-                if (NewPassword != ConfirmPassword)
+                if (NewPassword.Length < 6)
                 {
-                    ErrorMessage = "Passwords do not match.";
+                    ErrorMessage = $"Password too short ({NewPassword.Length} chars). Minimum is 6 characters.";
                     ErrorVisible = true;
                     return;
                 }
                 if (NewPassword.Contains(" "))
                 {
                     ErrorMessage = "Password cannot contain spaces.";
+                    ErrorVisible = true;
+                    return;
+                }
+                if (string.IsNullOrWhiteSpace(ConfirmPassword))
+                {
+                    ErrorMessage = "Please confirm your new password.";
+                    ErrorVisible = true;
+                    return;
+                }
+                if (NewPassword != ConfirmPassword)
+                {
+                    ErrorMessage = "Passwords do not match.";
                     ErrorVisible = true;
                     return;
                 }
@@ -144,9 +156,7 @@ namespace CarRentals_MVVM.ViewModels
                 {
                     MessageBox.Show(
                         "Password reset successfully! You can now log in.",
-                        "Success",
-                        MessageBoxButton.OK,
-                        MessageBoxImage.Information);
+                        "Success", MessageBoxButton.OK, MessageBoxImage.Information);
 
                     if (_role == "Admin")
                         NavigationService.Navigate(new View.AdminLogin());
