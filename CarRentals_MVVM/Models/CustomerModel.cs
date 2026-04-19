@@ -12,6 +12,8 @@ namespace CarRentals_MVVM.Models
         private string _licenseNumber = string.Empty;
         private string _securityQuestion = string.Empty;
         private string _securityAnswer = string.Empty;
+        private string _profilePicturePath = string.Empty;
+     
 
         public string CustomerId
         {
@@ -53,6 +55,12 @@ namespace CarRentals_MVVM.Models
         {
             get => _securityAnswer;
             set { _securityAnswer = value; OnPropertyChanged(); }
+        }
+
+        public string ProfilePicturePath
+        {
+            get => _profilePicturePath;
+            set { _profilePicturePath = value; OnPropertyChanged(); }
         }
     }
 }

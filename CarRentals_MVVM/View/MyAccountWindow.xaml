@@ -82,47 +82,117 @@
                         <DropShadowEffect Color="#C8B6FF" BlurRadius="32" ShadowDepth="0" Opacity="0.20"/>
                     </Border.Effect>
                     <StackPanel Margin="24,28,24,24">
-                        <!-- Avatar -->
-                        <Border Width="80" Height="80" CornerRadius="40"
-                                HorizontalAlignment="Center" Margin="0,0,0,14">
-                            <Border.Background>
-                                <LinearGradientBrush StartPoint="0,0" EndPoint="1,1">
-                                    <GradientStop Color="#8A2BE2" Offset="0"/>
-                                    <GradientStop Color="#C9B8E8" Offset="1"/>
-                                </LinearGradientBrush>
-                            </Border.Background>
-                            <TextBlock Text="👤" FontSize="36" HorizontalAlignment="Center"
-                                       VerticalAlignment="Center"/>
-                        </Border>
 
-                        <TextBlock Text="{Binding FullName}" FontSize="16" FontWeight="Bold"
-                                   Foreground="#2A1B5E" HorizontalAlignment="Center"
+                        <Grid Width="100" Height="100" HorizontalAlignment="Center" Margin="0,0,0,16">
+                            <Border Width="90" Height="90" CornerRadius="45" ClipToBounds="True">
+                                <Border.Background>
+                                    <LinearGradientBrush StartPoint="0,0" EndPoint="1,1">
+                                        <GradientStop Color="#8A2BE2" Offset="0"/>
+                                        <GradientStop Color="#C9B8E8" Offset="1"/>
+                                    </LinearGradientBrush>
+                                </Border.Background>
+                                <Grid>
+                                    <Ellipse Fill="#C9B8E8" Stroke="#C9B8E8" StrokeThickness="2" />
+                                    <TextBlock Text="👤" FontSize="50" HorizontalAlignment="Center" VerticalAlignment="Center" />
+
+                                    <Ellipse Stroke="Lavender" StrokeThickness="2">
+                                        <Ellipse.Fill>
+                                            <ImageBrush ImageSource="{Binding ProfilePicturePath}" Stretch="UniformToFill" />
+                                        </Ellipse.Fill>
+                                    </Ellipse>
+
+                                </Grid>
+                            </Border>
+
+                            <Button Command="{Binding PickPictureCommand}" 
+                                    Width="26" Height="26" VerticalAlignment="Bottom" HorizontalAlignment="Right" 
+                                    Margin="0,0,5,5" Cursor="Hand" ToolTip="Change Photo">
+                                <Button.Template>
+                                    <ControlTemplate TargetType="Button">
+                                        <Border CornerRadius="13" Background="MediumPurple" BorderBrush="White" BorderThickness="2">
+                                            <TextBlock Text="📷" FontSize="11" HorizontalAlignment="Center" VerticalAlignment="Center" Foreground="White" Margin="0,0,0,1"/>
+                                        </Border>
+                                    </ControlTemplate>
+                                </Button.Template>
+                            </Button>
+                        </Grid>
+
+                        <TextBlock Text="{Binding FullName}" FontSize="16" FontWeight="Bold" 
+                                   Foreground="#2A1B5E" HorizontalAlignment="Center" 
                                    TextWrapping="Wrap" TextAlignment="Center" Margin="0,0,0,4"/>
-                        <TextBlock Text="{Binding Username}" FontSize="12"
-                                   Foreground="#7E74A6" HorizontalAlignment="Center" Margin="0,0,0,20"/>
+
+                        <Grid Margin="0,0,0,16" MinHeight="24">
+                            <StackPanel Orientation="Horizontal" HorizontalAlignment="Center">
+                                <StackPanel.Style>
+                                    <Style TargetType="StackPanel">
+                                        <Setter Property="Visibility" Value="Visible"/>
+                                        <Style.Triggers>
+                                            <DataTrigger Binding="{Binding IsEditingUsername}" Value="True">
+                                                <Setter Property="Visibility" Value="Collapsed"/>
+                                            </DataTrigger>
+                                        </Style.Triggers>
+                                    </Style>
+                                </StackPanel.Style>
+
+                                <TextBlock Text="{Binding Username}" FontSize="13" Foreground="#7E74A6" VerticalAlignment="Center"/>
+                                <Button Command="{Binding EditUsernameCommand}" Background="Transparent" BorderThickness="0" 
+                                        Margin="6,0,0,0" Cursor="Hand" ToolTip="Edit Username">
+                                    <TextBlock Text="✏️" FontSize="12"/>
+                                </Button>
+                            </StackPanel>
+
+                            <StackPanel Orientation="Horizontal" HorizontalAlignment="Center">
+                                <StackPanel.Style>
+                                    <Style TargetType="StackPanel">
+                                        <Setter Property="Visibility" Value="Collapsed"/>
+                                        <Style.Triggers>
+                                            <DataTrigger Binding="{Binding IsEditingUsername}" Value="True">
+                                                <Setter Property="Visibility" Value="Visible"/>
+                                            </DataTrigger>
+                                        </Style.Triggers>
+                                    </Style>
+                                </StackPanel.Style>
+
+                                <TextBox Text="{Binding NewUsername, UpdateSourceTrigger=PropertyChanged}" 
+                                         Width="110" Height="24" VerticalAlignment="Center" Padding="2"
+                                         Style="{StaticResource InputTextBoxStyle}"/>
+
+                                <Button Command="{Binding SaveUsernameCommand}" Background="Transparent" BorderThickness="0" 
+                                        Margin="6,0,0,0" Cursor="Hand" ToolTip="Save Changes">
+                                    <TextBlock Text="✔️" FontSize="12" Foreground="Green"/>
+                                </Button>
+
+                                <Button Command="{Binding CancelEditUsernameCommand}" Background="Transparent" BorderThickness="0" 
+                                        Margin="4,0,0,0" Cursor="Hand" ToolTip="Cancel">
+                                    <TextBlock Text="❌" FontSize="10" Foreground="Red"/>
+                                </Button>
+                            </StackPanel>
+                        </Grid>
+
+                        <Border Background="{StaticResource ColorErrorBg}" BorderBrush="{StaticResource ColorErrorBorder}"
+                                BorderThickness="1" CornerRadius="8" Padding="10,6" Margin="0,0,0,10"
+                                Visibility="{Binding ErrorVisible, Converter={StaticResource BoolToVisibility}}">
+                            <TextBlock Text="{Binding ErrorMessage}" Foreground="{StaticResource ColorError}"
+                                       FontSize="12" TextWrapping="Wrap" HorizontalAlignment="Center"/>
+                        </Border>
 
                         <Rectangle Height="1" Fill="#E0D4FF" Margin="0,0,0,16"/>
 
-                        <!-- Profile fields -->
                         <StackPanel Margin="0,0,0,10">
                             <TextBlock Text="Customer ID" FontSize="10" Foreground="#9E8FC0" Margin="0,0,0,3"/>
-                            <TextBlock Text="{Binding CustomerId}" FontSize="13"
-                                       FontWeight="SemiBold" Foreground="#2A1B5E"/>
+                            <TextBlock Text="{Binding CustomerId}" FontSize="13" FontWeight="SemiBold" Foreground="#2A1B5E"/>
                         </StackPanel>
                         <StackPanel Margin="0,0,0,10">
                             <TextBlock Text="Contact Number" FontSize="10" Foreground="#9E8FC0" Margin="0,0,0,3"/>
-                            <TextBlock Text="{Binding Contact}" FontSize="13"
-                                       FontWeight="SemiBold" Foreground="#2A1B5E"/>
+                            <TextBlock Text="{Binding Contact}" FontSize="13" FontWeight="SemiBold" Foreground="#2A1B5E"/>
                         </StackPanel>
                         <StackPanel Margin="0,0,0,10">
                             <TextBlock Text="License Number" FontSize="10" Foreground="#9E8FC0" Margin="0,0,0,3"/>
-                            <TextBlock Text="{Binding License}" FontSize="13"
-                                       FontWeight="SemiBold" Foreground="#2A1B5E"/>
+                            <TextBlock Text="{Binding License}" FontSize="13" FontWeight="SemiBold" Foreground="#2A1B5E"/>
                         </StackPanel>
 
                         <Rectangle Height="1" Fill="#E0D4FF" Margin="0,8,0,14"/>
 
-                        <!-- Browse Cars shortcut -->
                         <Button Content="🚗  Browse Cars" Height="38" FontSize="12"
                                 FontWeight="Bold" Foreground="White" BorderThickness="0"
                                 Cursor="Hand" Command="{Binding BrowseCarsCommand}"
@@ -137,7 +207,6 @@
                         </Button>
                     </StackPanel>
                 </Border>
-
                 <!-- RIGHT: Rental History -->
                 <Border Grid.Column="2" CornerRadius="22" Background="White">
                     <Border.Effect>

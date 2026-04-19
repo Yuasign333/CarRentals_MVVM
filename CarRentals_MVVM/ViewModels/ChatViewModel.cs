@@ -1,5 +1,7 @@
 ﻿using System;
 using System.Collections.ObjectModel;
+using System.Threading.Tasks;
+using System.Windows;
 using System.Windows.Input;
 using CarRentals_MVVM.Commands;
 using CarRentals_MVVM.Models;
@@ -9,10 +11,12 @@ namespace CarRentals_MVVM.ViewModels
 {
     public class ChatViewModel : ObservableObject
     {
-        private readonly string _userId;
+        private readonly string _myId;
+        private readonly string _otherId;
         private readonly string _role;
 
         public string UserLabel { get; }
+        public string ChatTitle { get; }
         public ObservableCollection<ChatMessage> Messages { get; } = new();
 
         private string _currentMessage = string.Empty;
@@ -22,63 +26,161 @@ namespace CarRentals_MVVM.ViewModels
             set { _currentMessage = value; OnPropertyChanged(); }
         }
 
-        public ICommand SendCommand { get; }
+        // ==========================================
+        // NEW PROPERTIES FOR THE ADMIN HEADER
+        // ==========================================
+        private string _fullName;
+        public string FullName
+        {
+            get => _fullName;
+            set { _fullName = value; OnPropertyChanged(); }
+        }
 
+        private string _profilePicturePath;
+        public string ProfilePicturePath
+        {
+            get => _profilePicturePath;
+            set { _profilePicturePath = value; OnPropertyChanged(); }
+        }
+
+        private string _customerId;
+        public string CustomerId
+        {
+            get => _customerId;
+            set { _customerId = value; OnPropertyChanged(); }
+        }
+        // ==========================================
+
+        public ICommand SendCommand { get; }
         public ICommand BackCommand { get; }
 
-        public ChatViewModel(string userId, string role)
+        public ChatViewModel(string myId, string otherId, string role)
         {
-
-            _userId = userId;
-            UserLabel = !string.IsNullOrEmpty(UserSession.Username)
-       ? $"Customer: {UserSession.Username}"
-       : $"Customer: {userId}";
-
-
-            BackCommand = new RelayCommand(_ =>
-                NavigationService.Navigate(new View.CustomerDashboard(_userId)));
-
-
-            _userId = userId;
+            _myId = myId;
+            _otherId = otherId;
             _role = role;
-            UserLabel = role == "Admin" ? $"Agent: {userId}" : $"Customer: {UserSession.Username ?? userId}";
 
-            // Welcome message from support
-            Messages.Add(new ChatMessage
+            UserLabel = role == "Admin"
+                ? $"Agent: {myId}"
+                : $"Customer: {UserSession.Username ?? myId}";
+
+            ChatTitle = role == "Admin"
+                ? $"Chat with {otherId}"
+                : "Support Chat";
+
+            // ==========================================
+            // REVISED HEADER LOGIC
+            // ==========================================
+            // Inside ChatViewModel Constructor
+            // Inside ChatViewModel Constructor
+            if (role == "Admin")
             {
-                Text = role == "Admin"
-                    ? "Welcome, Admin! How can we assist you today?"
-                    : $"Hello {UserSession.FullName ?? userId}! Welcome to Rental Rev. support. How can I help you?",
-                Time = DateTime.Now.ToString("HH:mm"),
-                IsFromUser = false
+               
+                CustomerId = $"Customer | {_otherId}";
+                LoadCustomerDetails(_otherId);
+            }
+            else
+            {      FullName = "Live Agent Support";
+
+                CustomerId = "Online - Replies instantly";
+            }
+        
+            // ==========================================
+
+            // Back navigation
+            BackCommand = new RelayCommand(_ =>
+            {
+                if (role == "Admin")
+                    NavigationService.Navigate(new View.AdminChatListWindow(myId));
+                else
+                    NavigationService.Navigate(new View.CustomerDashboard(myId));
             });
 
-            SendCommand = new RelayCommand(_ =>
+            // Send message — save to DB, show it, then trigger AUTO-REPLY
+            SendCommand = new RelayCommand(async _ =>
             {
                 if (string.IsNullOrWhiteSpace(CurrentMessage)) return;
 
-                // Add user message
-                var userMsg = CurrentMessage.Trim();
+                string text = CurrentMessage.Trim();
+                CurrentMessage = string.Empty;
+
+                // 1. SAVE & SHOW MESSAGE
+                await CarDataService.SaveChatMessage(_myId, _otherId, text);
                 Messages.Add(new ChatMessage
                 {
-                    Text = userMsg,
+                    SenderId = _myId,
+                    ReceiverId = _otherId,
+                    Text = text,
                     Time = DateTime.Now.ToString("HH:mm"),
                     IsFromUser = true
                 });
 
-                // Auto-reply logic
-                string reply = GetAutoReply(userMsg.ToLower());
-                Messages.Add(new ChatMessage
+                // 2. TRIGGER AUTO-REPLY (Only if a Customer is sending the message)
+                if (_role == "Customer")
                 {
-                    Text = reply,
-                    Time = DateTime.Now.ToString("HH:mm"),
-                    IsFromUser = false
-                });
+                    await Task.Delay(500);
 
-                CurrentMessage = string.Empty;
+                    string replyText = GetAutoReply(text.ToLower());
+
+                    await CarDataService.SaveChatMessage(_otherId, _myId, replyText);
+
+                    Messages.Add(new ChatMessage
+                    {
+                        SenderId = _otherId,
+                        ReceiverId = _myId,
+                        Text = replyText,
+                        Time = DateTime.Now.ToString("HH:mm"),
+                        IsFromUser = false
+                    });
+                }
+            });
+
+            // Load existing messages from DB
+            LoadMessages();
+        }
+
+        // ==========================================
+        // NEW METHOD TO FETCH CUSTOMER DATA
+        // ==========================================
+        private void LoadCustomerDetails(string customerId)
+        {
+            Task.Run(async () =>
+            {
+                var customer = await CarDataService.GetCustomerById(customerId);
+
+                Application.Current.Dispatcher.Invoke(() =>
+                {
+                    if (customer != null)
+                    {
+                        FullName = customer.FullName;
+                        ProfilePicturePath = customer.ProfilePicturePath;
+                    }
+                    else
+                    {
+                        FullName = "Unknown Customer";
+                    }
+                });
             });
         }
 
+        private void LoadMessages()
+        {
+            Task.Run(async () =>
+            {
+                var msgs = await CarDataService.GetChatMessages(_myId, _otherId);
+                Application.Current.Dispatcher.Invoke(() =>
+                {
+                    Messages.Clear();
+                    foreach (var m in msgs)
+                    {
+                        m.IsFromUser = m.SenderId == _myId;
+                        Messages.Add(m);
+                    }
+                });
+            });
+        }
+
+        //AUTO-REPLY LOGIC PLACED HERE
         private string GetAutoReply(string msg)
         {
             if (msg.Contains("rent") || msg.Contains("book"))

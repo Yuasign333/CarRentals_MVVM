@@ -20,6 +20,7 @@ namespace CarRentals_MVVM.ViewModels
         private bool _errorVisible = false;
         private string _securityQuestion = "What is your pet's name?";
         private string _securityAnswer = string.Empty;
+        private string _profilePicturePath = string.Empty;
 
         public string FullName
         {
@@ -166,12 +167,34 @@ namespace CarRentals_MVVM.ViewModels
             get => _securityAnswer;
             set { _securityAnswer = value; OnPropertyChanged(); }
         }
+        public string ProfilePicturePath
+        {
+            get => _profilePicturePath;
+            set { _profilePicturePath = value; OnPropertyChanged(); }
+        }
 
         public ICommand RegisterCommand { get; }
         public ICommand BackCommand { get; }
 
+        public ICommand PickProfilePictureCommand { get; }
+
         public SignUpViewModel()
         {
+            PickProfilePictureCommand = new RelayCommand(_ =>
+            {
+                var dialog = new Microsoft.Win32.OpenFileDialog
+                {
+                    Filter = "Image files (*.png;*.jpg;*.jpeg)|*.png;*.jpg;*.jpeg",
+                    Title = "Select Profile Picture"
+                };
+                if (dialog.ShowDialog() == true)
+                {
+                    ProfilePicturePath = dialog.FileName;
+                }
+            });
+
+
+
             BackCommand = new RelayCommand(_ =>
                 NavigationService.Navigate(new View.CustomerLogin()));
 
@@ -179,38 +202,78 @@ namespace CarRentals_MVVM.ViewModels
             {
                 ErrorVisible = false;
 
-                // Final validation before submit
+                // All fields required
                 if (string.IsNullOrWhiteSpace(FullName) ||
                     string.IsNullOrWhiteSpace(Username) ||
                     string.IsNullOrWhiteSpace(Password) ||
                     string.IsNullOrWhiteSpace(Contact) ||
-                    string.IsNullOrWhiteSpace(License))
+                    string.IsNullOrWhiteSpace(License) ||
+                    string.IsNullOrWhiteSpace(SecurityAnswer))
                 {
-                    ErrorMessage = "All fields are required. Please fill in every field.";
+                    ErrorMessage = "All fields are required.";
                     ErrorVisible = true;
                     return;
                 }
+
+                // Password rules
                 if (Password.Length < 6)
                 {
-                    ErrorMessage = $"Password must be at least 6 characters (you entered {Password.Length}).";
+                    ErrorMessage = $"Password must be at least 6 characters ({Password.Length}/6).";
                     ErrorVisible = true;
                     return;
                 }
                 if (Password != ConfirmPass)
                 {
-                    ErrorMessage = "Passwords do not match. Please re-enter them.";
+                    ErrorMessage = "Passwords do not match.";
                     ErrorVisible = true;
                     return;
                 }
-                if (string.IsNullOrWhiteSpace(SecurityAnswer))
+                if (Password.Contains(" "))
                 {
-                    ErrorMessage = "Please provide a security answer for account recovery.";
+                    ErrorMessage = "Password cannot contain spaces.";
                     ErrorVisible = true;
                     return;
                 }
+
+                // Contact validation
+                if (Contact.Length != 11 || !Contact.StartsWith("09") ||
+                    !Contact.All(char.IsDigit))
+                {
+                    ErrorMessage = "Contact must be 11 digits starting with 09 (e.g. 09171234567).";
+                    ErrorVisible = true;
+                    return;
+                }
+
+                // License min length
+                if (License.Trim().Length < 4)
+                {
+                    ErrorMessage = "License Number must be at least 4 characters.";
+                    ErrorVisible = true;
+                    return;
+                }
+
+                // Duplicate checks BEFORE hitting DB constraints
                 if (await CarDataService.UsernameExists(Username))
                 {
-                    ErrorMessage = $"The username '{Username}' is already taken. Please choose another.";
+                    ErrorMessage = $"Username '{Username}' is already taken.";
+                    ErrorVisible = true;
+                    return;
+                }
+                if (await CarDataService.ContactExists(Contact))
+                {
+                    ErrorMessage = "That contact number is already registered.";
+                    ErrorVisible = true;
+                    return;
+                }
+                if (await CarDataService.LicenseExists(License))
+                {
+                    ErrorMessage = "That license number is already registered.";
+                    ErrorVisible = true;
+                    return;
+                }
+                if (await CarDataService.PasswordExists(Password))
+                {
+                    ErrorMessage = "That password is already used by another account. Please choose a unique password.";
                     ErrorVisible = true;
                     return;
                 }
@@ -227,12 +290,13 @@ namespace CarRentals_MVVM.ViewModels
                         ContactNumber = Contact,
                         LicenseNumber = License,
                         SecurityQuestion = SecurityQuestion,
-                        SecurityAnswer = SecurityAnswer
+                        SecurityAnswer = SecurityAnswer,
+                        ProfilePicturePath = ProfilePicturePath
                     };
                     await CarDataService.RegisterCustomer(customer);
 
                     MessageBox.Show(
-                        $"Account created successfully!\n\nYour Customer ID: {newId}\nYour Username: {Username}\n\nUse your username to log in.",
+                        $"Account created!\n\nYour Customer ID: {newId}\nUsername: {Username}\n\nUse your username to log in.",
                         "Registration Successful",
                         MessageBoxButton.OK, MessageBoxImage.Information);
 

@@ -120,6 +120,8 @@ namespace CarRentals_MVVM.ViewModels
 
 
 
+
+
         /// <summary>
         /// Initializes the Admin Dashboard with user info and all navigation commands.
         /// </summary>
@@ -186,10 +188,7 @@ namespace CarRentals_MVVM.ViewModels
             });
 
             ChatCommand = new RelayCommand(_ =>
-            {
-                var chat = new View.ChatWindow(_userId, "Admin");
-                chat.Show();
-            });
+            NavigationService.Navigate(new View.AdminChatListWindow(_userId)));
         }
     }
 }

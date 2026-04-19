@@ -96,8 +96,8 @@
                             </StackPanel>
                         </Border>
                     </Button>
-                    <!-- My Rentals -->
-                    <Button Command="{Binding MyRentalsCommand}" Padding="0" Margin="0,0,0,4">
+                    <!-- Chat Support -->
+                    <Button Command="{Binding ChatCommand}" Padding="0" Margin="0,0,0,4">
                         <Button.Template>
                             <ControlTemplate TargetType="Button">
                                 <ContentPresenter/>
@@ -109,8 +109,8 @@
                                 <SolidColorBrush Color="#00FFFFFF"/>
                             </Border.Background>
                             <StackPanel Orientation="Horizontal">
-                                <TextBlock Text="📋" Margin="0,0,8,0"/>
-                                <TextBlock Text="My Rentals" FontWeight="Bold" Foreground="White"/>
+                                <TextBlock Text="💬" Margin="0,0,8,0"/>
+                                <TextBlock Text="Chat Support" FontWeight="Bold" Foreground="White"/>
                             </StackPanel>
                         </Border>
                     </Button>
@@ -245,7 +245,7 @@
                                 <Grid Margin="18">
                                     <StackPanel>
                                         <TextBlock Text="🚗" FontSize="26"/>
-                                        <TextBlock Text="View Cars" FontWeight="Bold" Margin="0,12,0,2"/>
+                                        <TextBlock Text="View Cars" FontSize ="16" Foreground="#2A1B5E" FontWeight="Bold" Margin="0,12,0,2"/>
                                         <TextBlock Text="Browse available fleet" FontSize="12" Foreground="#5F5A87"/>
                                     </StackPanel>
                                 </Grid>
@@ -273,9 +273,9 @@
                                 <Grid Margin="18">
                                     <StackPanel>
                                         <TextBlock Text="👤" FontSize="26"/>
-                                        <TextBlock Text="My Account" FontWeight="Bold" Margin="0,12,0,2"/>
-                                        <TextBlock Text="Manage your Account and" FontSize="12" Foreground="#5F5A87" Margin=" 0,-3,0,4"/>
-                                        <TextBlock Text="Rental History" FontSize="12" Foreground="#5F5A87" Margin=" 0,-3,0,0"/>
+                                        <TextBlock Text="My Account" FontSize="16" Foreground="#2A1B5E" FontWeight="Bold" Margin="0,12,0,2"/>
+                                        <TextBlock Text="Manage your Account" FontSize="12" Foreground="#5F5A87" Margin=" 0,-3,0,4"/>
+                                      
                                     </StackPanel>
                                 </Grid>
                             </Border>
@@ -298,7 +298,7 @@
                             <Grid Margin="18">
                                 <StackPanel>
                                     <TextBlock Text="💬" FontSize="26"/>
-                                    <TextBlock Text="Chat Support" FontWeight="Bold" Margin="0,12,0,2"/>
+                                    <TextBlock Text="Chat Support" FontSize="16" Foreground="#2A1B5E" FontWeight="Bold" Margin="0,12,0,2"/>
                                     <TextBlock Text="Get help now" FontSize="12" Foreground="#5F5A87"/>
                                 </StackPanel>
                             </Grid>

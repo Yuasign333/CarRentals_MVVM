@@ -85,16 +85,37 @@
 
                     <Border Grid.Row="0" Background="White" CornerRadius="24,24,0,0" BorderBrush="#F0EBFF" BorderThickness="0,0,0,1">
                         <StackPanel Orientation="Horizontal" VerticalAlignment="Center" Margin="24,0">
-                            <Border Width="42" Height="42" CornerRadius="21" Background="#F0EBFF" Margin="0,0,14,0">
-                                <TextBlock Text="🎧" FontSize="20" HorizontalAlignment="Center" VerticalAlignment="Center"/>
-                            </Border>
+
+                            <Grid Width="42" Height="42" Margin="0,0,14,0">
+                                <Ellipse>
+                                    <Ellipse.Fill>
+                                        <LinearGradientBrush StartPoint="0,0" EndPoint="1,1">
+                                            <GradientStop Color="#8A2BE2" Offset="0"/>
+                                            <GradientStop Color="#C9B8E8" Offset="1"/>
+                                        </LinearGradientBrush>
+                                    </Ellipse.Fill>
+                                </Ellipse>
+                                <TextBlock Text="👤" FontSize="20" HorizontalAlignment="Center" VerticalAlignment="Center"/>
+
+                                <Ellipse>
+                                    <Ellipse.Fill>
+                                        <ImageBrush ImageSource="{Binding ProfilePicturePath}" Stretch="UniformToFill"/>
+                                    </Ellipse.Fill>
+                                </Ellipse>
+                            </Grid>
+
                             <StackPanel VerticalAlignment="Center">
-                                <TextBlock Text="Live Agent Support" FontSize="16" FontWeight="Bold" Foreground="#2A1B5E"/>
+                                <TextBlock Text="{Binding FullName}" FontSize="16" FontWeight="Bold" Foreground="#2A1B5E"/>
+
                                 <StackPanel Orientation="Horizontal" Margin="0,2,0,0">
                                     <Ellipse Width="8" Height="8" Fill="#4CAF50" Margin="0,0,6,0"/>
-                                    <TextBlock Text="Online - Replies instantly" FontSize="12" Foreground="#7E74A6"/>
+                                    <TextBlock Foreground="#7E74A6" FontSize="12">
+                    <Run Text="Customer | " />
+                    <Run Text="{Binding CustomerId}" />
+                                    </TextBlock>
                                 </StackPanel>
                             </StackPanel>
+
                         </StackPanel>
                     </Border>
 

@@ -38,7 +38,187 @@ namespace CarRentals_MVVM.Services
         /// </summary>
         public static List<RentalModel> Rentals { get; } = new();
 
+        // ── CHAT ─────────────────────────────────────────────────────────────────────
 
+        public static async Task SaveChatMessage(string senderId, string receiverId, string message)
+        {
+            try
+            {
+                using var conn = new SqlConnection(_conn);
+                await conn.OpenAsync();
+                using var cmd = new SqlCommand("sp_SaveChatMessage", conn);
+                cmd.CommandType = System.Data.CommandType.StoredProcedure;
+                cmd.Parameters.AddWithValue("@SenderId", senderId);
+                cmd.Parameters.AddWithValue("@ReceiverId", receiverId);
+                cmd.Parameters.AddWithValue("@Message", message);
+                await cmd.ExecuteNonQueryAsync();
+            }
+            catch (Exception ex) { MessageBox.Show("SaveChatMessage failed: " + ex.Message); }
+        }
+
+        public static async Task<List<ChatMessage>> GetChatMessages(string userId1, string userId2)
+        {
+            var list = new List<ChatMessage>();
+            try
+            {
+                using var conn = new SqlConnection(_conn);
+                await conn.OpenAsync();
+                using var cmd = new SqlCommand("sp_GetChatMessages", conn);
+                cmd.CommandType = System.Data.CommandType.StoredProcedure;
+                cmd.Parameters.AddWithValue("@UserId1", userId1);
+                cmd.Parameters.AddWithValue("@UserId2", userId2);
+                using var reader = await cmd.ExecuteReaderAsync();
+                while (await reader.ReadAsync())
+                {
+                    string senderId = reader["SenderId"].ToString() ?? "";
+                    list.Add(new ChatMessage
+                    {
+                        Id = Convert.ToInt32(reader["Id"]),
+                        SenderId = senderId,
+                        ReceiverId = reader["ReceiverId"].ToString() ?? "",
+                        Text = reader["Message"].ToString() ?? "",
+                        Time = Convert.ToDateTime(reader["SentAt"]).ToString("HH:mm"),
+                        IsFromUser = senderId == userId1
+                    });
+                }
+            }
+            catch (Exception ex) { MessageBox.Show("GetChatMessages failed: " + ex.Message); }
+            return list;
+        }
+
+        public static async Task<List<CustomerModel>> GetChatCustomers()
+        {
+            var list = new List<CustomerModel>();
+            try
+            {
+                using var conn = new SqlConnection(_conn);
+                await conn.OpenAsync();
+                using var cmd = new SqlCommand("sp_GetChatCustomers", conn);
+                cmd.CommandType = System.Data.CommandType.StoredProcedure;
+                using var reader = await cmd.ExecuteReaderAsync();
+                while (await reader.ReadAsync())
+                {
+                    list.Add(new CustomerModel
+                    {
+                        CustomerId = reader["CustomerID"].ToString() ?? "",
+                        FullName = reader["FullName"].ToString() ?? "",
+                        Username = reader["Username"].ToString() ?? "",
+                        ProfilePicturePath = reader["ProfilePicturePath"].ToString() ?? ""
+                    });
+                }
+            }
+            catch (Exception ex) { MessageBox.Show("GetChatCustomers failed: " + ex.Message); }
+            return list;
+        }
+
+        // ── PROFILE UPDATE ────────────────────────────────────────────────────────────
+
+        public static async Task UpdateCustomerProfile(
+            string customerId, string newUsername, string profilePicPath)
+        {
+            try
+            {
+                using var conn = new SqlConnection(_conn);
+                await conn.OpenAsync();
+                using var cmd = new SqlCommand("sp_UpdateCustomerProfile", conn);
+                cmd.CommandType = System.Data.CommandType.StoredProcedure;
+                cmd.Parameters.AddWithValue("@CustomerId", customerId);
+                cmd.Parameters.AddWithValue("@NewUsername", newUsername);
+                cmd.Parameters.AddWithValue("@ProfilePic", profilePicPath);
+                await cmd.ExecuteNonQueryAsync();
+            }
+            catch (Exception ex) { MessageBox.Show("UpdateProfile failed: " + ex.Message); }
+        }
+
+        public static async Task<bool> UsernameExistsExcept(string username, string excludeId)
+        {
+            try
+            {
+                using var conn = new SqlConnection(_conn);
+                await conn.OpenAsync();
+                using var cmd = new SqlCommand(
+                    "SELECT COUNT(*) FROM Customers WHERE Username=@u AND CustomerID != @id", conn);
+                cmd.Parameters.AddWithValue("@u", username);
+                cmd.Parameters.AddWithValue("@id", excludeId);
+                return (int)await cmd.ExecuteScalarAsync() > 0;
+            }
+            catch { return false; }
+        }
+
+        // ── DUPLICATE CHECK ───────────────────────────────────────────────────────────
+
+        public static async Task<bool> ContactExists(string contact)
+        {
+            try
+            {
+                using var conn = new SqlConnection(_conn);
+                await conn.OpenAsync();
+                using var cmd = new SqlCommand(
+                    "SELECT COUNT(*) FROM Customers WHERE ContactNumber=@c", conn);
+                cmd.Parameters.AddWithValue("@c", contact);
+                return (int)await cmd.ExecuteScalarAsync() > 0;
+            }
+            catch { return false; }
+        }
+
+        public static async Task<bool> LicenseExists(string license)
+        {
+            try
+            {
+                using var conn = new SqlConnection(_conn);
+                await conn.OpenAsync();
+                using var cmd = new SqlCommand(
+                    "SELECT COUNT(*) FROM Customers WHERE LicenseNumber=@l", conn);
+                cmd.Parameters.AddWithValue("@l", license);
+                return (int)await cmd.ExecuteScalarAsync() > 0;
+            }
+            catch { return false; }
+        }
+
+        public static async Task<bool> PasswordExists(string password)
+        {
+            try
+            {
+                using var conn = new SqlConnection(_conn);
+                await conn.OpenAsync();
+                using var cmd = new SqlCommand(
+                    "SELECT COUNT(*) FROM Customers WHERE Password=@p", conn);
+                cmd.Parameters.AddWithValue("@p", password);
+                return (int)await cmd.ExecuteScalarAsync() > 0;
+            }
+            catch { return false; }
+        }
+
+        public static async Task<CustomerModel> GetCustomerById(string customerId)
+        {
+            try
+            {
+                using var conn = new SqlConnection(_conn);
+                await conn.OpenAsync();
+
+                using var cmd = new SqlCommand(
+                    "SELECT FullName, ProfilePicturePath FROM Customers WHERE CustomerID = @id", conn);
+
+                // If CustomerID in your SQL database is an INT, change customerId to int.Parse(customerId)
+                cmd.Parameters.AddWithValue("@id", customerId);
+
+                using var reader = await cmd.ExecuteReaderAsync();
+                if (await reader.ReadAsync())
+                {
+                    return new CustomerModel
+                    {
+                        FullName = reader["FullName"] != DBNull.Value ? reader["FullName"].ToString() : "Unknown",
+                        ProfilePicturePath = reader["ProfilePicturePath"] != DBNull.Value ? reader["ProfilePicturePath"].ToString() : string.Empty
+                    };
+                }
+
+                return null;
+            }
+            catch
+            {
+                return null;
+            }
+        }
         public static async Task<CustomerModel?> GetCustomerByUsername(string username)
         {
             try
@@ -57,7 +237,9 @@ namespace CarRentals_MVVM.Services
                         FullName = reader["FullName"].ToString() ?? "",
                         Username = reader["Username"].ToString() ?? "",
                         ContactNumber = reader["ContactNumber"].ToString() ?? "",
-                        LicenseNumber = reader["LicenseNumber"].ToString() ?? ""
+                        LicenseNumber = reader["LicenseNumber"].ToString() ?? "",
+                        // THIS WAS THE MISSING LINE RIGHT HERE:
+                        ProfilePicturePath = reader["ProfilePicturePath"] != DBNull.Value ? reader["ProfilePicturePath"].ToString() ?? "" : ""
                     };
                 }
             }

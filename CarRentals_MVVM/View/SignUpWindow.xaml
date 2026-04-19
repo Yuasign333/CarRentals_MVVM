@@ -30,8 +30,8 @@
                 </Ellipse>
 
                 <Border HorizontalAlignment="Center" VerticalAlignment="Center"
-        Width="480" CornerRadius="24" Padding="40,32" Margin="0,20,0,20"
-        MaxHeight="900">
+        Width="480" CornerRadius="24" Padding="40,32"
+        MaxHeight="900" Height="588">
                     <Border.Background>
                         <LinearGradientBrush StartPoint="0,0" EndPoint="1,1">
                             <GradientStop Color="#F0EBFF" Offset="0"/>
@@ -142,16 +142,16 @@
 
                         <TextBlock Text="Security Question" FontSize="11" FontWeight="SemiBold"
                                    Foreground="#2A1B5E" Margin="0,0,0,5"/>
-                      
-                            <ComboBox SelectedValue="{Binding SecurityQuestion, UpdateSourceTrigger=PropertyChanged}"
+
+                        <ComboBox SelectedValue="{Binding SecurityQuestion, UpdateSourceTrigger=PropertyChanged}"
                                       SelectedValuePath="Content" Height="34" Background="Transparent" 
                                       BorderThickness="0" Foreground="#2A1B5E" FontSize="12" VerticalContentAlignment="Center">
-                                <ComboBoxItem Content="What is your pet name?" IsSelected="True"/>
-                                <ComboBoxItem Content="What is your mother's maiden name?"/>
-                                <ComboBoxItem Content="What is your childhood nickname?"/>
-                                <ComboBoxItem Content="What city were you born in?"/>
-                            </ComboBox>
-                    
+                            <ComboBoxItem Content="What is your pet name?" IsSelected="True"/>
+                            <ComboBoxItem Content="What is your mother's maiden name?"/>
+                            <ComboBoxItem Content="What is your childhood nickname?"/>
+                            <ComboBoxItem Content="What city were you born in?"/>
+                        </ComboBox>
+
 
                         <TextBlock Text="Security Answer" FontSize="11" FontWeight="SemiBold"
                                    Foreground="#2A1B5E" Margin="0,0,0,5"/>

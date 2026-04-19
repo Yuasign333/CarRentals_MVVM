@@ -64,11 +64,11 @@ namespace CarRentals_MVVM.ViewModels
                     NavigationService.Navigate(new View.ChooseRole());
                 }
             });
+
+            // In CustomerDashboardViewModel — chat command
             ChatCommand = new RelayCommand(_ =>
-            {
-                var chat = new View.ChatWindow(_userId, "Customer");
-                chat.Show(); // Show() not Navigate — chat is a floating window
-            });
+                NavigationService.Navigate(
+                    new View.ChatWindow(_userId, "A001", "Customer")));
 
         }
     }

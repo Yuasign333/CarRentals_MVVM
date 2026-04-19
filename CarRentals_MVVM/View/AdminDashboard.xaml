@@ -27,7 +27,7 @@
                     <RowDefinition Height="Auto"/>
                 </Grid.RowDefinitions>
                 <Image Source="https://i.imgur.com/vTJAlag.jpeg" Opacity="0.10"
-                       Stretch="Fill" Margin="-18,0,5,0" Grid.RowSpan="3">
+           Stretch="Fill" Margin="-18,0,5,0" Grid.RowSpan="3">
                     <Image.Effect>
                         <BlurEffect Radius="18"/>
                     </Image.Effect>
@@ -36,28 +36,27 @@
                 <StackPanel Grid.Row="0" Margin="0,26,0,28" HorizontalAlignment="Center">
                     <Border Width="150" Height="103" ClipToBounds="True">
                         <Image Source="https://i.imgur.com/yVApvuV.png"
-                               Stretch="UniformToFill" Margin="0,-47,0,39"/>
+                   Stretch="UniformToFill" Margin="0,-47,0,39"/>
                     </Border>
                     <TextBlock Text="RENTAL REV." FontSize="28" FontWeight="Bold"
-                               Foreground="Lavender" Margin="0,-38,0,0"/>
+                   Foreground="Lavender" Margin="0,-38,0,0"/>
                 </StackPanel>
 
                 <StackPanel Grid.Row="1" Margin="16,0">
-                    <!-- Active dashboard item -->
                     <Button Style="{StaticResource RoleCardButtonStyle}" Padding="0" Margin="0,8,0,4">
                         <Border CornerRadius="14" Padding="14,12" Cursor="Hand"
-            Style="{StaticResource SidebarItemStyle}">
+                    Style="{StaticResource SidebarItemStyle}">
                             <Border.Background>
                                 <SolidColorBrush Color="#00FFFFFF"/>
                             </Border.Background>
                             <StackPanel Orientation="Horizontal">
                                 <TextBlock Text="🏠" FontSize="14" Margin="0,0,8,0"/>
                                 <TextBlock Text="Dashboard" FontWeight="Bold" Foreground="White"
-                                           Margin=" 0,2,0,0"/>
+                               Margin=" 0,2,0,0"/>
                             </StackPanel>
                         </Border>
                     </Button>
-                    <!-- Fleet Status -->
+
                     <Button Command="{Binding FleetCommand}" Padding="0" Margin="0,0,0,4">
                         <Button.Template>
                             <ControlTemplate TargetType="Button">
@@ -65,19 +64,18 @@
                             </ControlTemplate>
                         </Button.Template>
                         <Border CornerRadius="14" Padding="14,12" Cursor="Hand"
-                                Style="{StaticResource SidebarItemStyle}">
+                    Style="{StaticResource SidebarItemStyle}">
                             <Border.Background>
                                 <SolidColorBrush Color="#00FFFFFF"/>
                             </Border.Background>
                             <StackPanel Orientation="Horizontal">
                                 <TextBlock Text="🚗" Margin="0,0,8,0"/>
                                 <TextBlock Text="Fleet Status" FontWeight="Bold" Foreground="White"
-                                            Margin="0,2,0,0"/>
+                               Margin="0,2,0,0"/>
                             </StackPanel>
                         </Border>
                     </Button>
 
-                    <!-- Process Return -->
                     <Button Command="{Binding ReturnCommand}" Padding="0" Margin="0,0,0,4">
                         <Button.Template>
                             <ControlTemplate TargetType="Button">
@@ -85,19 +83,18 @@
                             </ControlTemplate>
                         </Button.Template>
                         <Border CornerRadius="14" Padding="14,12" Cursor="Hand"
-                                Style="{StaticResource SidebarItemStyle}">
+                    Style="{StaticResource SidebarItemStyle}">
                             <Border.Background>
                                 <SolidColorBrush Color="#00FFFFFF"/>
                             </Border.Background>
                             <StackPanel Orientation="Horizontal">
                                 <TextBlock Text="🔄" Margin="0,0,8,0"/>
                                 <TextBlock Text="Process Return" FontWeight="Bold" Foreground="White"
-                                            Margin="0,-1,0,0"/>
+                               Margin="0,-1,0,0"/>
                             </StackPanel>
                         </Border>
                     </Button>
 
-                    <!-- Add Car -->
                     <Button Command="{Binding AddCarCommand}" Padding="0" Margin="0,0,0,4">
                         <Button.Template>
                             <ControlTemplate TargetType="Button">
@@ -105,19 +102,18 @@
                             </ControlTemplate>
                         </Button.Template>
                         <Border CornerRadius="14" Padding="14,12" Cursor="Hand"
-                                Style="{StaticResource SidebarItemStyle}">
+                    Style="{StaticResource SidebarItemStyle}">
                             <Border.Background>
                                 <SolidColorBrush Color="#00FFFFFF"/>
                             </Border.Background>
                             <StackPanel Orientation="Horizontal">
                                 <TextBlock Text="➕" Margin="0,0,8,0"/>
                                 <TextBlock Text="Add Car" FontWeight="Bold" Foreground="White"
-                                            Margin="0,-1,0,0"/>
+                               Margin="0,-1,0,0"/>
                             </StackPanel>
                         </Border>
                     </Button>
 
-                    <!-- Maintenance -->
                     <Button Command="{Binding MaintenanceCommand}" Padding="0" Margin="0,0,0,4">
                         <Button.Template>
                             <ControlTemplate TargetType="Button">
@@ -125,19 +121,18 @@
                             </ControlTemplate>
                         </Button.Template>
                         <Border CornerRadius="14" Padding="14,12" Cursor="Hand"
-                                Style="{StaticResource SidebarItemStyle}">
+                    Style="{StaticResource SidebarItemStyle}">
                             <Border.Background>
                                 <SolidColorBrush Color="#00FFFFFF"/>
                             </Border.Background>
                             <StackPanel Orientation="Horizontal">
                                 <TextBlock Text="🔧" Margin="0,0,8,0"/>
                                 <TextBlock Text="Maintenance" FontWeight="Bold" Foreground="White"
-                                            Margin="0,-1,0,0"/>
+                               Margin="0,-1,0,0"/>
                             </StackPanel>
                         </Border>
                     </Button>
 
-                    <!-- Revenue -->
                     <Button Command="{Binding RevenueCommand}" Padding="0" Margin="0,0,0,4">
                         <Button.Template>
                             <ControlTemplate TargetType="Button">
@@ -145,23 +140,41 @@
                             </ControlTemplate>
                         </Button.Template>
                         <Border CornerRadius="14" Padding="14,12" Cursor="Hand"
-                                Style="{StaticResource SidebarItemStyle}">
+                    Style="{StaticResource SidebarItemStyle}">
                             <Border.Background>
                                 <SolidColorBrush Color="#00FFFFFF"/>
                             </Border.Background>
                             <StackPanel Orientation="Horizontal">
                                 <TextBlock Text="💰" Margin="0,0,8,0"/>
                                 <TextBlock Text="Revenue" FontWeight="Bold" Foreground="White"
-                                            Margin="0,-1,0,0"/>
+                               Margin="0,-1,0,0"/>
+                            </StackPanel>
+                        </Border>
+                    </Button>
+
+                    <Button Command="{Binding ChatCommand}" Padding="0" Margin="0,0,0,4">
+                        <Button.Template>
+                            <ControlTemplate TargetType="Button">
+                                <ContentPresenter/>
+                            </ControlTemplate>
+                        </Button.Template>
+                        <Border CornerRadius="14" Padding="14,12" Cursor="Hand"
+                    Style="{StaticResource SidebarItemStyle}">
+                            <Border.Background>
+                                <SolidColorBrush Color="#00FFFFFF"/>
+                            </Border.Background>
+                            <StackPanel Orientation="Horizontal">
+                                <TextBlock Text="💬" Margin="0,0,8,0"/>
+                                <TextBlock Text="Customer Chats" FontWeight="Bold" Foreground="White"
+                               Margin="0,-1,0,0"/>
                             </StackPanel>
                         </Border>
                     </Button>
                 </StackPanel>
 
-                <!-- Logout -->
                 <StackPanel Grid.Row="2" Margin="16,0,16,24">
                     <Button Command="{Binding LogoutCommand}" Padding="0"
-            Style="{StaticResource RoleCardButtonStyle}">
+                Style="{StaticResource RoleCardButtonStyle}">
                         <Border CornerRadius="14" Padding="14,12" Cursor="Hand">
                             <Border.Background>
                                 <LinearGradientBrush StartPoint="0,0" EndPoint="1,0">
@@ -172,15 +185,14 @@
                             <StackPanel Orientation="Horizontal">
                                 <TextBlock Text="⏻" Margin="0,0,8,0"/>
                                 <TextBlock Text="Log Out" FontWeight="Bold"
-                           Foreground="{StaticResource TextMedium}"/>
+                               Foreground="{StaticResource TextMedium}"/>
                             </StackPanel>
                         </Border>
                     </Button>
                     <TextBlock Text="Made by Yuan" FontSize="10"
-               Foreground="White" HorizontalAlignment="Center" Margin="0,10,0,0"/>
+                   Foreground="White" HorizontalAlignment="Center" Margin="0,10,0,0"/>
                 </StackPanel>
             </Grid>
-
             <!-- MAIN CONTENT -->
             <Grid Grid.Column="1">
                 <Grid.RowDefinitions>
@@ -288,7 +300,8 @@
                                 <Grid Margin="18">
                                     <StackPanel>
                                         <TextBlock Text="🚗" FontSize="26"/>
-                                        <TextBlock Text="Fleet Status" FontWeight="Bold" Margin="0,12,0,2"/>
+                                        <TextBlock Text="Fleet Status"  FontSize="16" FontWeight="Bold" Margin="0,12,0,2"
+                                                       Foreground="#2A1B5E"/>
                                         <TextBlock Text="View all vehicles" FontSize="12" Foreground="#5F5A87"/>
                                     </StackPanel>
                                 </Grid>
@@ -316,7 +329,7 @@
                                 <Grid Margin="18">
                                     <StackPanel>
                                         <TextBlock Text="🔄" FontSize="26"/>
-                                        <TextBlock Text="Process Return" FontWeight="Bold" Margin="0,12,0,2"/>
+                                        <TextBlock Text="Process Return" FontSize="16"     Foreground="#2A1B5E" FontWeight="Bold" Margin="0,12,0,2"/>
                                         <TextBlock Text="Complete active returns" FontSize="12" Foreground="#5F5A87"/>
                                     </StackPanel>
                                 </Grid>
@@ -344,7 +357,7 @@
                                 <Grid Margin="18">
                                     <StackPanel>
                                         <TextBlock Text="➕" FontSize="26"/>
-                                        <TextBlock Text="Add/Delete Car" FontWeight="Bold" Margin="0,12,0,2"/>
+                                        <TextBlock Text="Add/Delete Car" FontSize="16"  Foreground="#2A1B5E" FontWeight="Bold" Margin="0,12,0,2"/>
                                         <TextBlock Text="Register new vehicle and delete" FontSize="12" Foreground="#5F5A87"/>
                                     </StackPanel>
                                 </Grid>
@@ -381,29 +394,42 @@
                     </WrapPanel>
 
 
-                    <Border Width="210" Height="130" CornerRadius="20" Cursor="Hand"
-        Style="{StaticResource DashCardStyle}" Margin="226,165,476,61" Grid.Row="2">
-                        <Border.InputBindings>
-                            <MouseBinding MouseAction="LeftClick" Command="{Binding ChatCommand}"/>
-                        </Border.InputBindings>
-                        <Border.Background>
-                            <LinearGradientBrush StartPoint="0,0" EndPoint="1,1">
-                                <GradientStop Color="White" Offset="0.01"/>
-                                <GradientStop Color="Lavender" Offset="0.4"/>
-                            </LinearGradientBrush>
-                        </Border.Background>
-                        <Border.Effect>
-                            <DropShadowEffect Color="#C8B6FF" BlurRadius="30" ShadowDepth="0" Opacity="0.35"/>
-                        </Border.Effect>
-                        <Grid Margin="18">
-                            <StackPanel>
-                                <TextBlock Text="💬" FontSize="26"/>
-                                <TextBlock Text="Chat Support" FontWeight="Bold" Margin="0,12,0,2"/>
-                                <TextBlock Text="Get help now" FontSize="12" Foreground="#5F5A87"/>
-                            </StackPanel>
-                        </Grid>
-                    </Border>
+                    <Button Command="{Binding ChatCommand}"
+                      Style="{StaticResource RoleCardButtonStyle}" 
+                        Padding="0" 
+                         Margin="226,165,476,61" 
+                     Grid.Row="2"
+                 BorderThickness="0"
+                 Background="Transparent"
+                 Cursor="Hand">
 
+                        <Border Width="210" Height="130" CornerRadius="20">
+                            <Border.Background>
+                                <LinearGradientBrush StartPoint="0,0" EndPoint="1,1">
+                                    <GradientStop Color="White" Offset="0.01"/>
+                                    <GradientStop Color="Lavender" Offset="0.4"/>
+                                </LinearGradientBrush>
+                            </Border.Background>
+
+                            <Border.Effect>
+                                <DropShadowEffect Color="#C8B6FF" BlurRadius="30" ShadowDepth="0" Opacity="0.35"/>
+                            </Border.Effect>
+
+                            <Grid Margin="18">
+                                <StackPanel VerticalAlignment="Center">
+                                    <TextBlock Text="💬" FontSize="26"/>
+                                    <TextBlock Text="Customer Chats" 
+                           FontWeight="Bold" 
+                           FontSize="16"
+                           Foreground="#2A1B5E"
+                           Margin="0,12,0,2"/>
+                                    <TextBlock Text="Reply to Customers" 
+                           FontSize="12" 
+                           Foreground="#5F5A87"/>
+                                </StackPanel>
+                            </Grid>
+                        </Border>
+                    </Button>
 
                     <!-- Revenue card below Fleet Status -->
                     <Border Width="210" Height="130" CornerRadius="20"
@@ -428,7 +454,7 @@
                                 <Grid Margin="18">
                                     <StackPanel>
                                         <TextBlock Text="💰" FontSize="26"/>
-                                        <TextBlock Text="Revenue" FontWeight="Bold" Margin="0,12,0,2"/>
+                                        <TextBlock Text="Revenue"  FontSize="16" FontWeight="Bold" Margin="0,12,0,2" Foreground="#2A1B5E"/>
                                         <TextBlock Text="Earnings &amp; analytics" FontSize="12" Foreground="#5F5A87"/>
                                     </StackPanel>
                                 </Grid>
