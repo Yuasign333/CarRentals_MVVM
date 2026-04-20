@@ -92,10 +92,10 @@
                                     </LinearGradientBrush>
                                 </Border.Background>
                                 <Grid>
-                                    <Ellipse Fill="#C9B8E8" Stroke="#C9B8E8" StrokeThickness="2" />
+                                    <Ellipse Fill="White" Stroke="#C9B8E8" StrokeThickness="2" />
                                     <TextBlock Text="👤" FontSize="50" HorizontalAlignment="Center" VerticalAlignment="Center" />
 
-                                    <Ellipse Stroke="Lavender" StrokeThickness="2">
+                                    <Ellipse Stroke="Lavender" StrokeThickness="2.5">
                                         <Ellipse.Fill>
                                             <ImageBrush ImageSource="{Binding ProfilePicturePath}" Stretch="UniformToFill" />
                                         </Ellipse.Fill>

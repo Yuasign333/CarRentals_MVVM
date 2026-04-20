@@ -385,7 +385,7 @@
                                 <Grid Margin="18">
                                     <StackPanel>
                                         <TextBlock Text="🔧" FontSize="26"/>
-                                        <TextBlock Text="Maintenance" FontWeight="Bold" Margin="0,12,0,2"/>
+                                        <TextBlock Text="Maintenance"  Foreground="#2A1B5E"  FontSize ="16" FontWeight="Bold" Margin="0,12,0,2"/>
                                         <TextBlock Text="Manage service records" FontSize="12" Foreground="#5F5A87"/>
                                     </StackPanel>
                                 </Grid>

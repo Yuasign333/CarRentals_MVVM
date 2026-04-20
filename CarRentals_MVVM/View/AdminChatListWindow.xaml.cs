@@ -12,5 +12,7 @@ namespace CarRentals_MVVM.View
             this.Loaded += (s, e) => NavigationService.SetCurrent(this);
             this.DataContext = new AdminChatListViewModel(adminId);
         }
+
+       
     }
 }

@@ -5,33 +5,40 @@
         Height="620" Width="1020"
         WindowStartupLocation="CenterScreen" ResizeMode="CanResize">
 
-    <ScrollViewer VerticalScrollBarVisibility="Auto" HorizontalScrollBarVisibility="Disabled">
-        <Viewbox Stretch="UniformToFill">
-            <Grid Width="1020" Height="620">
+    <Viewbox Stretch="UniformToFill">
+        <Grid Width="1020" Height="620">
 
-                <Rectangle>
-                    <Rectangle.Fill>
-                        <LinearGradientBrush StartPoint="0,0" EndPoint="1,1">
-                            <GradientStop Color="#F0EBFF" Offset="0"/>
-                            <GradientStop Color="#E8F0FF" Offset="0.5"/>
-                            <GradientStop Color="MediumPurple" Offset="1"/>
-                        </LinearGradientBrush>
-                    </Rectangle.Fill>
-                </Rectangle>
-                <Image Source="https://i.imgur.com/vTJAlag.jpeg" Opacity="0.07" Stretch="UniformToFill"/>
-                <Ellipse Width="420" Height="420" Opacity="0.15"
-                         HorizontalAlignment="Right" VerticalAlignment="Top" Margin="0,-120,-120,0">
-                    <Ellipse.Fill>
-                        <RadialGradientBrush>
-                            <GradientStop Color="#C9B8E8" Offset="0"/>
-                            <GradientStop Color="Transparent" Offset="1"/>
-                        </RadialGradientBrush>
-                    </Ellipse.Fill>
-                </Ellipse>
+            <!-- BACKGROUND -->
+            <Rectangle>
+                <Rectangle.Fill>
+                    <LinearGradientBrush StartPoint="0,0" EndPoint="1,1">
+                        <GradientStop Color="#F0EBFF" Offset="0"/>
+                        <GradientStop Color="#E8F0FF" Offset="0.5"/>
+                        <GradientStop Color="MediumPurple" Offset="1"/>
+                    </LinearGradientBrush>
+                </Rectangle.Fill>
+            </Rectangle>
+            <Image Source="https://i.imgur.com/vTJAlag.jpeg" Opacity="0.07" Stretch="UniformToFill"/>
+            <Ellipse Width="420" Height="420" Opacity="0.15"
+                     HorizontalAlignment="Right" VerticalAlignment="Top" Margin="0,-120,-120,0">
+                <Ellipse.Fill>
+                    <RadialGradientBrush>
+                        <GradientStop Color="#C9B8E8" Offset="0"/>
+                        <GradientStop Color="Transparent" Offset="1"/>
+                    </RadialGradientBrush>
+                </Ellipse.Fill>
+            </Ellipse>
 
-                <Border HorizontalAlignment="Center" VerticalAlignment="Center"
-        Width="480" CornerRadius="24" Padding="40,32"
-        MaxHeight="900" Height="588">
+            <!-- Back button — always on top -->
+            <Button Content="🡸" HorizontalAlignment="Left" VerticalAlignment="Top"
+                    Margin="16,16,0,0" Command="{Binding BackCommand}"
+                    Style="{StaticResource BackButtonStyle}"
+                    FontSize="20" Background="Transparent" BorderThickness="0" Cursor="Hand"/>
+
+            <!-- Scrollable form -->
+            <ScrollViewer VerticalScrollBarVisibility="Auto" HorizontalScrollBarVisibility="Disabled" Margin="47,0,0,0">
+                <Border HorizontalAlignment="Center" VerticalAlignment="Top"
+                        Width="520" Margin="0,50,0,40" CornerRadius="24" Padding="40,32">
                     <Border.Background>
                         <LinearGradientBrush StartPoint="0,0" EndPoint="1,1">
                             <GradientStop Color="#F0EBFF" Offset="0"/>
@@ -41,19 +48,66 @@
                     <Border.Effect>
                         <DropShadowEffect Color="#C8B6FF" BlurRadius="40" ShadowDepth="0" Opacity="0.35"/>
                     </Border.Effect>
+
                     <StackPanel>
                         <TextBlock Text="Create Account" FontSize="22" FontWeight="Bold"
-                                   Foreground="#2A1B5E" HorizontalAlignment="Center" Margin="0,0,0,6"/>
-                        <TextBlock Text="Register to start renting cars." FontSize="12"
-                                   Foreground="#7E74A6" HorizontalAlignment="Center" Margin="0,0,0,20"/>
+                                   Foreground="#2A1B5E" HorizontalAlignment="Center" Margin="0,0,0,4"/>
+                        <TextBlock Text="Register to start renting cars."
+                                   FontSize="12" Foreground="#7E74A6"
+                                   HorizontalAlignment="Center" Margin="0,0,0,20"/>
 
+                        <StackPanel HorizontalAlignment="Center" Margin="0,0,0,20">
+                            <Border Width="90" Height="90" CornerRadius="45"
+               HorizontalAlignment="Center" Margin="0,0,0,10"
+               ClipToBounds="True" Cursor="Hand">
+                                <Border.InputBindings>
+                                    <MouseBinding MouseAction="LeftClick"
+                             Command="{Binding PickProfilePictureCommand}"/>
+                                </Border.InputBindings>
+                                <Grid>
+
+                                    <Ellipse Stroke="Purple" StrokeThickness="2">
+                                        <Ellipse.Fill>
+                                            <ImageBrush ImageSource="{Binding ProfilePicturePath}" Stretch="UniformToFill" />
+                                        </Ellipse.Fill>
+                                    </Ellipse>
+
+                                    <TextBlock Text="👤" FontSize="38"
+                          HorizontalAlignment="Center"
+                          VerticalAlignment="Center">
+                                        <TextBlock.Style>
+                                            <Style TargetType="TextBlock">
+                                                <Setter Property="Visibility" Value="Visible"/>
+                                                <Style.Triggers>
+                                                    <DataTrigger Binding="{Binding HasProfilePicture}" Value="True">
+                                                        <Setter Property="Visibility" Value="Collapsed"/>
+                                                    </DataTrigger>
+                                                </Style.Triggers>
+                                            </Style>
+                                        </TextBlock.Style>
+                                    </TextBlock>
+
+                                    <Border VerticalAlignment="Bottom" Height="26"
+                       Background="White" Margin="67,0,0,0" CornerRadius="10,10,10,10">
+                                        <TextBlock Text="📷" FontSize="13"
+                              HorizontalAlignment="Center"
+                              VerticalAlignment="Center"/>
+                                    </Border>
+                                </Grid>
+                            </Border>
+                            <TextBlock Text="Tap to add photo (optional)"
+                  FontSize="10" Foreground="#9E8FC0"
+                  HorizontalAlignment="Center"/>
+                        </StackPanel>
+                        <!-- ── ERROR BANNER — only this collapses ── -->
                         <Border Visibility="{Binding ErrorVisible, Converter={StaticResource BoolToVisibility}}"
-        CornerRadius="10" Background="#FFF0F0" BorderBrush="#FFBDBD"
-        BorderThickness="1" Padding="12,8" Margin="0,0,0,12">
-                            <TextBlock Text="{Binding ErrorMessage}" Foreground="#C0392B" FontSize="12"
-               TextWrapping="Wrap"/>
+                                CornerRadius="10" Background="#FFF0F0" BorderBrush="#FFBDBD"
+                                BorderThickness="1" Padding="12,8" Margin="0,0,0,12">
+                            <TextBlock Text="{Binding ErrorMessage}" Foreground="#C0392B"
+                                       FontSize="12" TextWrapping="Wrap"/>
                         </Border>
 
+                        <!-- Full Name -->
                         <TextBlock Text="Full Name" FontSize="11" FontWeight="SemiBold"
                                    Foreground="#2A1B5E" Margin="0,0,0,5"/>
                         <Border CornerRadius="11" BorderThickness="1.5" BorderBrush="#E0D4FF"
@@ -66,8 +120,9 @@
                                      Foreground="#2A1B5E" FontSize="12" VerticalContentAlignment="Center"/>
                         </Border>
 
-                        <TextBlock Text="Username (will become your Customer ID)" FontSize="11"
-                                   FontWeight="SemiBold" Foreground="#2A1B5E" Margin="0,0,0,5"/>
+                        <!-- Username -->
+                        <TextBlock Text="Username" FontSize="11" FontWeight="SemiBold"
+                                   Foreground="#2A1B5E" Margin="0,0,0,5"/>
                         <Border CornerRadius="11" BorderThickness="1.5" BorderBrush="#E0D4FF"
                                 Padding="12,0" Margin="0,0,0,12">
                             <Border.Background>
@@ -78,6 +133,7 @@
                                      Foreground="#2A1B5E" FontSize="12" VerticalContentAlignment="Center"/>
                         </Border>
 
+                        <!-- Password row -->
                         <Grid Margin="0,0,0,12">
                             <Grid.ColumnDefinitions>
                                 <ColumnDefinition Width="*"/>
@@ -91,7 +147,7 @@
                                     <Border.Background>
                                         <SolidColorBrush Color="#F8F4FF"/>
                                     </Border.Background>
-                                    <PasswordBox x:Name="PwBox" Height="32" Background="Transparent" VerticalContentAlignment="Center"
+                                    <PasswordBox x:Name="PwBox" Height="34" Background="Transparent"
                                                  BorderThickness="0" Foreground="#2A1B5E" FontSize="12"/>
                                 </Border>
                             </StackPanel>
@@ -102,12 +158,13 @@
                                     <Border.Background>
                                         <SolidColorBrush Color="#F8F4FF"/>
                                     </Border.Background>
-                                    <PasswordBox x:Name="ConfirmPwBox" Height="34" Background="Transparent" VerticalContentAlignment="Center"
+                                    <PasswordBox x:Name="ConfirmPwBox" Height="34" Background="Transparent"
                                                  BorderThickness="0" Foreground="#2A1B5E" FontSize="12"/>
                                 </Border>
                             </StackPanel>
                         </Grid>
 
+                        <!-- Contact + License row -->
                         <Grid Margin="0,0,0,12">
                             <Grid.ColumnDefinitions>
                                 <ColumnDefinition Width="*"/>
@@ -140,19 +197,26 @@
                             </StackPanel>
                         </Grid>
 
+                        <!-- Security Question -->
                         <TextBlock Text="Security Question" FontSize="11" FontWeight="SemiBold"
                                    Foreground="#2A1B5E" Margin="0,0,0,5"/>
+                        <Border CornerRadius="11" BorderThickness="1.5" BorderBrush="#E0D4FF"
+                                Padding="4,0" Margin="0,0,0,12">
+                            <Border.Background>
+                                <SolidColorBrush Color="#F8F4FF"/>
+                            </Border.Background>
+                            <ComboBox SelectedValue="{Binding SecurityQuestion}"
+                                      SelectedValuePath="Content"
+                                      Height="34" Background="Transparent" BorderThickness="0"
+                                      Foreground="#2A1B5E" FontSize="12" VerticalContentAlignment="Center">
+                                <ComboBoxItem Content="What is your pet's name?" IsSelected="True"/>
+                                <ComboBoxItem Content="What is your mother's maiden name?"/>
+                                <ComboBoxItem Content="What is your childhood nickname?"/>
+                                <ComboBoxItem Content="What city were you born in?"/>
+                            </ComboBox>
+                        </Border>
 
-                        <ComboBox SelectedValue="{Binding SecurityQuestion, UpdateSourceTrigger=PropertyChanged}"
-                                      SelectedValuePath="Content" Height="34" Background="Transparent" 
-                                      BorderThickness="0" Foreground="#2A1B5E" FontSize="12" VerticalContentAlignment="Center">
-                            <ComboBoxItem Content="What is your pet name?" IsSelected="True"/>
-                            <ComboBoxItem Content="What is your mother's maiden name?"/>
-                            <ComboBoxItem Content="What is your childhood nickname?"/>
-                            <ComboBoxItem Content="What city were you born in?"/>
-                        </ComboBox>
-
-
+                        <!-- Security Answer -->
                         <TextBlock Text="Security Answer" FontSize="11" FontWeight="SemiBold"
                                    Foreground="#2A1B5E" Margin="0,0,0,5"/>
                         <Border CornerRadius="11" BorderThickness="1.5" BorderBrush="#E0D4FF"
@@ -165,10 +229,25 @@
                                      Foreground="#2A1B5E" FontSize="12" VerticalContentAlignment="Center"/>
                         </Border>
 
-                        <Button Content="Create Account" Height="44" FontSize="13" FontWeight="Bold"
-        Foreground="White" BorderThickness="0" Cursor="Hand"
-        Click="RegisterBtn_Click"
-        Style="{StaticResource LoginButtonStyle}" Margin="0,4,0,0">
+                        <!-- ── CREATE ACCOUNT BUTTON — ALWAYS VISIBLE ── -->
+                        <Button Height="44" FontSize="13" FontWeight="Bold"
+                                Foreground="White" BorderThickness="0" Cursor="Hand"
+                                Click="RegisterBtn_Click"
+                                Style="{StaticResource LoginButtonStyle}">
+                            <Button.Content>
+                                <TextBlock>
+                                    <TextBlock.Style>
+                                        <Style TargetType="TextBlock">
+                                            <Setter Property="Text" Value="Create Account"/>
+                                            <Style.Triggers>
+                                                <DataTrigger Binding="{Binding IsLoading}" Value="True">
+                                                    <Setter Property="Text" Value="Creating account..."/>
+                                                </DataTrigger>
+                                            </Style.Triggers>
+                                        </Style>
+                                    </TextBlock.Style>
+                                </TextBlock>
+                            </Button.Content>
                             <Button.Background>
                                 <LinearGradientBrush StartPoint="0,0" EndPoint="1,0">
                                     <GradientStop Color="#8A2BE2" Offset="0"/>
@@ -177,18 +256,15 @@
                             </Button.Background>
                         </Button>
 
+                        <!-- Already have account -->
+                        <Button Content="Already have an account? Log In"
+                                Background="Transparent" BorderThickness="0"
+                                Foreground="#7E74A6" FontSize="11" Cursor="Hand"
+                                Margin="0,8,0,0" Height="30"
+                                Command="{Binding BackCommand}"/>
                     </StackPanel>
                 </Border>
-
-                <Button x:Name="BackButton" Content="🡸"
-                    HorizontalAlignment="Left" VerticalAlignment="Top"
-                    Margin="6,10,0,0"
-                    Command="{Binding BackCommand}"
-                    Style="{StaticResource BackButtonStyle}"
-                    FontSize="32" Foreground="#2A1B5E" 
-                    Background="Transparent" BorderThickness="0" Cursor="Hand"/>
-
-            </Grid>
-        </Viewbox>
-    </ScrollViewer>
+            </ScrollViewer>
+        </Grid>
+    </Viewbox>
 </Window>

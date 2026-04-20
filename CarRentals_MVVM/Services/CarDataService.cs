@@ -1,6 +1,7 @@
-﻿using System.Collections.Generic;
+﻿using System;
+using System.Collections.Generic;
 using System.IO;
-using System.Printing;
+using System.Threading.Tasks;
 using System.Windows;
 using CarRentals_MVVM.Models;
 using Microsoft.Data.SqlClient;
@@ -18,17 +19,47 @@ namespace CarRentals_MVVM.Services
     /// </summary>
     public static class CarDataService
     {
-        /// <summary>
-        /// The master list of all cars in the fleet.
-        /// Pre-loaded with seed data on app startup.
-        /// Modified by AddCarViewModel (add/remove) and BrowseCarsViewModel (update status).
-        /// </summary>
+        // ── AUTO CONNECTION STRING ────────────────────────────────────────────────────
+        // Tries PC first, then falls back to Laptop automatically.
+        // No more manual switching between machines.
+
+        private static string? _cachedConn = null;
+
+        private static readonly string _laptopConn =
+      @"Server=DESKTOP-8P1VJSE;Database=RENTAL_REVS_DATABASE;Trusted_Connection=True;TrustServerCertificate=True;";
+
+        private static readonly string _pcConn =
+            @"Server=CCL2-12\MSSQLSERVER01;Database=RENTAL_REVS_DATABASE;User Id=sa;Password=ccl2;TrustServerCertificate=True;";
+
+        private static string _conn
+        {
+            get
+            {
+                if (_cachedConn != null) return _cachedConn;
+                try
+                {
+                    using var test = new SqlConnection(_pcConn + "Connect Timeout=2;");
+                    test.Open();
+                    _cachedConn = _pcConn;
+                    return _cachedConn;
+                }
+                catch { }
+                _cachedConn = _laptopConn;
+                return _cachedConn;
+            }
+        }
+        // ──────────────────────────────────────────────────────────────────────────────
+
+            /// <summary>
+            /// The master list of all cars in the fleet.
+            /// Pre-loaded with seed data on app startup.
+            /// Modified by AddCarViewModel (add/remove) and BrowseCarsViewModel (update status).
+            /// </summary>
         public static List<CarModel> Cars { get; } = new()
         {
-           
+            //file path for laptop
+            //C:\Users\yuanm\source\repos\CarRentals_MVVM\CarRentals_MVVM\bin\Debug\net8.0-windows 
         };
-
-
 
         /// <summary>
         /// The master list of all rental transactions.
@@ -140,7 +171,8 @@ namespace CarRentals_MVVM.Services
                     "SELECT COUNT(*) FROM Customers WHERE Username=@u AND CustomerID != @id", conn);
                 cmd.Parameters.AddWithValue("@u", username);
                 cmd.Parameters.AddWithValue("@id", excludeId);
-                return (int)await cmd.ExecuteScalarAsync() > 0;
+                var result = await cmd.ExecuteScalarAsync();
+                return result != null && (int)result > 0;
             }
             catch { return false; }
         }
@@ -156,7 +188,8 @@ namespace CarRentals_MVVM.Services
                 using var cmd = new SqlCommand(
                     "SELECT COUNT(*) FROM Customers WHERE ContactNumber=@c", conn);
                 cmd.Parameters.AddWithValue("@c", contact);
-                return (int)await cmd.ExecuteScalarAsync() > 0;
+                var result = await cmd.ExecuteScalarAsync();
+                return result != null && (int)result > 0;
             }
             catch { return false; }
         }
@@ -170,7 +203,8 @@ namespace CarRentals_MVVM.Services
                 using var cmd = new SqlCommand(
                     "SELECT COUNT(*) FROM Customers WHERE LicenseNumber=@l", conn);
                 cmd.Parameters.AddWithValue("@l", license);
-                return (int)await cmd.ExecuteScalarAsync() > 0;
+                var result = await cmd.ExecuteScalarAsync();
+                return result != null && (int)result > 0;
             }
             catch { return false; }
         }
@@ -184,12 +218,13 @@ namespace CarRentals_MVVM.Services
                 using var cmd = new SqlCommand(
                     "SELECT COUNT(*) FROM Customers WHERE Password=@p", conn);
                 cmd.Parameters.AddWithValue("@p", password);
-                return (int)await cmd.ExecuteScalarAsync() > 0;
+                var result = await cmd.ExecuteScalarAsync();
+                return result != null && (int)result > 0;
             }
             catch { return false; }
         }
 
-        public static async Task<CustomerModel> GetCustomerById(string customerId)
+        public static async Task<CustomerModel?> GetCustomerById(string customerId)
         {
             try
             {
@@ -198,10 +233,7 @@ namespace CarRentals_MVVM.Services
 
                 using var cmd = new SqlCommand(
                     "SELECT FullName, ProfilePicturePath FROM Customers WHERE CustomerID = @id", conn);
-
-                // If CustomerID in your SQL database is an INT, change customerId to int.Parse(customerId)
                 cmd.Parameters.AddWithValue("@id", customerId);
-
                 using var reader = await cmd.ExecuteReaderAsync();
                 if (await reader.ReadAsync())
                 {
@@ -219,6 +251,7 @@ namespace CarRentals_MVVM.Services
                 return null;
             }
         }
+
         public static async Task<CustomerModel?> GetCustomerByUsername(string username)
         {
             try
@@ -238,7 +271,6 @@ namespace CarRentals_MVVM.Services
                         Username = reader["Username"].ToString() ?? "",
                         ContactNumber = reader["ContactNumber"].ToString() ?? "",
                         LicenseNumber = reader["LicenseNumber"].ToString() ?? "",
-                        // THIS WAS THE MISSING LINE RIGHT HERE:
                         ProfilePicturePath = reader["ProfilePicturePath"] != DBNull.Value ? reader["ProfilePicturePath"].ToString() ?? "" : ""
                     };
                 }
@@ -250,23 +282,17 @@ namespace CarRentals_MVVM.Services
         //If driver duplicates
         public static bool IsDriverNameInUse(string driverName)
         {
-            string ConnectionString = @"Server=DESKTOP-8P1VJSE;Database=RENTAL_REVS_DATABASE;Trusted_Connection=True;TrustServerCertificate=True;";
-
-            // for pc
-            //string connectionString = @"Server=.\MSSQLSERVER01;Database=RENTAL_REVS_DATABASE;User Id=sa;Password=ccl2;TrustServerCertificate=True;";
-
-            // If the name is null or empty, it's technically not "in use" in this context
             if (string.IsNullOrWhiteSpace(driverName)) return false;
 
             int count = 0;
 
-            using (SqlConnection conn = new SqlConnection(ConnectionString))
+            using (SqlConnection conn = new SqlConnection(_conn))
             {
                 // Query checks for the name specifically on ACTIVE rentals
                 string query = @"
-                    SELECT COUNT(1) 
-                    FROM Rentals 
-                    WHERE DriverName = @DriverName 
+                    SELECT COUNT(1)
+                    FROM Rentals
+                    WHERE DriverName = @DriverName
                       AND Status = 'Active'";
 
                 using (SqlCommand cmd = new SqlCommand(query, conn))
@@ -292,32 +318,19 @@ namespace CarRentals_MVVM.Services
             return count > 0;
         }
 
-
-
         /// <summary>
         /// Returns a copy of all cars in the fleet.
         /// Used by FleetStatusWindow and BrowseCarsViewModel to display the full list.
         /// </summary>
-        /// 
-
-
-
         public static async Task<List<CarModel>> GetAll()
         {
-            var cars = new List<CarModel>(); //
-
-            //for laptop
-            string connectionString = @"Server=DESKTOP-8P1VJSE;Database=RENTAL_REVS_DATABASE;Trusted_Connection=True;TrustServerCertificate=True;";
-
-            // for pc
-            //string connectionString = @"Server=.\MSSQLSERVER01;Database=RENTAL_REVS_DATABASE;User Id=sa;Password=ccl2;TrustServerCertificate=True;";
-
+            var cars = new List<CarModel>();
             string query = "SELECT * FROM Cars";
 
             try
             {
                 // Use 'await' on the connection open and the reader execution
-                using (SqlConnection connection = new SqlConnection(connectionString))
+                using (SqlConnection connection = new SqlConnection(_conn))
                 {
                     await connection.OpenAsync(); // Non-blocking open
 
@@ -355,21 +368,15 @@ namespace CarRentals_MVVM.Services
 
             return cars;
         }
+
         public static async Task AddCar(CarModel car)
         {
-            //for laptop
-            string connectionString = @"Server=DESKTOP-8P1VJSE;Database=RENTAL_REVS_DATABASE;Trusted_Connection=True;TrustServerCertificate=True;";
-
-
-            // for pc
-            //string connectionString = @"Server=.\MSSQLSERVER01;Database=RENTAL_REVS_DATABASE;User Id=sa;Password=ccl2;TrustServerCertificate=True;";
-
             // 1. ADD AvailableColors and @colors TO THE SQL QUERY
             string query = "INSERT INTO Cars (CarId, Name, Category, FuelType, Status, PricePerHour, ImageUrl, AvailableColors) " +
                            "VALUES (@id, @name, @cat, @fuel, @status, @price, @img, @colors)";
             try
             {
-                using (SqlConnection connection = new SqlConnection(connectionString))
+                using (SqlConnection connection = new SqlConnection(_conn))
                 {
                     await connection.OpenAsync();
 
@@ -395,21 +402,15 @@ namespace CarRentals_MVVM.Services
                 MessageBox.Show("Database connection failed: " + ex.Message);
             }
         }
+
         public static async Task DeleteCar(string carId)
         {
-            //for laptop
-            string connectionString = @"Server=DESKTOP-8P1VJSE;Database=RENTAL_REVS_DATABASE;Trusted_Connection=True;TrustServerCertificate=True;";
-
-
-            // for pc
-            //string connectionString = @"Server=.\MSSQLSERVER01;Database=RENTAL_REVS_DATABASE;User Id=sa;Password=ccl2;TrustServerCertificate=True;";
-
             // Make sure the table name matches your SQL database
             string query = "DELETE FROM Cars WHERE CarId = @id";
 
             try
             {
-                using (SqlConnection connection = new SqlConnection(connectionString))
+                using (SqlConnection connection = new SqlConnection(_conn))
                 {
                     await connection.OpenAsync();
                     using (SqlCommand cmd = new SqlCommand(query, connection))
@@ -422,37 +423,28 @@ namespace CarRentals_MVVM.Services
                     }
                 }
             }
-            catch (Exception ex) 
+            catch (Exception ex)
             {
                 MessageBox.Show("Database connection failed: " + ex.Message);
             }
-
-           
         }
 
         public static async Task UpdateCar(CarModel car)
         {
-            //for laptop
-            string connectionString = @"Server=DESKTOP-8P1VJSE;Database=RENTAL_REVS_DATABASE;Trusted_Connection=True;TrustServerCertificate=True;";
-
-
-            // for pc
-            //string connectionString = @"Server=.\MSSQLSERVER01;Database=RENTAL_REVS_DATABASE;User Id=sa;Password=ccl2;TrustServerCertificate=True;";
-
             // 1. ADD AvailableColors = @colors TO THE SQL QUERY
-            string query = @"UPDATE Cars 
-                     SET Name = @name, 
-                         Category = @cat, 
-                         FuelType = @fuel, 
-                         PricePerHour = @price, 
-                         Status = @status, 
+            string query = @"UPDATE Cars
+                     SET Name = @name,
+                         Category = @cat,
+                         FuelType = @fuel,
+                         PricePerHour = @price,
+                         Status = @status,
                          ImageUrl = @img,
                          AvailableColors = @colors
                      WHERE CarId = @id";
 
             try
             {
-                using (SqlConnection conn = new SqlConnection(connectionString))
+                using (SqlConnection conn = new SqlConnection(_conn))
                 {
                     await conn.OpenAsync();
                     using (SqlCommand cmd = new SqlCommand(query, conn))
@@ -477,16 +469,6 @@ namespace CarRentals_MVVM.Services
                 MessageBox.Show("Database connection failed: " + ex.Message);
             }
         }
-
-        // for laptop
-
-        private static readonly string _conn =
-            @"Server=DESKTOP-8P1VJSE;Database=RENTAL_REVS_DATABASE;Trusted_Connection=True;TrustServerCertificate=True;";
-
-        // for pc
-        //private static readonly string _conn =  @"Server=.\MSSQLSERVER01;Database=RENTAL_REVS_DATABASE;User Id=sa;Password=ccl2;TrustServerCertificate=True;";
-
-
 
         // ── RENTALS ─────────────────────────────────────────────────────────────
 
@@ -564,7 +546,8 @@ namespace CarRentals_MVVM.Services
                 using var conn = new SqlConnection(_conn);
                 await conn.OpenAsync();
                 using var cmd = new SqlCommand("SELECT COUNT(*) FROM Rentals", conn);
-                int count = (int)await cmd.ExecuteScalarAsync();
+                var scalar = await cmd.ExecuteScalarAsync();
+                int count = scalar != null ? (int)scalar : 0;
                 return $"R{(count + 1):D4}";
             }
             catch { return $"R{DateTime.Now.Ticks:D4}"; }
@@ -572,10 +555,10 @@ namespace CarRentals_MVVM.Services
 
         public static async Task SaveRental(RentalModel rental)
         {
-            string query = @"INSERT INTO Rentals 
-        (RentalId, CustomerId, CarId, CarName, DriverName, Color, Hours, 
+            string query = @"INSERT INTO Rentals
+        (RentalId, CustomerId, CarId, CarName, DriverName, Color, Hours,
          BasePrice, Deposit, TotalAmount, RentalDate, Status)
-        VALUES 
+        VALUES
         (@rid, @cid, @carid, @carname, @driver, @color, @hours,
          @base, @deposit, @total, @date, @status)";
             try
@@ -653,7 +636,8 @@ namespace CarRentals_MVVM.Services
                 using var conn = new SqlConnection(_conn);
                 await conn.OpenAsync();
                 using var cmd = new SqlCommand("SELECT COUNT(*) FROM Maintenance", conn);
-                int count = (int)await cmd.ExecuteScalarAsync();
+                var scalar = await cmd.ExecuteScalarAsync();
+                int count = scalar != null ? (int)scalar : 0;
                 return $"M{(count + 1):D4}";
             }
             catch { return $"M{DateTime.Now.Ticks:D4}"; }
@@ -661,7 +645,7 @@ namespace CarRentals_MVVM.Services
 
         public static async Task SaveMaintenance(MaintenanceModel m)
         {
-            string query = @"INSERT INTO Maintenance 
+            string query = @"INSERT INTO Maintenance
         (MaintenanceId, CarId, TechnicianName, Description, StartDate, Cost, Status)
         VALUES (@id, @carid, @tech, @desc, @start, @cost, @status)";
             try
@@ -683,8 +667,8 @@ namespace CarRentals_MVVM.Services
 
         public static async Task CompleteMaintenance(string maintenanceId, decimal cost)
         {
-            string query = @"UPDATE Maintenance 
-                     SET Status='Completed', EndDate=@end, Cost=@cost 
+            string query = @"UPDATE Maintenance
+                     SET Status='Completed', EndDate=@end, Cost=@cost
                      WHERE MaintenanceId=@id";
             try
             {
@@ -714,7 +698,7 @@ namespace CarRentals_MVVM.Services
         //       Revenue_20260101.txt
 
         private static readonly string _baseDir =
-            Path.Combine(AppDomain.CurrentDomain.BaseDirectory, "RentalRevData");
+             Path.Combine(AppDomain.CurrentDomain.BaseDirectory, "RentalRevData");
 
         private static string CustomerReceiptPath(string customerId, string rentalId)
         {
@@ -738,8 +722,7 @@ namespace CarRentals_MVVM.Services
         {
             string dir = Path.Combine(_baseDir, "Admin", "RevenueReports");
             Directory.CreateDirectory(dir);
-            return Path.Combine(dir,
-                $"Revenue_{DateTime.Now:yyyyMMdd_HHmmss}.txt");
+            return Path.Combine(dir, $"Revenue_{DateTime.Now:yyyyMMdd_HHmmss}.txt");
         }
 
         // Updated receipt method — replaces the old one
@@ -869,11 +852,18 @@ namespace CarRentals_MVVM.Services
             {
                 using var conn = new SqlConnection(_conn);
                 await conn.OpenAsync();
-                using var cmd = new SqlCommand("SELECT COUNT(*) FROM Customers", conn);
-                int count = (int)await cmd.ExecuteScalarAsync();
-                return $"C{(count + 1):D3}";
+                // Use MAX to find the highest existing ID — COUNT breaks when rows are deleted
+                using var cmd = new SqlCommand(
+                    "SELECT ISNULL(MAX(CAST(SUBSTRING(CustomerID,2,LEN(CustomerID)) AS INT)),0) FROM Customers WHERE CustomerID LIKE 'C%'", conn);
+                var scalar = await cmd.ExecuteScalarAsync();
+                int maxNum = scalar != null ? (int)scalar : 0;
+                return $"C{(maxNum + 1):D3}";
             }
-            catch { return $"C{DateTime.Now.Millisecond:D3}"; }
+            catch
+            {
+                // Fallback using timestamp to guarantee uniqueness
+                return $"C{(DateTime.Now.Ticks % 999 + 1):D3}";
+            }
         }
 
         public static async Task<bool> UsernameExists(string username)
@@ -885,7 +875,8 @@ namespace CarRentals_MVVM.Services
                 using var cmd = new SqlCommand(
                     "SELECT COUNT(*) FROM Customers WHERE Username = @u", conn);
                 cmd.Parameters.AddWithValue("@u", username);
-                int count = (int)await cmd.ExecuteScalarAsync();
+                var scalar = await cmd.ExecuteScalarAsync();
+                int count = scalar != null ? (int)scalar : 0;
                 return count > 0;
             }
             catch { return false; }
@@ -893,9 +884,6 @@ namespace CarRentals_MVVM.Services
 
         public static async Task RegisterCustomer(CustomerModel c)
         {
-            string query = @"EXEC sp_RegisterCustomer 
-        @CustomerId, @FullName, @Username, @Password,
-        @Contact, @License, @SecurityQ, @SecurityA";
             try
             {
                 using var conn = new SqlConnection(_conn);
@@ -912,10 +900,11 @@ namespace CarRentals_MVVM.Services
                 cmd.Parameters.AddWithValue("@SecurityA", c.SecurityAnswer);
                 await cmd.ExecuteNonQueryAsync();
             }
+
             catch (Exception ex)
             {
-                MessageBox.Show("Registration failed: " + ex.Message);
-                throw;
+                // Only rethrow — let ViewModel show the error, not CarDataService
+                throw new Exception(ex.Message, ex);
             }
         }
         // ── FORGOT PASSWORD ──────────────────────────────────────────────────────────
@@ -997,7 +986,6 @@ namespace CarRentals_MVVM.Services
         /// Returns only cars with Status = "Available".
         /// Reserved for future use — BrowseCarsViewModel filters directly using LINQ.
         /// </summary>
-
         public static async Task<List<CarModel>> GetAvailable()
         {
             // Await the task to get the actual list
@@ -1014,7 +1002,6 @@ namespace CarRentals_MVVM.Services
             return availableCars;
         }
 
-
         /// <summary>
         /// Returns all rentals that belong to the given customer ID.
         /// Used by MyRentalsViewModel to show only the logged-in customer's rentals.
@@ -1023,7 +1010,6 @@ namespace CarRentals_MVVM.Services
         public static List<RentalModel> GetByCustomer(string id)
         {
             var result = new List<RentalModel>();
-
             foreach (var rental in Rentals)
             {
                 if (rental.CustomerId == id)
@@ -1043,7 +1029,6 @@ namespace CarRentals_MVVM.Services
         public static async Task<CarModel?> GetById(string carId)
         {
             List<CarModel> allCars = await GetAll();
-
             foreach (var car in allCars)
             {
                 if (car.CarId == carId)
@@ -1055,16 +1040,6 @@ namespace CarRentals_MVVM.Services
         }
 
         /// <summary>
-        /// Adds a new car to the fleet.
-        /// Called by AddCarViewModel.SaveCommand after validation passes.
-        /// </summary>
-        /// <param name="car">The CarModel to add.</param>
-        //public static void AddCar(CarModel car)
-        //{
-        //    Cars.Add(car);
-        //}
-
-        /// <summary>
         /// Removes a car from the fleet by its CarId.
         /// Called by AddCarViewModel.DeleteCommand when the admin confirms deletion.
         /// </summary>
@@ -1072,7 +1047,6 @@ namespace CarRentals_MVVM.Services
         public static async void RemoveCar(string carId)
         {
             var car = await GetById(carId);
-
             if (car != null)
             {
                 Cars.Remove(car);
@@ -1088,8 +1062,5 @@ namespace CarRentals_MVVM.Services
         {
             Rentals.Add(rental);
         }
-
-
-        
     }
 }

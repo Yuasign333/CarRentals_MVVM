@@ -59,13 +59,21 @@ namespace CarRentals_MVVM.ViewModels
             get => _isEditingUsername;
             set { _isEditingUsername = value; OnPropertyChanged(); }
         }
-
         private string _profilePicturePath = string.Empty;
         public string ProfilePicturePath
         {
             get => _profilePicturePath;
-            set { _profilePicturePath = value; OnPropertyChanged(); }
+            set
+            {
+                _profilePicturePath = value;
+                OnPropertyChanged();
+                // This tells the XAML to hide the  icon and show the picture!
+                OnPropertyChanged(nameof(HasProfilePicture));
+            }
         }
+
+        // The XAML needs this to know if it should show the circle image
+        public bool HasProfilePicture => !string.IsNullOrEmpty(_profilePicturePath);
 
         private string _errorMessage = string.Empty;
         public string ErrorMessage

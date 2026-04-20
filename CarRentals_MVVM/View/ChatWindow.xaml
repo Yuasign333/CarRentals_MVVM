@@ -110,8 +110,8 @@
                                 <StackPanel Orientation="Horizontal" Margin="0,2,0,0">
                                     <Ellipse Width="8" Height="8" Fill="#4CAF50" Margin="0,0,6,0"/>
                                     <TextBlock Foreground="#7E74A6" FontSize="12">
-                    <Run Text="Customer | " />
-                    <Run Text="{Binding CustomerId}" />
+    
+                                        <TextBlock Text="{Binding OpenChatCommand}" Foreground="#7E74A6" FontSize="12"/>
                                     </TextBlock>
                                 </StackPanel>
                             </StackPanel>

@@ -2,6 +2,7 @@
 using System.Linq;
 using System.Windows;
 using System.Windows.Input;
+using System.Threading.Tasks;
 using CarRentals_MVVM.Commands;
 using CarRentals_MVVM.Models;
 using CarRentals_MVVM.Services;
@@ -10,6 +11,7 @@ namespace CarRentals_MVVM.ViewModels
 {
     public class SignUpViewModel : ObservableObject
     {
+        // ── Backing fields ─────────────────────────────────────────────────────
         private string _fullName = string.Empty;
         private string _username = string.Empty;
         private string _password = string.Empty;
@@ -18,26 +20,30 @@ namespace CarRentals_MVVM.ViewModels
         private string _license = string.Empty;
         private string _errorMessage = string.Empty;
         private bool _errorVisible = false;
-        private string _securityQuestion = "What is your pet's name?";
+        private bool _isLoading = false;
+        private string _securityQuestion = "What is your pet name?";
         private string _securityAnswer = string.Empty;
         private string _profilePicturePath = string.Empty;
+
+        public bool HasProfilePicture => !string.IsNullOrEmpty(_profilePicturePath);
+
+        // ── Properties — NO blocking MessageBox in setters, inline errors only ─
 
         public string FullName
         {
             get => _fullName;
             set
             {
-                // Names must be letters and spaces only
+                // Reject digits/symbols inline, don't block with popup
                 if (!string.IsNullOrEmpty(value) &&
                     value.Any(c => !char.IsLetter(c) && !char.IsWhiteSpace(c)))
                 {
-                    MessageBox.Show(
-                        "Full Name must contain letters and spaces only.\n\nExample: 'Juan Dela Cruz'\nNumbers and symbols are not allowed.",
-                        "Invalid Full Name", MessageBoxButton.OK, MessageBoxImage.Warning);
-                    return;
+                    ShowError("Full Name must be letters and spaces only. Example: 'Juan Dela Cruz'");
+                    return; // don't update backing field
                 }
                 _fullName = value;
                 OnPropertyChanged();
+                ClearErrorIfAny();
             }
         }
 
@@ -48,52 +54,57 @@ namespace CarRentals_MVVM.ViewModels
             {
                 if (!string.IsNullOrEmpty(value) && value.Contains(" "))
                 {
-                    MessageBox.Show(
-                        "Username cannot contain spaces.\n\nExample: 'juandc' or 'juan123'\nUse letters and numbers only, no spaces.",
-                        "Invalid Username", MessageBoxButton.OK, MessageBoxImage.Warning);
+                    ShowError("Username cannot contain spaces. Example: 'juandc'");
                     return;
                 }
                 _username = value;
                 OnPropertyChanged();
+                ClearErrorIfAny();
             }
         }
 
+        // Password is set from code-behind (PasswordBox), not from XAML binding
         public string Password
         {
             get => _password;
-            set
-            {
-                _password = value;
-                OnPropertyChanged();
-               
-                if (!string.IsNullOrEmpty(value) && value.Length < 6)
+            set {
+
+                if(!string.IsNullOrEmpty(value) && value.Length < 6)
                 {
-                    ErrorMessage = $"Password too short ({value.Length}/6 chars minimum).";
-                    ErrorVisible = true;
+                    ShowError("Password must be at least 6 characters. Example: 'P@ssw0rd'");
+                }
+                else if (!string.IsNullOrEmpty(value) && value.Contains(" "))
+                {
+                    ShowError("Password cannot contain spaces. Example: 'P@ssw0rd'");
                 }
                 else
                 {
-                    ErrorVisible = false;
+                    _password = value; OnPropertyChanged();
+            
+            
                 }
-            }
+           
+}
         }
+
         public string ConfirmPass
         {
             get => _confirmPass;
-            set
-            {
-                _confirmPass = value;
-                OnPropertyChanged();
-                // Live check: show inline error if they don't match
-                if (!string.IsNullOrEmpty(value) && value != _password)
+            set {
+
+                if (!string.IsNullOrEmpty(value) && value.Length < 6)
                 {
-                    ErrorMessage = "Passwords do not match yet.";
-                    ErrorVisible = true;
+
+                    ShowError("Confirm Password must be at least 6 characters. Example: 'P@ssw0rd'");
                 }
-                else if (!string.IsNullOrEmpty(value) && value == _password)
-                {
-                    ErrorVisible = false;
+                else if (!string.IsNullOrEmpty(value) && value.Contains(" "))
+                { 
+                    ShowError("Confirm Password cannot contain spaces. Example: 'P@ssw0rd'");
                 }
+                else
+
+                    _confirmPass = value; OnPropertyChanged(); 
+            
             }
         }
 
@@ -102,26 +113,27 @@ namespace CarRentals_MVVM.ViewModels
             get => _contact;
             set
             {
-                // 1. If it's empty, just accept it (so they can delete/clear the box)
                 if (string.IsNullOrEmpty(value))
                 {
                     _contact = value;
                     OnPropertyChanged();
                     return;
                 }
-
-                // 2. Check ONLY for invalid characters while they type
-                if (value.Any(c => !char.IsDigit(c) && c != '+' && c != '-' && c != ' ') || value.Length == 12)
+                // Only digits — reject invalid chars immediately
+                if (value.Any(c => !char.IsDigit(c)))
                 {
-                    MessageBox.Show(
-                        "Contact Number should contain 11 digits only.\n\nExample: '09171234567' or '+639171234567'",
-                        "Invalid Character", MessageBoxButton.OK, MessageBoxImage.Warning);
-                    return; // Reject the invalid character, but let them keep typing valid ones
+                    ShowError("Contact Number must be digits only. Example: '09171234567'");
+                    return;
                 }
-
-                // 3. Accept the valid keystroke
+                // Cap at 11 digits
+                if (value.Length > 11)
+                {
+                    ShowError("Contact Number must be exactly 11 digits. Example: '09171234567'");
+                    return;
+                }
                 _contact = value;
                 OnPropertyChanged();
+                ClearErrorIfAny();
             }
         }
 
@@ -132,28 +144,36 @@ namespace CarRentals_MVVM.ViewModels
             {
                 _license = value;
                 OnPropertyChanged();
-                // Only show inline hint, never block or MessageBox on every keystroke
-                if (!string.IsNullOrEmpty(value) && value.Length < 4)
+                // Only inline hint — never block
+                if (!string.IsNullOrEmpty(value) && value.Trim().Length < 4)
                 {
-                    ErrorMessage = "License Number: e.g. 'N01-23-456789' or 'LIC-0001' (min 4 chars)";
-                    ErrorVisible = true;
+                    ShowError("License must be at least 4 characters. Example: 'N01-23-456789'");
                 }
-                else if (!string.IsNullOrEmpty(value) && value.Length >= 4)
+                else
                 {
-                    ErrorVisible = false;
+                    ClearErrorIfAny();
                 }
             }
         }
+
         public string ErrorMessage
         {
             get => _errorMessage;
             set { _errorMessage = value; OnPropertyChanged(); }
         }
 
+        // ErrorVisible NEVER hides the button — only the error banner uses this
         public bool ErrorVisible
         {
             get => _errorVisible;
             set { _errorVisible = value; OnPropertyChanged(); }
+        }
+
+        // IsLoading disables the button while async ops run
+        public bool IsLoading
+        {
+            get => _isLoading;
+            set { _isLoading = value; OnPropertyChanged(); }
         }
 
         public string SecurityQuestion
@@ -167,19 +187,29 @@ namespace CarRentals_MVVM.ViewModels
             get => _securityAnswer;
             set { _securityAnswer = value; OnPropertyChanged(); }
         }
+
         public string ProfilePicturePath
         {
             get => _profilePicturePath;
-            set { _profilePicturePath = value; OnPropertyChanged(); }
+            set
+            {
+                _profilePicturePath = value;
+                OnPropertyChanged();
+                OnPropertyChanged(nameof(HasProfilePicture)); // ← notify so image shows
+            }
         }
+
+        // ── Commands ───────────────────────────────────────────────────────────
 
         public ICommand RegisterCommand { get; }
         public ICommand BackCommand { get; }
-
         public ICommand PickProfilePictureCommand { get; }
 
         public SignUpViewModel()
         {
+            BackCommand = new RelayCommand(_ =>
+                NavigationService.Navigate(new View.CustomerLogin()));
+
             PickProfilePictureCommand = new RelayCommand(_ =>
             {
                 var dialog = new Microsoft.Win32.OpenFileDialog
@@ -188,115 +218,95 @@ namespace CarRentals_MVVM.ViewModels
                     Title = "Select Profile Picture"
                 };
                 if (dialog.ShowDialog() == true)
-                {
                     ProfilePicturePath = dialog.FileName;
-                }
             });
-
-
-
-            BackCommand = new RelayCommand(_ =>
-                NavigationService.Navigate(new View.CustomerLogin()));
 
             RegisterCommand = new RelayCommand(async _ =>
             {
+                // RegisterCommand receives passwords pushed from code-behind
+                // before this executes (see SignUpWindow.xaml.cs RegisterBtn_Click)
+
                 ErrorVisible = false;
-
-                // All fields required
-                if (string.IsNullOrWhiteSpace(FullName) ||
-                    string.IsNullOrWhiteSpace(Username) ||
-                    string.IsNullOrWhiteSpace(Password) ||
-                    string.IsNullOrWhiteSpace(Contact) ||
-                    string.IsNullOrWhiteSpace(License) ||
-                    string.IsNullOrWhiteSpace(SecurityAnswer))
-                {
-                    ErrorMessage = "All fields are required.";
-                    ErrorVisible = true;
-                    return;
-                }
-
-                // Password rules
-                if (Password.Length < 6)
-                {
-                    ErrorMessage = $"Password must be at least 6 characters ({Password.Length}/6).";
-                    ErrorVisible = true;
-                    return;
-                }
-                if (Password != ConfirmPass)
-                {
-                    ErrorMessage = "Passwords do not match.";
-                    ErrorVisible = true;
-                    return;
-                }
-                if (Password.Contains(" "))
-                {
-                    ErrorMessage = "Password cannot contain spaces.";
-                    ErrorVisible = true;
-                    return;
-                }
-
-                // Contact validation
-                if (Contact.Length != 11 || !Contact.StartsWith("09") ||
-                    !Contact.All(char.IsDigit))
-                {
-                    ErrorMessage = "Contact must be 11 digits starting with 09 (e.g. 09171234567).";
-                    ErrorVisible = true;
-                    return;
-                }
-
-                // License min length
-                if (License.Trim().Length < 4)
-                {
-                    ErrorMessage = "License Number must be at least 4 characters.";
-                    ErrorVisible = true;
-                    return;
-                }
-
-                // Duplicate checks BEFORE hitting DB constraints
-                if (await CarDataService.UsernameExists(Username))
-                {
-                    ErrorMessage = $"Username '{Username}' is already taken.";
-                    ErrorVisible = true;
-                    return;
-                }
-                if (await CarDataService.ContactExists(Contact))
-                {
-                    ErrorMessage = "That contact number is already registered.";
-                    ErrorVisible = true;
-                    return;
-                }
-                if (await CarDataService.LicenseExists(License))
-                {
-                    ErrorMessage = "That license number is already registered.";
-                    ErrorVisible = true;
-                    return;
-                }
-                if (await CarDataService.PasswordExists(Password))
-                {
-                    ErrorMessage = "That password is already used by another account. Please choose a unique password.";
-                    ErrorVisible = true;
-                    return;
-                }
+                IsLoading = true;
 
                 try
                 {
+                    // ── 1. Empty field check ───────────────────────────────────
+                    if (string.IsNullOrWhiteSpace(FullName))
+                    { ShowError("Full Name is required."); return; }
+
+                    if (string.IsNullOrWhiteSpace(Username))
+                    { ShowError("Username is required."); return; }
+
+                    if (string.IsNullOrWhiteSpace(Password))
+                    { ShowError("Password is required."); return; }
+
+                    if (string.IsNullOrWhiteSpace(ConfirmPass))
+                    { ShowError("Please confirm your password."); return; }
+
+                    if (string.IsNullOrWhiteSpace(Contact))
+                    { ShowError("Contact Number is required."); return; }
+
+                    if (string.IsNullOrWhiteSpace(License))
+                    { ShowError("License Number is required."); return; }
+
+                    if (string.IsNullOrWhiteSpace(SecurityAnswer))
+                    { ShowError("Security Answer is required."); return; }
+
+                    // ── 2. Format checks ──────────────────────────────────────
+                    if (Password.Length < 6)
+                    { ShowError($"Password must be at least 6 characters (you entered {Password.Length})."); return; }
+
+                    if (Password.Contains(" "))
+                    { ShowError("Password cannot contain spaces."); return; }
+
+                    if (Password != ConfirmPass)
+                    { ShowError("Passwords do not match. Please re-enter."); return; }
+
+                    if (Contact.Length != 11 || !Contact.StartsWith("09") || !Contact.All(char.IsDigit))
+                    { ShowError("Contact must be 11 digits starting with 09. Example: 09171234567"); return; }
+
+                    if (License.Trim().Length < 4)
+                    { ShowError("License Number must be at least 4 characters."); return; }
+
+                    // ── 3. Duplicate checks (DB calls) ────────────────────────
+                    if (await CarDataService.UsernameExists(Username))
+                    { ShowError($"Username '{Username}' is already taken. Please choose another."); return; }
+
+                    if (await CarDataService.ContactExists(Contact))
+                    { ShowError("That contact number is already registered to another account."); return; }
+
+                    if (await CarDataService.LicenseExists(License.Trim()))
+                    { ShowError("That license number is already registered to another account."); return; }
+
+                    // ── 4. Create account ─────────────────────────────────────
                     string newId = await CarDataService.GetNextCustomerId();
+
                     var customer = new CustomerModel
                     {
                         CustomerId = newId,
-                        FullName = FullName,
-                        Username = Username,
+                        FullName = FullName.Trim(),
+                        Username = Username.Trim(),
                         Password = Password,
-                        ContactNumber = Contact,
-                        LicenseNumber = License,
+                        ContactNumber = Contact.Trim(),
+                        LicenseNumber = License.Trim(),
                         SecurityQuestion = SecurityQuestion,
-                        SecurityAnswer = SecurityAnswer,
+                        SecurityAnswer = SecurityAnswer.Trim(),
                         ProfilePicturePath = ProfilePicturePath
                     };
+
+                    // Save the user data
                     await CarDataService.RegisterCustomer(customer);
 
+                    // FIXED HERE: Immediately save the profile picture to the database!
+                    if (!string.IsNullOrEmpty(ProfilePicturePath))
+                    {
+                        await CarDataService.UpdateCustomerProfile(newId, Username.Trim(), ProfilePicturePath);
+                    }
+
+                    // ── 5. Success ─────────────────────────────────────────────
                     MessageBox.Show(
-                        $"Account created!\n\nYour Customer ID: {newId}\nUsername: {Username}\n\nUse your username to log in.",
+                        $"Account created successfully!\n\nYour Customer ID: {newId}\nUsername: {Username}\n\nYou can now log in using your username.",
                         "Registration Successful",
                         MessageBoxButton.OK, MessageBoxImage.Information);
 
@@ -304,10 +314,31 @@ namespace CarRentals_MVVM.ViewModels
                 }
                 catch (Exception ex)
                 {
-                    ErrorMessage = "Registration failed: " + ex.Message;
-                    ErrorVisible = true;
+                    ShowError("Registration failed: " + ex.Message);
+                }
+                finally
+                {
+                    IsLoading = false;
                 }
             });
+        }
+
+        // ── Helpers ────────────────────────────────────────────────────────────
+
+        private void ShowError(string message)
+        {
+            ErrorMessage = message;
+            ErrorVisible = true;
+            IsLoading = false;
+        }
+
+        private void ClearErrorIfAny()
+        {
+            if (_errorVisible)
+            {
+                ErrorVisible = false;
+                ErrorMessage = string.Empty;
+            }
         }
     }
 }
