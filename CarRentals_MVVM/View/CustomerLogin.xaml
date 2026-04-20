@@ -95,9 +95,9 @@
                             </Border>
                             <Button Content="Forgot Password?"                                  
 Background="Transparent" BorderThickness="0" HorizontalAlignment="Right"
-Foreground="#7E74A6" FontSize="10" Cursor="Hand"
-Height="32"
-Command="{Binding ForgotPasswordCommand}" Margin="0,1.8,0,2"/>
+Foreground="#7E74A6" FontSize="8" Cursor="Hand" 
+Height="26"
+Command="{Binding ForgotPasswordCommand}" Margin="0,1.8,0,2" Width="97"/>
 
                             <!-- ERROR BANNER: Collapsed by default -->
                             <Border Visibility="{Binding ErrorVisible, Converter={StaticResource BoolToVisibility}}"
@@ -110,7 +110,7 @@ Command="{Binding ForgotPasswordCommand}" Margin="0,1.8,0,2"/>
                                            FontSize="12" TextWrapping="Wrap"/>
                             </Border>
 
-                            <Button Content="Login"
+                            <Button Content="Login" Margin=" 0,4,0,0"
                                     Style="{StaticResource LoginButtonStyle}"
                                     Command="{Binding LoginCommand}"
                                     CommandParameter="{Binding ElementName=PasswordBox}">
@@ -123,7 +123,7 @@ Command="{Binding ForgotPasswordCommand}" Margin="0,1.8,0,2"/>
                                 </Button.Background>
                             </Button>
 
-                        
+
                             <Button Content="Don't have an account? Sign Up" FontStyle="Italic"
                                     Margin=" 0,6,0,0"                                  
         Background="Transparent" BorderThickness="0"

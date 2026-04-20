@@ -67,14 +67,6 @@ namespace CarRentals_MVVM.ViewModels
             get => _password;
             set 
             {
-                // If username is below 6 characters, show error message and do not update the field
-                if (value.Length < 6)
-                {
-                    ErrorMessage = $"Password too short ({value.Length} chars). Minimum is 6 characters.";
-                    ErrorVisible = true;
-                    return;
-                }
-                else
                     _password = value; OnPropertyChanged();
             }
         }
@@ -84,24 +76,6 @@ namespace CarRentals_MVVM.ViewModels
             get => _confirmPass;
             set 
             {
-                if (value.Length < 6)
-                {
-                    ErrorMessage = $"Password too short ({value.Length} chars). Minimum is 6 characters.";
-                    ErrorVisible = true;
-                    return;
-                }
-                else if (value.Contains(" "))
-                {
-                    ShowError("Password cannot contain spaces. Example: 'password123'");
-                    return;
-                }
-               
-                else if (value != Password)
-                {
-                    ShowError("Passwords do not match. Please re-enter.");
-                    return;
-                }
-                else
                     _confirmPass = value; OnPropertyChanged();
 
 
