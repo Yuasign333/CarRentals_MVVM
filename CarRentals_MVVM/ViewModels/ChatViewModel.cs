@@ -65,14 +65,10 @@ namespace CarRentals_MVVM.ViewModels
                 : $"Customer: {UserSession.Username ?? myId}";
 
             ChatTitle = role == "Admin"
-                ? $"Chat with {otherId}"
-                : "Support Chat";
+                ? $"Customer Support: {otherId}"
+                : "Support Chat | Instantly Replies";
 
-            // ==========================================
-            // REVISED HEADER LOGIC
-            // ==========================================
-            // Inside ChatViewModel Constructor
-            // Inside ChatViewModel Constructor
+            // header info setup based on role 
             if (role == "Admin")
             {
                

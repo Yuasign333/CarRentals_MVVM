@@ -37,12 +37,21 @@ namespace CarRentals_MVVM.ViewModels
         public string NewPassword
         {
             get => _newPassword;
-            set { _newPassword = value; OnPropertyChanged(); }
+            set 
+            {
+
+                    _newPassword = value; OnPropertyChanged(); 
+            }
         }
         public string ConfirmPassword
         {
             get => _confirmPassword;
-            set { _confirmPassword = value; OnPropertyChanged(); }
+            set 
+            {
+               
+               
+                _confirmPassword = value; OnPropertyChanged(); 
+            }
         }
         public string ErrorMessage
         {

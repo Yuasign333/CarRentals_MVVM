@@ -106,6 +106,8 @@ namespace CarRentals_MVVM.ViewModels
         public ICommand BackCommand { get; }
         public ICommand BrowseCarsCommand { get; }
 
+        public ICommand DeleteAccountCommand { get; }
+
         public MyAccountViewModel(string userId)
         {
             _userId = userId;
@@ -119,6 +121,47 @@ namespace CarRentals_MVVM.ViewModels
 
             BrowseCarsCommand = new RelayCommand(_ =>
                 NavigationService.Navigate(new View.BrowseCarsWindow(_userId)));
+
+            DeleteAccountCommand = new RelayCommand(async _ =>
+            {
+                var confirm1 = MessageBox.Show(
+                    "Are you sure you want to delete your account?\n\n" +
+                    "This will permanently delete all your data and rental history.\n" +
+                    "This action cannot be undone.",
+                    "Delete Account",
+                    MessageBoxButton.YesNo,
+                    MessageBoxImage.Warning);
+
+                if (confirm1 != MessageBoxResult.Yes) return;
+
+                // Second confirmation
+                var confirm2 = MessageBox.Show(
+                    $"Final confirmation: Delete account for '{Username}'?\n\n" +
+                    "Type YES to confirm — this is permanent.",
+                    "Are you absolutely sure?",
+                    MessageBoxButton.YesNo,
+                    MessageBoxImage.Stop);
+
+                if (confirm2 != MessageBoxResult.Yes) return;
+
+                try
+                {
+                    await CarDataService.DeleteAccount(_userId);
+
+                    MessageBox.Show(
+                        "Your account has been deleted.\nThank you for using Rental Rev.",
+                        "Account Deleted",
+                        MessageBoxButton.OK, MessageBoxImage.Information);
+
+                    UserSession.Clear();
+                    NavigationService.Navigate(new View.ChooseRole());
+                }
+                catch (Exception ex)
+                {
+                    ErrorMessage = ex.Message;
+                    ErrorVisible = true;
+                }
+            });
 
             // FIXED: Using a dedicated method instead of an unawaited Task.Run to fix the CS4014 warning
             _ = LoadUserDataAsync(userId);

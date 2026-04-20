@@ -148,7 +148,7 @@
                                         <SolidColorBrush Color="#F8F4FF"/>
                                     </Border.Background>
                                     <PasswordBox x:Name="PwBox" Height="34" Background="Transparent"
-                                                 BorderThickness="0" Foreground="#2A1B5E" FontSize="12"/>
+                                                 BorderThickness="0" Foreground="#2A1B5E" FontSize="12" Padding=" 0,8,0,0"/>
                                 </Border>
                             </StackPanel>
                             <StackPanel Grid.Column="2">
@@ -159,7 +159,7 @@
                                         <SolidColorBrush Color="#F8F4FF"/>
                                     </Border.Background>
                                     <PasswordBox x:Name="ConfirmPwBox" Height="34" Background="Transparent"
-                                                 BorderThickness="0" Foreground="#2A1B5E" FontSize="12"/>
+                                                 BorderThickness="0" Foreground="#2A1B5E" FontSize="12" Padding=" 0,8,0,0"/>
                                 </Border>
                             </StackPanel>
                         </Grid>

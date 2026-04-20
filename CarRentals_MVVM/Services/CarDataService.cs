@@ -852,17 +852,25 @@ namespace CarRentals_MVVM.Services
             {
                 using var conn = new SqlConnection(_conn);
                 await conn.OpenAsync();
-                // Use MAX to find the highest existing ID — COUNT breaks when rows are deleted
-                using var cmd = new SqlCommand(
-                    "SELECT ISNULL(MAX(CAST(SUBSTRING(CustomerID,2,LEN(CustomerID)) AS INT)),0) FROM Customers WHERE CustomerID LIKE 'C%'", conn);
+                // Check MAX from BOTH tables so orphaned Users rows don't cause collision
+                string query = @"
+            SELECT ISNULL(MAX(num), 0) FROM (
+                SELECT CAST(SUBSTRING(UserID, 2, LEN(UserID)) AS INT) AS num
+                FROM Users
+                WHERE UserID LIKE 'C[0-9][0-9][0-9]'
+                UNION ALL
+                SELECT CAST(SUBSTRING(CustomerID, 2, LEN(CustomerID)) AS INT) AS num
+                FROM Customers
+                WHERE CustomerID LIKE 'C[0-9][0-9][0-9]'
+            ) AS all_ids";
+                using var cmd = new SqlCommand(query, conn);
                 var scalar = await cmd.ExecuteScalarAsync();
-                int maxNum = scalar != null ? (int)scalar : 0;
+                int maxNum = scalar != null ? Convert.ToInt32(scalar) : 0;
                 return $"C{(maxNum + 1):D3}";
             }
             catch
             {
-                // Fallback using timestamp to guarantee uniqueness
-                return $"C{(DateTime.Now.Ticks % 999 + 1):D3}";
+                return $"C{(DateTime.Now.Ticks % 900 + 100):D3}";
             }
         }
 
@@ -882,7 +890,39 @@ namespace CarRentals_MVVM.Services
             catch { return false; }
         }
 
-        public static async Task RegisterCustomer(CustomerModel c)
+        public static async Task DeleteAccount(string customerId)
+        {
+            try
+            {
+                using var conn = new SqlConnection(_conn);
+                await conn.OpenAsync();
+
+                // Delete rentals first (FK dependency)
+                using var cmd1 = new SqlCommand(
+                    "DELETE FROM Rentals WHERE CustomerId = @id", conn);
+                cmd1.Parameters.AddWithValue("@id", customerId);
+                await cmd1.ExecuteNonQueryAsync();
+
+                // Delete from Customers
+                using var cmd2 = new SqlCommand(
+                    "DELETE FROM Customers WHERE CustomerID = @id", conn);
+                cmd2.Parameters.AddWithValue("@id", customerId);
+                await cmd2.ExecuteNonQueryAsync();
+
+                // Delete from Users
+                using var cmd3 = new SqlCommand(
+                    "DELETE FROM Users WHERE UserID = @id", conn);
+                cmd3.Parameters.AddWithValue("@id", customerId);
+                await cmd3.ExecuteNonQueryAsync();
+            }
+            catch (Exception ex)
+            {
+                throw new Exception("Account deletion failed: " + ex.Message);
+            }
+        }
+
+        public static async Task<(bool Success, bool AlreadyExists, string NewId)>
+         RegisterCustomer(CustomerModel c)
         {
             try
             {
@@ -899,12 +939,22 @@ namespace CarRentals_MVVM.Services
                 cmd.Parameters.AddWithValue("@SecurityQ", c.SecurityQuestion);
                 cmd.Parameters.AddWithValue("@SecurityA", c.SecurityAnswer);
                 await cmd.ExecuteNonQueryAsync();
+                return (true, false, c.CustomerId);
             }
-
-            catch (Exception ex)
+            catch (Microsoft.Data.SqlClient.SqlException ex)
             {
-                // Only rethrow — let ViewModel show the error, not CarDataService
-                throw new Exception(ex.Message, ex);
+                // Duplicate key — account already exists from a previous attempt
+                // Check if the customer record actually made it to Customers table
+                if (ex.Number == 2627 || ex.Number == 2601) // UNIQUE constraint violation
+                {
+                    bool customerExists = await UsernameExists(c.Username);
+                    if (customerExists)
+                    {
+                        // Account was actually created — treat as success
+                        return (true, true, c.CustomerId);
+                    }
+                }
+                throw; // Real error — rethrow
             }
         }
         // ── FORGOT PASSWORD ──────────────────────────────────────────────────────────

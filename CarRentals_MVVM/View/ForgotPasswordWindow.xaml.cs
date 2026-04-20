@@ -25,6 +25,6 @@ namespace CarRentals_MVVM.View
             }
         }
 
-     
+      
     }
 }

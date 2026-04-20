@@ -111,7 +111,7 @@
                                     <Ellipse Width="8" Height="8" Fill="#4CAF50" Margin="0,0,6,0"/>
                                     <TextBlock Foreground="#7E74A6" FontSize="12">
     
-                                        <TextBlock Text="{Binding OpenChatCommand}" Foreground="#7E74A6" FontSize="12"/>
+                                        <TextBlock Text="{Binding ChatTitle}" Foreground="#7E74A6" FontSize="12"/>
                                     </TextBlock>
                                 </StackPanel>
                             </StackPanel>
