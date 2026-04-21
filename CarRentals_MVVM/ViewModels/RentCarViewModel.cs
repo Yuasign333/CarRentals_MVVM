@@ -126,7 +126,7 @@ namespace CarRentals_MVVM.ViewModels
             BackCommand = new RelayCommand(_ =>
                 NavigationService.Navigate(new View.BrowseCarsWindow(_userId)));
 
-            ConfirmCommand = new RelayCommand(async _ =>
+            ConfirmCommand = new AsyncRelayCommand(async _ =>
             {
                 if (string.IsNullOrWhiteSpace(SelectedColor))
                 {

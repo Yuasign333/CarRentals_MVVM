@@ -93,7 +93,7 @@ namespace CarRentals_MVVM.ViewModels
             });
 
             // Send message — save to DB, show it, then trigger AUTO-REPLY
-            SendCommand = new RelayCommand(async _ =>
+            SendCommand = new AsyncRelayCommand(async _ =>
             {
                 if (string.IsNullOrWhiteSpace(CurrentMessage)) return;
 

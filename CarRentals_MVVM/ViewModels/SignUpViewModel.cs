@@ -193,7 +193,7 @@ namespace CarRentals_MVVM.ViewModels
                 }
             });
 
-            RegisterCommand = new RelayCommand(async _ =>
+            RegisterCommand = new AsyncRelayCommand(async _ =>
             {
                 if (IsLoading) return;
 

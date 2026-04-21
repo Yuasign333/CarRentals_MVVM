@@ -67,8 +67,9 @@
                     </Border>
                 </Grid>
             </Border>
+          <ScrollViewer Grid.Row="1" VerticalScrollBarVisibility="Auto" HorizontalScrollBarVisibility="Disabled">
 
-            <!-- BODY -->
+                <!-- BODY -->
             <Grid Grid.Row="1" Margin="24,14,24,20">
                 <Grid.ColumnDefinitions>
                     <ColumnDefinition Width="280"/>
@@ -345,6 +346,7 @@
                     </Grid>
                 </Border>
             </Grid>
+          </ScrollViewer>
         </Grid>
     </Viewbox>
 </Window>

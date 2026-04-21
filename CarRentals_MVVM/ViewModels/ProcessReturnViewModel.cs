@@ -43,7 +43,7 @@ namespace CarRentals_MVVM.ViewModels
             BackCommand = new RelayCommand(_ =>
                 NavigationService.Navigate(new View.AdminDashboard(_userId)));
 
-            ReturnCommand = new RelayCommand(async _ =>
+            ReturnCommand = new AsyncRelayCommand(async _ =>
             {
                 if (SelectedRental == null)
                 {

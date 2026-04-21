@@ -943,7 +943,7 @@ namespace CarRentals_MVVM.Services
             }
             catch (Microsoft.Data.SqlClient.SqlException ex)
             {
-                // Duplicate key — account already exists from a previous attempt
+              
                 // Check if the customer record actually made it to Customers table
                 if (ex.Number == 2627 || ex.Number == 2601) // UNIQUE constraint violation
                 {

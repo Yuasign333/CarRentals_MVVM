@@ -88,7 +88,7 @@ namespace CarRentals_MVVM.ViewModels
                 NavigationService.Navigate(new View.AdminDashboard(_userId)));
 
             // Send car to maintenance
-            SendToMaintCommand = new RelayCommand(async _ =>
+            SendToMaintCommand = new AsyncRelayCommand(async _ =>
             {
                 if (string.IsNullOrWhiteSpace(SelectedCarId) ||
                     string.IsNullOrWhiteSpace(TechnicianName))
@@ -159,7 +159,7 @@ namespace CarRentals_MVVM.ViewModels
             });
 
             // Complete maintenance
-            CompleteCommand = new RelayCommand(async _ =>
+            CompleteCommand = new AsyncRelayCommand(async _ =>
             {
                 if (SelectedMaintenance == null)
                 {

@@ -122,7 +122,7 @@ namespace CarRentals_MVVM.ViewModels
             BrowseCarsCommand = new RelayCommand(_ =>
                 NavigationService.Navigate(new View.BrowseCarsWindow(_userId)));
 
-            DeleteAccountCommand = new RelayCommand(async _ =>
+            DeleteAccountCommand = new AsyncRelayCommand(async _ =>
             {
                 var confirm1 = MessageBox.Show(
                     "Are you sure you want to delete your account?\n\n" +
@@ -167,7 +167,7 @@ namespace CarRentals_MVVM.ViewModels
             _ = LoadUserDataAsync(userId);
 
             // 1. CHANGE PROFILE PICTURE LOGIC
-            PickPictureCommand = new RelayCommand(async _ =>
+            PickPictureCommand = new AsyncRelayCommand(async _ =>
             {
                 var result = MessageBox.Show("Do you want to change your profile picture?",
                                              "Change Photo", MessageBoxButton.YesNo, MessageBoxImage.Question);
@@ -205,7 +205,7 @@ namespace CarRentals_MVVM.ViewModels
                 ErrorVisible = false;
             });
 
-            SaveUsernameCommand = new RelayCommand(async _ =>
+            SaveUsernameCommand = new AsyncRelayCommand(async _ =>
             {
                 var result = MessageBox.Show("Are you sure you want to change your username?",
                                              "Confirm Change", MessageBoxButton.YesNo, MessageBoxImage.Question);

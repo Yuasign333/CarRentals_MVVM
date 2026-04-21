@@ -254,7 +254,7 @@ namespace CarRentals_MVVM.ViewModels
 
             // Save command — validate inputs then create and store a new car in Database
             // Save command — validate inputs then create and store a new car in Database
-            SaveCommand = new RelayCommand(async _ =>
+            SaveCommand = new AsyncRelayCommand(async _ =>
             {
                 try
                 {
@@ -343,7 +343,7 @@ namespace CarRentals_MVVM.ViewModels
 
 
             // Delete command — remove the selected car from the database and the UI
-            DeleteCommand = new RelayCommand(async _ =>
+            DeleteCommand = new AsyncRelayCommand(async _ =>
             {
                 //  Check if a car is actually selected
                 if (SelectedCar == null)
@@ -388,11 +388,12 @@ namespace CarRentals_MVVM.ViewModels
                     catch (System.Exception ex)
                     {
                         MessageBox.Show($"Error deleting car: {ex.Message}", "Database Error", MessageBoxButton.OK, MessageBoxImage.Error);
+
                     }
                 }
             });
 
-            UpdateCommand = new RelayCommand(async _ =>
+            UpdateCommand = new AsyncRelayCommand(async _ =>
             {
                 if (SelectedCar == null)
                 {

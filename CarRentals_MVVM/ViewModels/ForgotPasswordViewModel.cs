@@ -91,7 +91,7 @@ namespace CarRentals_MVVM.ViewModels
                     NavigationService.Navigate(new View.CustomerLogin());
             });
 
-            FindAccountCommand = new RelayCommand(async _ =>
+            FindAccountCommand = new AsyncRelayCommand(async _ =>
             {
                 ErrorVisible = false;
 
@@ -117,7 +117,7 @@ namespace CarRentals_MVVM.ViewModels
                 IsStep2 = true;
             });
 
-            ResetPasswordCommand = new RelayCommand(async _ =>
+            ResetPasswordCommand = new AsyncRelayCommand(async _ =>
             {
                 ErrorVisible = false;
 
