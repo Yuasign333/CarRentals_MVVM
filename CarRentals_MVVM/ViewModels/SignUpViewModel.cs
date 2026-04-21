@@ -9,6 +9,11 @@ using CarRentals_MVVM.Services;
 
 namespace CarRentals_MVVM.ViewModels
 {
+    /// <summary>
+    /// ViewModel for the User Registration (Sign Up) screen.
+    /// Handles comprehensive form validation, profile picture selection, 
+    /// and multi-step confirmation before saving to the database.
+    /// </summary>
     public class SignUpViewModel : ObservableObject
     {
         // ── Backing fields ─────────────────────────────────────────────────────
@@ -24,17 +29,19 @@ namespace CarRentals_MVVM.ViewModels
         private string _securityQuestion = "What is your pet name?";
         private string _securityAnswer = string.Empty;
         private string _profilePicturePath = string.Empty;
-        private bool _userConfirmed = false; // Prevents double tap and triggers dialog
+        private bool _userConfirmed = false; // Prevents double tap and triggers confirmation dialog
 
+        /// <summary>Helper property for the UI to determine if a profile image preview should be shown.</summary>
         public bool HasProfilePicture => !string.IsNullOrEmpty(_profilePicturePath);
 
-        // ── Properties — NO blocking MessageBox in setters, inline errors only ─
+        // ── Properties — Logic is kept inside setters for real-time validation feedback ─
 
         public string FullName
         {
             get => _fullName;
             set
             {
+                // Logic: Block numbers or symbols in the name field
                 if (!string.IsNullOrEmpty(value) && value.Any(c => !char.IsLetter(c) && !char.IsWhiteSpace(c)))
                 {
                     ShowError("Full Name must be letters and spaces only. Example: 'Juan Dela Cruz'");
@@ -51,6 +58,7 @@ namespace CarRentals_MVVM.ViewModels
             get => _username;
             set
             {
+                // Logic: Enforce no-space policy for usernames
                 if (!string.IsNullOrEmpty(value) && value.Contains(" "))
                 {
                     ShowError("Username cannot contain spaces. Example: 'juandc'");
@@ -65,20 +73,18 @@ namespace CarRentals_MVVM.ViewModels
         public string Password
         {
             get => _password;
-            set 
+            set
             {
-                    _password = value; OnPropertyChanged();
+                _password = value; OnPropertyChanged();
             }
         }
 
         public string ConfirmPass
         {
             get => _confirmPass;
-            set 
+            set
             {
-                    _confirmPass = value; OnPropertyChanged();
-
-
+                _confirmPass = value; OnPropertyChanged();
             }
         }
 
@@ -93,11 +99,13 @@ namespace CarRentals_MVVM.ViewModels
                     OnPropertyChanged();
                     return;
                 }
+                // Logic: Ensure contact field only contains numeric digits
                 if (value.Any(c => !char.IsDigit(c)))
                 {
                     ShowError("Contact Number must be digits only. Example: '09171234567'");
                     return;
                 }
+                // Logic: Enforce standard PH mobile number length
                 if (value.Length > 11)
                 {
                     ShowError("Contact Number must be exactly 11 digits. Example: '09171234567'");
@@ -127,18 +135,21 @@ namespace CarRentals_MVVM.ViewModels
             }
         }
 
+        /// <summary>The text message displayed in the UI error banner.</summary>
         public string ErrorMessage
         {
             get => _errorMessage;
             set { _errorMessage = value; OnPropertyChanged(); }
         }
 
+        /// <summary>Controls the visibility of the red error panel in the XAML.</summary>
         public bool ErrorVisible
         {
             get => _errorVisible;
             set { _errorVisible = value; OnPropertyChanged(); }
         }
 
+        /// <summary>Indicates if the registration task is currently running.</summary>
         public bool IsLoading
         {
             get => _isLoading;
@@ -176,9 +187,11 @@ namespace CarRentals_MVVM.ViewModels
 
         public SignUpViewModel()
         {
+            // Back navigation to login page
             BackCommand = new RelayCommand(_ =>
                 NavigationService.Navigate(new View.CustomerLogin()));
 
+            // Command to trigger the Windows File Explorer for image selection
             PickProfilePictureCommand = new RelayCommand(_ =>
             {
                 var dialog = new Microsoft.Win32.OpenFileDialog
@@ -189,17 +202,18 @@ namespace CarRentals_MVVM.ViewModels
                 if (dialog.ShowDialog() == true)
                 {
                     ProfilePicturePath = dialog.FileName;
-                    _userConfirmed = false; // Reset confirmation so they can see new dialog
+                    _userConfirmed = false; // Reset confirmation if picture changes
                 }
             });
 
+            // Main registration logic
             RegisterCommand = new AsyncRelayCommand(async _ =>
             {
                 if (IsLoading) return;
 
                 ErrorVisible = false;
 
-                // ── 1. Empty field check ───────────────────────────────────────
+                // ── 1. Mandatory Field Presence Checks ─────────────────────────
                 if (string.IsNullOrWhiteSpace(FullName)) { ShowError("Full Name is required."); return; }
                 if (string.IsNullOrWhiteSpace(Username)) { ShowError("Username is required."); return; }
                 if (string.IsNullOrWhiteSpace(Password)) { ShowError("Password is required."); return; }
@@ -208,14 +222,15 @@ namespace CarRentals_MVVM.ViewModels
                 if (string.IsNullOrWhiteSpace(License)) { ShowError("License Number is required."); return; }
                 if (string.IsNullOrWhiteSpace(SecurityAnswer)) { ShowError("Security Answer is required."); return; }
 
-                // ── 2. Format checks ──────────────────────────────────────────
+                // ── 2. Data Integrity/Format Checks ─────────────────────────────
                 if (Password.Length < 6) { ShowError($"Password must be at least 6 characters (you entered {Password.Length})."); return; }
                 if (Password.Contains(" ")) { ShowError("Password cannot contain spaces."); return; }
                 if (Password != ConfirmPass) { ShowError("Passwords do not match. Please re-enter."); return; }
                 if (Contact.Length != 11 || !Contact.StartsWith("09") || !Contact.All(char.IsDigit)) { ShowError("Contact must be 11 digits starting with 09."); return; }
                 if (License.Trim().Length < 4) { ShowError("License Number must be at least 4 characters."); return; }
 
-                // ── 3. FIRST TAP: Show confirm dialog instead of errors ────────
+                // ── 3. UX: Confirmation Step ────────────────────────────────────
+                // Before talking to DB, show the user their data for final verification.
                 if (!_userConfirmed)
                 {
                     var confirm = MessageBox.Show(
@@ -235,16 +250,16 @@ namespace CarRentals_MVVM.ViewModels
                     }
                     else
                     {
-                        return; // User said No
+                        return; // User cancelled
                     }
                 }
 
-                // ── 4. Process Registration ────────────────────────────────────
+                // ── 4. DB Communication (Background Thread) ─────────────────────
                 IsLoading = true;
 
                 try
                 {
-                    // Check duplicates before creating ID
+                    // Check for existing users to avoid SQL Constraint violations
                     if (await CarDataService.UsernameExists(Username))
                     { ShowError($"Username '{Username}' is already taken."); return; }
 
@@ -254,8 +269,10 @@ namespace CarRentals_MVVM.ViewModels
                     if (await CarDataService.LicenseExists(License.Trim()))
                     { ShowError("That license number is already registered."); return; }
 
+                    // Generate Next Customer ID (e.g. C007)
                     string newId = await CarDataService.GetNextCustomerId();
 
+                    // Construct the data model
                     var customer = new CustomerModel
                     {
                         CustomerId = newId,
@@ -269,12 +286,12 @@ namespace CarRentals_MVVM.ViewModels
                         ProfilePicturePath = ProfilePicturePath
                     };
 
-                    // Uses Claude's tuple logic from CarDataService!
+                    // Execute the combined registration procedure
                     var (success, alreadyExists, finalId) = await CarDataService.RegisterCustomer(customer);
 
                     if (success)
                     {
-                        // Save profile picture 
+                        // Handle profile picture update if one was chosen
                         if (!string.IsNullOrEmpty(ProfilePicturePath))
                         {
                             await CarDataService.UpdateCustomerProfile(finalId, Username.Trim(), ProfilePicturePath);
@@ -285,7 +302,7 @@ namespace CarRentals_MVVM.ViewModels
                 }
                 catch (Exception ex)
                 {
-                    // If a REAL crash happens, show it so we can actually fix it!
+                    // Generic error catch-all for DB connection issues
                     ShowError(ex.Message);
                 }
                 finally

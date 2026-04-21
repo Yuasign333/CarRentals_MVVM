@@ -1,4 +1,17 @@
-﻿using System;
+﻿// ─────────────────────────────────────────────────────────────────────────────
+// FILE: ChatViewModel.cs
+// Connected to: ChatWindow.xaml (View), ChatWindow.xaml.cs (sets DataContext),
+//               CarDataService (SaveChatMessage, GetChatMessages, GetCustomerById),
+//               AdminChatListWindow (admin navigates back here).
+// Purpose: Manages the real-time chat window for both Customer and Admin roles.
+//          Customer side: sends messages + receives auto-replies saved to SQL.
+//          Admin side: sends messages only (no auto-reply) + loads chat history.
+//          Messages are persisted in the ChatMessages SQL table via stored procedures.
+//          LoadMessages() runs on init to restore previous conversation history.
+// Commands: SendCommand (AsyncRelayCommand), BackCommand (RelayCommand).
+// ─────────────────────────────────────────────────────────────────────────────
+
+using System;
 using System.Collections.ObjectModel;
 using System.Threading.Tasks;
 using System.Windows;
@@ -11,55 +24,97 @@ namespace CarRentals_MVVM.ViewModels
 {
     public class ChatViewModel : ObservableObject
     {
+        // The logged-in user's ID (sender)
         private readonly string _myId;
+        // The other participant's ID (recipient)
         private readonly string _otherId;
+        // "Admin" or "Customer" — controls auto-reply and back navigation
         private readonly string _role;
 
+        /// <summary>Shown in the top-right badge (e.g. "Customer: juandc").</summary>
         public string UserLabel { get; }
+
+        /// <summary>Shown in the chat header (e.g. "Support Chat | Instantly Replies").</summary>
         public string ChatTitle { get; }
+
+        /// <summary>
+        /// The live list of chat messages shown in the scrollable message list.
+        /// Populated from SQL on init and updated after each Send.
+        /// IsFromUser controls left/right bubble alignment.
+        /// </summary>
         public ObservableCollection<ChatMessage> Messages { get; } = new();
 
         private string _currentMessage = string.Empty;
+        /// <summary>
+        /// Bound to the message input TextBox.
+        /// Cleared to empty string after each successful send.
+        /// </summary>
         public string CurrentMessage
         {
             get => _currentMessage;
             set { _currentMessage = value; OnPropertyChanged(); }
         }
 
-        // ==========================================
-        // NEW PROPERTIES FOR THE ADMIN HEADER
-        // ==========================================
-        private string _fullName;
+        // ── Admin-only header properties ───────────────────────────────────────
+        // When role is "Admin", these populate the chat header with the customer's
+        // name and profile picture (loaded async from DB via LoadCustomerDetails).
+        // When role is "Customer", FullName = "Live Agent Support" (hardcoded).
+
+        private string _fullName = string.Empty;
+        /// <summary>Customer's full name (admin view) or "Live Agent Support" (customer view).</summary>
         public string FullName
         {
             get => _fullName;
             set { _fullName = value; OnPropertyChanged(); }
         }
 
-        private string _profilePicturePath;
+        private string _profilePicturePath = string.Empty;
+        /// <summary>
+        /// Local file path to the customer's profile picture (admin view only).
+        /// Empty string if no profile picture has been set.
+        /// </summary>
         public string ProfilePicturePath
         {
             get => _profilePicturePath;
             set { _profilePicturePath = value; OnPropertyChanged(); }
         }
 
-        private string _customerId;
+        private string _customerId = string.Empty;
+        /// <summary>
+        /// Subtitle shown under the name in the chat header.
+        /// Admin view: "Customer | C001". Customer view: "Online - Replies instantly".
+        /// </summary>
         public string CustomerId
         {
             get => _customerId;
             set { _customerId = value; OnPropertyChanged(); }
         }
-        // ==========================================
+
+        /// <summary>
+        /// Subtitle line shown below the chat title.
+        /// Customer view: "Online — Replies instantly".
+        /// Admin view: "Chatting with: {customerId}".
+        /// </summary>
+        public string ChatSubtitle => _role == "Admin"
+            ? $"Chatting with: {_otherId}"
+            : "Online — Replies instantly";
 
         public ICommand SendCommand { get; }
         public ICommand BackCommand { get; }
 
+        /// <summary>
+        /// Initializes the chat ViewModel for either Customer or Admin role.
+        /// </summary>
+        /// <param name="myId">The logged-in user's ID (sender).</param>
+        /// <param name="otherId">The other participant's ID (recipient).</param>
+        /// <param name="role">"Customer" or "Admin" — controls behavior and navigation.</param>
         public ChatViewModel(string myId, string otherId, string role)
         {
             _myId = myId;
             _otherId = otherId;
             _role = role;
 
+            // Badge label uses username from session for customers
             UserLabel = role == "Admin"
                 ? $"Agent: {myId}"
                 : $"Customer: {UserSession.Username ?? myId}";
@@ -68,22 +123,20 @@ namespace CarRentals_MVVM.ViewModels
                 ? $"Customer Support: {otherId}"
                 : "Support Chat | Instantly Replies";
 
-            // header info setup based on role 
+            // Admin: load the customer's name and photo for the header
+            // Customer: show generic agent label
             if (role == "Admin")
             {
-               
                 CustomerId = $"Customer | {_otherId}";
                 LoadCustomerDetails(_otherId);
             }
             else
-            {      FullName = "Live Agent Support";
-
+            {
+                FullName = "Live Agent Support";
                 CustomerId = "Online - Replies instantly";
             }
-        
-            // ==========================================
 
-            // Back navigation
+            // Back: admin returns to chat inbox, customer returns to dashboard
             BackCommand = new RelayCommand(_ =>
             {
                 if (role == "Admin")
@@ -92,16 +145,18 @@ namespace CarRentals_MVVM.ViewModels
                     NavigationService.Navigate(new View.CustomerDashboard(myId));
             });
 
-            // Send message — save to DB, show it, then trigger AUTO-REPLY
+            // Send: save message to DB, show it, then auto-reply if customer
             SendCommand = new AsyncRelayCommand(async _ =>
             {
                 if (string.IsNullOrWhiteSpace(CurrentMessage)) return;
 
                 string text = CurrentMessage.Trim();
-                CurrentMessage = string.Empty;
+                CurrentMessage = string.Empty; // Clear input immediately
 
-                // 1. SAVE & SHOW MESSAGE
+                // 1. Persist the user's message to the ChatMessages table
                 await CarDataService.SaveChatMessage(_myId, _otherId, text);
+
+                // 2. Add to the UI collection immediately (no reload needed)
                 Messages.Add(new ChatMessage
                 {
                     SenderId = _myId,
@@ -111,13 +166,15 @@ namespace CarRentals_MVVM.ViewModels
                     IsFromUser = true
                 });
 
-                // 2. TRIGGER AUTO-REPLY (Only if a Customer is sending the message)
+                // 3. Auto-reply only triggers for Customer role (not Admin)
                 if (_role == "Customer")
                 {
+                    // Short delay for a natural conversation feel
                     await Task.Delay(500);
 
                     string replyText = GetAutoReply(text.ToLower());
 
+                    // Save the auto-reply as coming FROM the admin (A001) TO the customer
                     await CarDataService.SaveChatMessage(_otherId, _myId, replyText);
 
                     Messages.Add(new ChatMessage
@@ -126,24 +183,25 @@ namespace CarRentals_MVVM.ViewModels
                         ReceiverId = _myId,
                         Text = replyText,
                         Time = DateTime.Now.ToString("HH:mm"),
-                        IsFromUser = false
+                        IsFromUser = false // Left-aligned — from the other party
                     });
                 }
             });
 
-            // Load existing messages from DB
+            // Load full conversation history from DB on window open
             LoadMessages();
         }
 
-        // ==========================================
-        // NEW METHOD TO FETCH CUSTOMER DATA
-        // ==========================================
+        /// <summary>
+        /// Loads the customer's FullName and ProfilePicturePath from the DB
+        /// and updates the admin chat header. Runs on a background thread
+        /// to avoid blocking the UI during window open.
+        /// </summary>
         private void LoadCustomerDetails(string customerId)
         {
             Task.Run(async () =>
             {
                 var customer = await CarDataService.GetCustomerById(customerId);
-
                 Application.Current.Dispatcher.Invoke(() =>
                 {
                     if (customer != null)
@@ -159,6 +217,11 @@ namespace CarRentals_MVVM.ViewModels
             });
         }
 
+        /// <summary>
+        /// Loads all past messages between the two participants from the DB.
+        /// Runs on a background thread — updates Messages collection on UI thread
+        /// via Dispatcher.Invoke to avoid cross-thread exceptions.
+        /// </summary>
         private void LoadMessages()
         {
             Task.Run(async () =>
@@ -169,6 +232,7 @@ namespace CarRentals_MVVM.ViewModels
                     Messages.Clear();
                     foreach (var m in msgs)
                     {
+                        // Re-evaluate IsFromUser based on the current user's ID
                         m.IsFromUser = m.SenderId == _myId;
                         Messages.Add(m);
                     }
@@ -176,7 +240,12 @@ namespace CarRentals_MVVM.ViewModels
             });
         }
 
-        //AUTO-REPLY LOGIC PLACED HERE
+        /// <summary>
+        /// Returns a contextual auto-reply based on keywords in the customer's message.
+        /// Used only when _role == "Customer". Covers common rental questions:
+        /// renting, returning, pricing, cancellation, maintenance, hours, colors, etc.
+        /// Falls back to a generic support message for unrecognized input.
+        /// </summary>
         private string GetAutoReply(string msg)
         {
             if (msg.Contains("rent") || msg.Contains("book"))
