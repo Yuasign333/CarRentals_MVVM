@@ -110,7 +110,7 @@
                                 </Border.Background>
                                 <StackPanel Orientation="Horizontal">
                                     <TextBlock Text="➕" Margin="0,0,8,0"/>
-                                    <TextBlock Text="Add Car" FontWeight="Bold" Foreground="White" Margin="0,-1,0,0"/>
+                                    <TextBlock Text="CRUD Application" FontWeight="Bold" Foreground="White" Margin="0,-1,0,0"/>
                                 </StackPanel>
                             </Border>
                         </Button>
@@ -351,8 +351,8 @@
                                 <Grid Margin="18">
                                     <StackPanel>
                                         <TextBlock Text="➕" FontSize="26"/>
-                                        <TextBlock Text="Add/Delete Car" FontSize="16"  Foreground="#2A1B5E" FontWeight="Bold" Margin="0,12,0,2"/>
-                                        <TextBlock Text="Register new vehicle and delete" FontSize="12" Foreground="#5F5A87"/>
+                                        <TextBlock Text="CRUD Application" FontSize="16"  Foreground="#2A1B5E" FontWeight="Bold" Margin="0,12,0,2"/>
+                                        <TextBlock FontSize="12" Foreground="#5F5A87"><Run Text="Add,"/><Run Language="en-gb" Text=" "/><Run Text="Delete and Update"/><Run Text=" "/><Run Text="Ve"/><Run Text="hicle"/><Run Text="s"/><Run Text=" and delete"/></TextBlock>
                                     </StackPanel>
                                 </Grid>
                             </Border>

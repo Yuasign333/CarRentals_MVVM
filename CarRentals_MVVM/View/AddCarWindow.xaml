@@ -59,7 +59,7 @@
                                    Foreground="#C9B8E8" VerticalAlignment="Center"/>
                         <TextBlock Text="  /  " FontSize="12"
                                    Foreground="#C4B0E0" VerticalAlignment="Center"/>
-                        <TextBlock Text="Add/Delete Car" FontSize="15" FontWeight="Bold"
+                        <TextBlock Text="CRUD Application" FontSize="15" FontWeight="Bold"
                                    Foreground="#2A1B5E" VerticalAlignment="Center"/>
                     </StackPanel>
                     <Border Grid.Column="1" Background="White" CornerRadius="20"
